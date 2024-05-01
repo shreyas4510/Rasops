@@ -1,7 +1,7 @@
 import { INVITE_STATUS } from "../../models/invite.model.js";
 import { STATUS_CODE } from "../../utils/common";
 
-const inviteUser = {
+export const create = {
     body: {
         email: 'valid-test@test.com',
         user: {
@@ -23,7 +23,7 @@ const inviteUser = {
 }
 
 
-const listInvites = {
+export const list = {
     req: { query: {}, user: { id: 'test-user-id' } },
     res: {
         status: STATUS_CODE.OK,
@@ -40,7 +40,7 @@ const listInvites = {
     }
 }
 
-const removeInvites = {
+export const remove = {
     req: { body: { id: 'test-invite-id' } },
     res: {
         success: {
@@ -78,10 +78,4 @@ const removeInvites = {
             success: 1,
         }
     }
-}
-
-export default {
-    inviteUser,
-    listInvites,
-    removeInvites
 }

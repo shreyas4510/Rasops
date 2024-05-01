@@ -24,7 +24,7 @@ describe('testing hotel cases', () => {
         }
     });
 
-    // Testing payload validation
+    // create hotel
     test('test payload validation', async () => {
         const { validationTest } = create;
         await hotelController.register(validationTest.req, res);
@@ -34,7 +34,6 @@ describe('testing hotel cases', () => {
         expect(res.send).toHaveBeenCalledWith(validationTest.res.data);
     })
 
-    // Testing hotel creation without an admin
     test('test create hotel without admin', async () => {
         const { ownerTest } = create;
 
@@ -52,7 +51,6 @@ describe('testing hotel cases', () => {
         expect(res.send).toHaveBeenCalledWith(ownerTest.db.hotel);
     })
 
-    // Testing hotel creation with an admin
     test('test create hotel with admin', async () => {
         const { adminTest } = create;
 
@@ -70,7 +68,6 @@ describe('testing hotel cases', () => {
         expect(res.send).toHaveBeenCalledWith(adminTest.db.hotel);
     })
 
-    // Testing error scenario during hotel creation
     test('test create hotel error', async () => {
         const { errorTest } = create;
         // Mocking rejected value for repository function

@@ -1,7 +1,6 @@
 import userController from "../../controllers/user.controllers";
 import { db } from "../../../config/database";
-import dummyData from "../utils/dummy.auth";
-
+import { register, login, verify, forget, reset } from "../utils/dummy.auth";
 // mock the database operations
 jest.mock('../../../config/database.js', () => ({
     db: {
@@ -32,7 +31,7 @@ describe('testing user cases', () => {
 
     // Register user test cases
     test('test invalid email to register a user', async () => {
-        const { invalidEmailData } = dummyData;
+        const { invalidEmailData } = register;
         await userController.create({ body: invalidEmailData.body }, res);
 
         // Status code should be 400
@@ -46,7 +45,7 @@ describe('testing user cases', () => {
     });
 
     test('test invalid password to register a user', async () => {
-        const { invalidPasswordData } = dummyData;
+        const { invalidPasswordData } = register;
         await userController.create({ body: invalidPasswordData.body }, res);
 
         // Status code should be 400
@@ -61,7 +60,7 @@ describe('testing user cases', () => {
     });
 
     test('test invalid phone number to register a user', async () => {
-        const { invalidPhoneData } = dummyData;
+        const { invalidPhoneData } = register;
         await userController.create({ body: invalidPhoneData.body }, res);
 
         // Status code should be 400
@@ -75,7 +74,7 @@ describe('testing user cases', () => {
     });
 
     test('test invalid body to register a user', async () => {
-        const { invalidData } = dummyData;
+        const { invalidData } = register;
         await userController.create({ body: invalidData.body }, res);
 
         // Status code should be 400
@@ -89,7 +88,7 @@ describe('testing user cases', () => {
     });
 
     test('test successful register of user', async () => {
-        const { user } = dummyData;
+        const { user } = register;
         // mock user details
         db.users.create.mockResolvedValue(user.db)
 
@@ -107,7 +106,7 @@ describe('testing user cases', () => {
 
     // Login user test cases
     test('test email not registered', async () => {
-        const { unregisteredEmailData } = dummyData;
+        const { unregisteredEmailData } = login;
 
         db.users.findOne.mockResolvedValue(undefined);
         await userController.login({ body: unregisteredEmailData.body }, res);
@@ -124,7 +123,7 @@ describe('testing user cases', () => {
     })
 
     test('test invalid password', async () => {
-        const { incorrectPasswordData } = dummyData;
+        const { incorrectPasswordData } = login;
 
         db.users.findOne.mockResolvedValue(incorrectPasswordData.db);
         await userController.login({ body: incorrectPasswordData.body }, res);
@@ -143,7 +142,7 @@ describe('testing user cases', () => {
     })
 
     test('test email not verified', async () => {
-        const { inActiveData } = dummyData;
+        const { inActiveData } = login;
 
         db.users.findOne.mockResolvedValue(inActiveData.db);
         await userController.login({ body: inActiveData.body }, res);
@@ -160,7 +159,7 @@ describe('testing user cases', () => {
     })
 
     test('test successful login of user', async () => {
-        const { successLoginData } = dummyData;
+        const { successLoginData } = login;
 
         db.users.findOne.mockResolvedValue(successLoginData.db);
         await userController.login({ body: successLoginData.body }, res);
@@ -181,7 +180,7 @@ describe('testing user cases', () => {
 
     // verify test cases
     test('test user already verified', async () => {
-        const { userAlreadyVerifiedData } = dummyData;
+        const { userAlreadyVerifiedData } = verify;
 
         db.users.findOne.mockResolvedValue(userAlreadyVerifiedData.db);
         await userController.verify({ body: userAlreadyVerifiedData.body }, res);
@@ -198,7 +197,7 @@ describe('testing user cases', () => {
     })
 
     test('test expired link', async () => {
-        const { linkExpiredData } = dummyData;
+        const { linkExpiredData } = verify;
 
         db.users.findOne.mockResolvedValue(linkExpiredData.db);
         await userController.verify({ body: linkExpiredData.body }, res);
@@ -215,7 +214,7 @@ describe('testing user cases', () => {
     })
 
     test('test verify email', async () => {
-        const { verifyEmailData } = dummyData;
+        const { verifyEmailData } = verify;
 
         verifyEmailData.db.save = jest.fn();
         db.users.findOne.mockResolvedValue(verifyEmailData.db);
@@ -237,7 +236,7 @@ describe('testing user cases', () => {
 
     // forgot password test cases
     test('test not verified user', async () => {
-        const { unverifiedData } = dummyData;
+        const { unverifiedData } = forget;
 
         db.users.findOne.mockResolvedValue(unverifiedData.db);
         await userController.forget({ body: unverifiedData.body }, res);
@@ -254,7 +253,7 @@ describe('testing user cases', () => {
     })
 
     test('test forgot password', async () => {
-        const { forgotPasswordData } = dummyData;
+        const { forgotPasswordData } = forget;
 
         db.users.findOne.mockResolvedValue(forgotPasswordData.db);
         await userController.forget({ body: forgotPasswordData.body }, res);
@@ -272,7 +271,7 @@ describe('testing user cases', () => {
 
     // reset password
     test('test to reset password', async () => {
-        const { resetPasswordData } = dummyData;
+        const { resetPasswordData } = reset;
 
         resetPasswordData.db.save = jest.fn();
         db.users.findOne.mockResolvedValue(resetPasswordData.db);
