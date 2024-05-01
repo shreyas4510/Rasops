@@ -46,6 +46,8 @@ const userModel = (sequelize) => (
             type: DataTypes.DATE,
             allowNull: true
         }
+    }, {
+        paranoid: true
     })
 );
 

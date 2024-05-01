@@ -19,7 +19,9 @@ export const EMAIL_ACTIONS = {
 
 export const TABLES = {
     USERS: 'users',
-    INVITE: 'invites'
+    INVITE: 'invites',
+    HOTEL: 'hotels',
+    HOTEL_USER_RELATION: 'hotelUserRelations'
 }
 
 
