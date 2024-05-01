@@ -13,11 +13,11 @@ const hotelModel = (sequelize) => (
         },
         open_time: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         close_time: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         address: {
             type: DataTypes.STRING,
@@ -29,6 +29,7 @@ const hotelModel = (sequelize) => (
         },
         rating: {
             type: DataTypes.DECIMAL,
+            allowNull: true
         },
         deletedAt: {
             type: DataTypes.DATE,

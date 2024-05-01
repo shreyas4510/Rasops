@@ -11,7 +11,7 @@ router.post('/verify', userController.verify);
 router.post('/forget', userController.forget);
 router.post('/reset', userController.reset);
 
-// admin apis
+// invite apis
 router.route('/invite')
     .all(authenticate)
     .post(userController.invite)
