@@ -12,7 +12,8 @@ const register = async (req, res) => {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: validation.error.message });
         }
 
-        res.status(STATUS_CODE.CREATED).send(await hotelService.create(body, user.id));
+        const result = await hotelService.create(body, user.id);
+        res.status(STATUS_CODE.CREATED).send(result);
     } catch (error) {
         console.log(`Failed to create hotel ${error}`);
         res.status(error.code).send({ message: error.message });

@@ -26,11 +26,11 @@ const create = async (payload, ownerId) => {
         }
         await hotelUserRelationRepo.save(ownerRelation);
 
-        let admin = {};
+        let admin = undefined;
         // Creating a relation between the admin and the hotel
         if (payload.admin) {
             const user = await userRepo.findOne({ id: payload.admin });
-            if (user && user?.dataValues?.role === USER_ROLES[1]) {
+            if (user?.role === USER_ROLES[1]) {
                 const adminRelation = {
                     id: uuidv4(),
                     hotelId: data.id,
@@ -42,7 +42,10 @@ const create = async (payload, ownerId) => {
             }
         }
 
-        return { ...data.dataValues, ...admin };
+        let result = JSON.parse(JSON.stringify(data, null, 4));
+        if( admin ) result.admin = { ...admin }
+
+        return result;
     } catch (error) {
         throw CustomError(error.code, error.message);
     }
