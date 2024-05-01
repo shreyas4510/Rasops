@@ -16,7 +16,8 @@ const create = async (req, res) => {
         }
 
         // register the user with details
-        return res.status(STATUS_CODE.CREATED).send(await userService.create(body));
+        const result = await userService.create(body);
+        return res.status(STATUS_CODE.CREATED).send(result);
     } catch (error) {
         console.log(`Failed to register user ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -33,7 +34,8 @@ const login = async (req, res) => {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
         }
 
-        return res.status(STATUS_CODE.OK).send(await userService.login({ ...body, password: depass }));
+        const result = await userService.login({ ...body, password: depass });
+        return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         console.log(`Failed to login ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -43,7 +45,9 @@ const login = async (req, res) => {
 const verify = async (req, res) => {
     try {
         const { body } = req;
-        return res.status(STATUS_CODE.OK).send(await userService.verify(body)); 
+
+        const result = await userService.verify(body);
+        return res.status(STATUS_CODE.OK).send(result); 
     } catch (error) {
         console.log(`Failed to login ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -53,7 +57,9 @@ const verify = async (req, res) => {
 const forget = async (req, res) => {
     try {
         const { body } = req;
-        return res.status(STATUS_CODE.OK).send(await userService.forget(body)); 
+
+        const result = await userService.forget(body);
+        return res.status(STATUS_CODE.OK).send(result); 
     } catch (error) {
         console.log(`Failed to send forgot password email ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -68,7 +74,9 @@ const reset = async (req, res) => {
         if (valid.error) {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
         }
-        return res.status(STATUS_CODE.OK).send(await userService.reset(body)); 
+
+        const result = await userService.reset(body);
+        return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         console.log(`Failed to reset password ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -84,7 +92,8 @@ const invite = async (req, res) => {
         }
 
         const data = { ...body, owner: req.user.id, name: `${req.user.firstName} ${req.user.lastName}` }
-        return res.status(STATUS_CODE.OK).send(await userService.invite(data)); 
+        const result = await userService.invite(data);
+        return res.status(STATUS_CODE.OK).send(result); 
     } catch (error) {
         console.log(`Failed to invite ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -105,7 +114,9 @@ const listInvites = async (req, res) => {
             filter_value,
             owner: req.user.id
         }
-        return res.status(STATUS_CODE.OK).send(await userService.listInvites(payload));
+
+        const result = await userService.listInvites(payload);
+        return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         console.log(`Failed to get invite list ${error}`);
         return res.status(error.code).send({ message: error.message });
@@ -115,7 +126,9 @@ const listInvites = async (req, res) => {
 const removeInvite = async (req, res) => {
     try {
         const id = req.body.id;
-        return res.status(STATUS_CODE.OK).send(await userService.removeInvite(id));
+
+        const result = await userService.removeInvite(id);
+        return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         console.log(`Failed to remove invite ${error}`);
         return res.status(error.code).send({ message: error.message });
