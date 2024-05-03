@@ -57,7 +57,9 @@ function Hotels() {
                 }}
                 isFooter={false}
                 size={"lg"}
-            />{" "}
+                submitText={'Submit'}
+                closeText={'Close'}
+            />
         </>
     );
 }
