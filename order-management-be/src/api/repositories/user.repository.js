@@ -10,7 +10,7 @@ const save = async (payload) => {
     }
 }
 
-const findOne = async( payload ) => {
+const findOne = async ( payload ) => {
     try {
         return await db.users.findOne({ where: payload });   
     } catch (error) {

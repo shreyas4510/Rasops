@@ -63,8 +63,8 @@ const login = async (payload) => {
             throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
         }
 
-        const { id, firstName, lastName } = user;
-        const token = jwt.sign({ id, firstName, lastName, status: user.status }, env.jwtSecret, { expiresIn: '12h' });
+        const { id, firstName, lastName, role } = user;
+        const token = jwt.sign({ id, firstName, lastName, status: user.status, role }, env.jwtSecret, { expiresIn: '12h' });
         return {
             token,
             data: user

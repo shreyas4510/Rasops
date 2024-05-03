@@ -24,7 +24,6 @@ export const TABLES = {
     HOTEL_USER_RELATION: 'hotelUserRelations'
 }
 
-
 export const CustomError = (
     code = STATUS_CODE.INTERNAL_SERVER_ERROR,
     message = 'Something went wrong.'

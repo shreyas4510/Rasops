@@ -6,10 +6,20 @@ const save = async (payload) => {
         return await db.hotel.create(payload);
     } catch (error) {
         const err = error?.errors ? error?.errors[0]?.message : undefined;
-        throw CustomError(error.code, ( err || error.message ));
+        throw CustomError(error.code, (err || error.message));
+    }
+}
+
+const update = async ( options, data ) => {
+    try {
+        return await db.hotel.update(data, { where: options });
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        throw CustomError(error.code, (err || error.message));
     }
 }
 
 export default {
-    save
+    save,
+    update
 }

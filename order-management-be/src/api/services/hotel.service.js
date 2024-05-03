@@ -1,9 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import hotelRepo from "../repositories/hotel.repository.js";
 import hotelUserRelationRepo from "../repositories/hotelUserRelation.repository.js";
-import userRepo from "../repositories/user.repository.js";
 import { CustomError } from "../utils/common.js";
-import { USER_ROLES } from '../models/user.model.js';
 
 const create = async (payload, ownerId) => {
     try {
@@ -28,18 +26,15 @@ const create = async (payload, ownerId) => {
 
         let admin = undefined;
         // Creating a relation between the admin and the hotel
-        if (payload.admin) {
-            const user = await userRepo.findOne({ id: payload.admin });
-            if (user?.role === USER_ROLES[1]) {
-                const adminRelation = {
-                    id: uuidv4(),
-                    hotelId: data.id,
-                    userId: payload.admin
-                }
-                await hotelUserRelationRepo.save(adminRelation);
-            } else {
-                admin = { error: 'admin assigned is invalid' };
-            }
+        if (payload.admin && payload.admin.length) {
+            const adminRelation = payload.admin.map(item => ({
+                id: uuidv4(),
+                hotelId: data.id,
+                userId: item
+            }));
+            await hotelUserRelationRepo.save(adminRelation).catch(err => {
+                admin = { code: err.code, message: err.message };
+            });
         }
 
         let result = JSON.parse(JSON.stringify(data, null, 4));
@@ -51,6 +46,17 @@ const create = async (payload, ownerId) => {
     }
 }
 
+const update = async (payload, id) => {
+    try {
+        // update the fields
+        const data = await hotelRepo.update({ id }, payload);
+        return { message:  data ? "Success" : " Failed" };  
+    } catch (error) {
+        throw CustomError(error.code, error.message);
+    }
+}
+
 export default {
-    create
+    create,
+    update
 }
