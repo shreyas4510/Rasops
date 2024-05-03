@@ -40,7 +40,7 @@ export const create = {
                 "name": "test-hotel",
                 "address": "test hotel address",
                 "care_number": "1234567890",
-                "admin": "test-admin-id"
+                "admin": ["test-admin-id"]
             }
         },
         db: {
@@ -64,6 +64,36 @@ export const create = {
         res: {
             status: STATUS_CODE.INTERNAL_SERVER_ERROR,
             data: { "message": "Internal Server Error" }
+        }
+    }
+}
+
+export const update = {
+    success: {
+        req: {
+            params: { id: 'test-hotel-id' },
+            body: {
+                "open_time": "10:00 AM",
+                "close_time": "11:00 PM"
+            }
+        },
+        res: {
+            status: STATUS_CODE.OK,
+            data: { message: "Success" }
+        }
+    },
+    error: {
+        req: {
+            params: { id: 'test-hotel-id' },
+            body: {
+                "open_time": "10:00 AM",
+                "close_time": "11:00 PM"
+            }
+        },
+        error: 'test error',
+        res: {
+            status: STATUS_CODE.INTERNAL_SERVER_ERROR,
+            data: { message: 'test error' }
         }
     }
 }

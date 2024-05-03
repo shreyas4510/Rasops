@@ -1,16 +1,17 @@
 import hotelController from "../../controllers/hotel.controller.js";
-import { create } from "../utils/dummy.hotel.js";
+import { create, update } from "../utils/dummy.hotel.js";
 import hotelRepo from "../../repositories/hotel.repository.js";
 import hotelUserRelationRepo from "../../repositories/hotelUserRelation.repository.js";
-import userRepo from "../../repositories/user.repository.js";
 
 // Initializing an empty response object
 let res = {};
 
+// console.log = jest.fn();
+
 // Creating spies to track function calls
 const hotelRepoSaveSpy = jest.spyOn(hotelRepo, 'save');
+const hotelRepoUpdateSpy = jest.spyOn(hotelRepo, 'update');
 const hotelUserRelationRepoSpy = jest.spyOn(hotelUserRelationRepo, 'save');
-const userRepoSpy = jest.spyOn(userRepo, 'findOne')
 
 // Describing the test suite for hotel registration functionality
 describe('testing hotel cases', () => {
@@ -56,14 +57,13 @@ describe('testing hotel cases', () => {
 
         // Mocking resolved values for repository functions
         hotelRepoSaveSpy.mockResolvedValue(adminTest.db.hotel);
-        userRepoSpy.mockResolvedValue(adminTest.db.admin);
+        hotelUserRelationRepoSpy.mockResolvedValue();          
 
         // Calling the hotel registration controller function
         await hotelController.register(adminTest.req, res);
 
         // Expectations for function calls and response data
         expect(res.status).toHaveBeenCalledWith(adminTest.res.status);
-        expect(userRepoSpy).toHaveBeenCalled();
         expect(hotelUserRelationRepoSpy).toHaveBeenCalledTimes(2);
         expect(res.send).toHaveBeenCalledWith(adminTest.db.hotel);
     })
@@ -78,5 +78,29 @@ describe('testing hotel cases', () => {
         // Expectations for error handling
         expect(res.status).toHaveBeenCalledWith(errorTest.res.status);
         expect(res.send).toHaveBeenCalledWith(errorTest.res.data);
+    })
+
+    // update hotel
+    test('test update hotel successfully', async () => {
+
+        const { success } = update;
+
+        hotelRepoUpdateSpy.mockResolvedValue(1);
+
+        await hotelController.update(success.req, res);
+
+        expect(res.status).toHaveBeenCalledWith(success.res.status);
+        expect(hotelRepoUpdateSpy).toHaveBeenCalled();
+        expect(res.send).toHaveBeenCalledWith(success.res.data);
+    })
+
+    test('test update hotel throw error', async () => {
+        const { error } = update;
+        hotelRepoUpdateSpy.mockRejectedValue(new Error(error.error));
+        await hotelController.update(error.req, res);
+
+        expect(res.status).toHaveBeenCalledWith(error.res.status);
+        expect(hotelRepoUpdateSpy).toHaveBeenCalled();
+        expect(res.send).toHaveBeenCalledWith(error.res.data);
     })
 })
