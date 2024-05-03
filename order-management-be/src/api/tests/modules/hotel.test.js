@@ -6,7 +6,7 @@ import hotelUserRelationRepo from "../../repositories/hotelUserRelation.reposito
 // Initializing an empty response object
 let res = {};
 
-// console.log = jest.fn();
+console.log = jest.fn();
 
 // Creating spies to track function calls
 const hotelRepoSaveSpy = jest.spyOn(hotelRepo, 'save');
