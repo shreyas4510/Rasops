@@ -595,6 +595,134 @@
 						"description": "Unauthorized"
 					}
 				}
+			},
+			"get": {
+				"summary": "Get a list of hotels",
+				"tags": [
+					"Hotel"
+				],
+				"parameters": [
+					{
+						"name": "userId",
+						"in": "query",
+						"description": "User ID",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"count": {
+											"type": "integer",
+											"description": "Total count of hotels"
+										},
+										"rows": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Hotel"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "Error response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"Hotel"
+				],
+				"summary": "Delete a hotel by ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID of the hotel to delete",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Hotel deleted successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string",
+									"example": "Hotel, Admins and Owners removed successfully"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string",
+									"example": "Invalid input"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string",
+									"example": "Unauthorized access"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string",
+									"example": "Hotel not found"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string",
+									"example": "Internal server error"
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
