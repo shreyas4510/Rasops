@@ -19,7 +19,17 @@ const update = async ( options, data ) => {
     }
 }
 
+const remove = async ( options ) => {
+    try {
+        return await db.hotel.destroy(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        throw CustomError(error.code, (err || error.message));
+    }
+}
+
 export default {
     save,
-    update
+    update,
+    remove
 }

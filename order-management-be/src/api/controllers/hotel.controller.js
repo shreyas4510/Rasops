@@ -38,7 +38,32 @@ const update = async (req, res) => {
     }
 }
 
+const list = async (req, res) => {
+    try {
+        const { user } = req;
+        const result = await hotelService.list(user.id);
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        console.log(`Failed to list hotel ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+}
+
+const remove = async (req, res) => {
+    try {
+        const { params } = req;
+        const result = await hotelService.remove(params.id);
+        console.log(result);
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        console.log(`Failed to remove hotel ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+}
+
 export default {
     register,
-    update
+    update,
+    list,
+    remove
 }

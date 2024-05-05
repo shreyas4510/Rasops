@@ -5,7 +5,12 @@ import { ownerAuthentication } from "../middlewares/roleAuth.js";
 
 const router = Router();
 
-router.post('/', authenticate, ownerAuthentication, hotelController.register);
 router.put('/:id', authenticate, hotelController.update);
+router.route('/')
+    .all(authenticate, ownerAuthentication)
+    .post(hotelController.register)
+    .get(hotelController.list);
+
+router.delete('/:id', authenticate, ownerAuthentication, hotelController.remove);
 
 export default router;

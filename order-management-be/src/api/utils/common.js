@@ -8,7 +8,8 @@ export const STATUS_CODE = {
     GONE: 410,
     INTERNAL_SERVER_ERROR: 500,
     BAD_GATEWAY: 502,
-    SERVICE_UNAVAILABLE: 503
+    SERVICE_UNAVAILABLE: 503,
+    TOO_MANY_REQUEST: 429
 }
 
 export const EMAIL_ACTIONS = {
@@ -32,3 +33,4 @@ export const CustomError = (
     error.code = code;
     return error;
 }
+

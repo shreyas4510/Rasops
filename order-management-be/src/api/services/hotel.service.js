@@ -1,10 +1,20 @@
 import { v4 as uuidv4 } from 'uuid';
 import hotelRepo from "../repositories/hotel.repository.js";
 import hotelUserRelationRepo from "../repositories/hotelUserRelation.repository.js";
-import { CustomError } from "../utils/common.js";
+import { CustomError, STATUS_CODE, TABLES } from "../utils/common.js";
 
 const create = async (payload, ownerId) => {
     try {
+        const maxHotels = 10;
+        const ownerHotels = await hotelUserRelationRepo.find({where: { userId: ownerId }})
+
+        if (ownerHotels.count >= maxHotels) {
+            throw CustomError(
+                STATUS_CODE.TOO_MANY_REQUEST,
+                `You've reached the maximum limit for hotel creations. Only 10 hotels per user allowed.`
+            );
+        }
+
         // Creating a new hotel object with provided payload
         const hotel = {
             id: uuidv4(),
@@ -40,7 +50,7 @@ const create = async (payload, ownerId) => {
         let result = JSON.parse(JSON.stringify(data, null, 4));
         if( admin ) result.admin = { ...admin }
 
-        return result;
+        return ownerHotels;
     } catch (error) {
         throw CustomError(error.code, error.message);
     }
@@ -56,7 +66,44 @@ const update = async (payload, id) => {
     }
 }
 
+const list = async ( userId ) => {
+    try {
+        const options = {
+            where: { userId },
+            include: [ TABLES.HOTEL ]
+        };
+        const hotels = await hotelUserRelationRepo.find(options);
+
+        const rows = hotels.rows.map(item => item.hotel);
+        return { count: hotels.count, rows };
+    } catch (error) {
+        throw CustomError(error.code, error.message);
+    }
+}
+
+const remove = async ( hotelId ) => {
+    try {
+        const result = [];
+
+        // remove hotels
+        const hotelOptions = {where: { id: hotelId }};
+        await hotelRepo.remove(hotelOptions);
+        result.push("Hotel");
+
+        // remove admin and owner ralation with hotel
+        const relationOption = { where: { hotelId } };
+        await hotelUserRelationRepo.remove(relationOption);
+        result.push("Admins and Owners");
+
+        return { message: `${result.join(', ')} removed successfully` };
+    } catch (error) {
+        throw CustomError(error.code, error.message);
+    }
+}
+
 export default {
     create,
-    update
+    update,
+    list,
+    remove
 }

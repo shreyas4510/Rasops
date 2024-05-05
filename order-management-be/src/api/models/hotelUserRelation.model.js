@@ -18,6 +18,7 @@ const hotelUserRelationModel = (sequelize) => (
         userId: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
             references: {
                 model: TABLES.USERS,
                 key: 'id'

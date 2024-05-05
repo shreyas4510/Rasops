@@ -1,6 +1,7 @@
 import { Router } from "express";
 import userController from "../controllers/user.controllers.js";
 import authenticate from "../middlewares/auth.js";
+import { ownerAuthentication } from "../middlewares/roleAuth.js";
 
 const router = Router();
 
@@ -13,7 +14,7 @@ router.post('/reset', userController.reset);
 
 // invite apis
 router.route('/invite')
-    .all(authenticate)
+    .all(authenticate, ownerAuthentication)
     .post(userController.invite)
     .get(userController.listInvites)
     .delete(userController.removeInvite);
