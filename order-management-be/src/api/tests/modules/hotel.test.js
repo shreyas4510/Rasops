@@ -1,5 +1,5 @@
 import hotelController from "../../controllers/hotel.controller.js";
-import { create, update } from "../utils/dummy.hotel.js";
+import { create, list, remove, update } from "../utils/dummy.hotel.js";
 import hotelRepo from "../../repositories/hotel.repository.js";
 import hotelUserRelationRepo from "../../repositories/hotelUserRelation.repository.js";
 
@@ -11,7 +11,11 @@ console.log = jest.fn();
 // Creating spies to track function calls
 const hotelRepoSaveSpy = jest.spyOn(hotelRepo, 'save');
 const hotelRepoUpdateSpy = jest.spyOn(hotelRepo, 'update');
-const hotelUserRelationRepoSpy = jest.spyOn(hotelUserRelationRepo, 'save');
+const hotelRepoRemoveSpy = jest.spyOn(hotelRepo, 'remove');
+const hotelUserRelationRepoSaveSpy = jest.spyOn(hotelUserRelationRepo, 'save');
+const hotelUserRelationRepoFindSpy = jest.spyOn(hotelUserRelationRepo, 'find');
+const hotelUserRelationRepoRemoveSpy = jest.spyOn(hotelUserRelationRepo, 'remove');
+
 
 // Describing the test suite for hotel registration functionality
 describe('testing hotel cases', () => {
@@ -35,19 +39,35 @@ describe('testing hotel cases', () => {
         expect(res.send).toHaveBeenCalledWith(validationTest.res.data);
     })
 
+    test('test too many request error', async () => {
+        const { tooManyRequest } = create;
+
+        // Mocking resolved values for repository functions
+        hotelUserRelationRepoFindSpy.mockResolvedValue(tooManyRequest.db.data);
+
+        // Calling the hotel registration controller function
+        await hotelController.register(tooManyRequest.req, res);
+
+        // Expectations for function calls and response data
+        expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(tooManyRequest.response.status);
+        expect(res.send).toHaveBeenCalledWith(tooManyRequest.response.data);
+    })
+
     test('test create hotel without admin', async () => {
         const { ownerTest } = create;
 
         // Mocking resolved values for repository functions
         hotelRepoSaveSpy.mockResolvedValue(ownerTest.db.hotel);
-        hotelUserRelationRepoSpy.mockResolvedValue({});
+        hotelUserRelationRepoSaveSpy.mockResolvedValue({});
+        hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 })
 
         // Calling the hotel registration controller function
         await hotelController.register(ownerTest.req, res);
 
         // Expectations for function calls and response data
         expect(hotelRepoSaveSpy).toHaveBeenCalled();
-        expect(hotelUserRelationRepoSpy).toHaveBeenCalled();
+        expect(hotelUserRelationRepoSaveSpy).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(ownerTest.res.status);
         expect(res.send).toHaveBeenCalledWith(ownerTest.db.hotel);
     })
@@ -57,14 +77,15 @@ describe('testing hotel cases', () => {
 
         // Mocking resolved values for repository functions
         hotelRepoSaveSpy.mockResolvedValue(adminTest.db.hotel);
-        hotelUserRelationRepoSpy.mockResolvedValue();          
+        hotelUserRelationRepoSaveSpy.mockResolvedValue();        
+        hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 })
 
         // Calling the hotel registration controller function
         await hotelController.register(adminTest.req, res);
 
         // Expectations for function calls and response data
         expect(res.status).toHaveBeenCalledWith(adminTest.res.status);
-        expect(hotelUserRelationRepoSpy).toHaveBeenCalledTimes(2);
+        expect(hotelUserRelationRepoSaveSpy).toHaveBeenCalledTimes(2);
         expect(res.send).toHaveBeenCalledWith(adminTest.db.hotel);
     })
 
@@ -72,6 +93,8 @@ describe('testing hotel cases', () => {
         const { errorTest } = create;
         // Mocking rejected value for repository function
         hotelRepoSaveSpy.mockRejectedValue(errorTest.error);
+        hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 })
+
         // Calling the hotel registration controller function
         await hotelController.register(errorTest.req, res)
 
@@ -102,5 +125,55 @@ describe('testing hotel cases', () => {
         expect(res.status).toHaveBeenCalledWith(error.res.status);
         expect(hotelRepoUpdateSpy).toHaveBeenCalled();
         expect(res.send).toHaveBeenCalledWith(error.res.data);
+    })
+
+    // list hotels
+    test('test list hotel success', async () => {
+        const { success } = list;
+        hotelUserRelationRepoFindSpy.mockResolvedValue(success.db.data);
+
+        await hotelController.list(success.req, res);
+
+        expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(success.res.status);
+        expect(res.send).toHaveBeenCalledWith(success.res.data);
+    })
+
+    test('test list hotel failed', async () => {
+        const { error } = list;
+
+        hotelUserRelationRepoFindSpy.mockRejectedValue(new Error(error.error));
+        await hotelController.list(error.req, res);
+
+        expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(error.res.status);
+        expect(res.send).toHaveBeenCalledWith(error.res.data);
+    })
+  
+    // remove hotel
+    test('test remove hotel success', async () => {
+        const { success } = remove;
+
+        hotelRepoRemoveSpy.mockResolvedValue(success.db);
+        hotelUserRelationRepoRemoveSpy.mockResolvedValue(success.db);
+
+        await hotelController.remove(success.req, res);
+
+        expect(hotelRepoRemoveSpy).toHaveBeenCalled();
+        expect(hotelUserRelationRepoRemoveSpy).toHaveBeenCalled();
+
+        expect(res.status).toHaveBeenCalledWith(success.response.status);
+        expect(res.send).toHaveBeenCalledWith(success.response.data)
+    })
+
+    test('test remove hotel error', async () => {
+        const { error } = remove;
+        hotelRepoRemoveSpy.mockRejectedValue(new Error(error.error));
+
+        await hotelController.remove(error.req, res);
+
+        expect(hotelRepoRemoveSpy).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(error.response.status);
+        expect(res.send).toHaveBeenCalledWith(error.response.data)
     })
 })

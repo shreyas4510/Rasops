@@ -15,6 +15,23 @@ export const create = {
             data: { "message": "\"care_number\" is required" }
         }
     },
+    tooManyRequest: {
+        req: {
+            user: { id: 'test-owner-id' },
+            body: {
+                "name": "test-hotel",
+                "address": "test hotel address",
+                "care_number": "1234567890"
+            }
+        },
+        db: {
+            data: { count: 10 }
+        },
+        response: {
+            status: STATUS_CODE.TOO_MANY_REQUEST,
+            data: { message: "You've reached the maximum limit for hotel creations. Only 10 hotels per user allowed." }
+        }
+    },
     ownerTest: {
         req: {
             user: { id: 'test-owner-id' },
@@ -94,6 +111,71 @@ export const update = {
         res: {
             status: STATUS_CODE.INTERNAL_SERVER_ERROR,
             data: { message: 'test error' }
+        }
+    }
+}
+
+export const list = {
+    success: {
+        req: {
+            user: { id: 'test-user-id' }
+        },
+        db: {
+            data: {
+                count: 2,
+                rows: [
+                    { hotel: { id: 'test-hotel-id-1' } },
+                    { hotel: { id: 'test-hotel-id-2' } }
+                ]
+
+            }
+        },
+        res: {
+            status: STATUS_CODE.OK,
+            data: {
+                count: 2,
+                rows: [
+                    { id: 'test-hotel-id-1' },
+                    { id: 'test-hotel-id-2' }
+                ]
+            }
+        }
+    },
+    error: {
+        req: {
+            user: { id: 'test-user-id' }
+        },
+        error: 'Failed to fetch',
+        res: {
+            status: STATUS_CODE.INTERNAL_SERVER_ERROR,
+            data: { message: 'Failed to fetch' }
+        }
+    }
+}
+
+export const remove = {
+    success: {
+        db: {},
+        req: {
+            params: { id: 'test-hotel-id' }
+        },
+        response: {
+            status: STATUS_CODE.OK,
+            data: {
+                "message": "Hotel, Admins and Owners removed successfully"
+            }
+        }
+    },
+    error: {
+        error: 'Failed to delete hotel',
+        req: {
+            params: { id: 'test-hotel-id' }
+        },
+        response: {
+            status: 500,
+            data: {
+                message: 'Failed to delete hotel'
+            }
         }
     }
 }

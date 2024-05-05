@@ -50,7 +50,7 @@ const create = async (payload, ownerId) => {
         let result = JSON.parse(JSON.stringify(data, null, 4));
         if( admin ) result.admin = { ...admin }
 
-        return ownerHotels;
+        return result;
     } catch (error) {
         throw CustomError(error.code, error.message);
     }
