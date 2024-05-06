@@ -101,7 +101,7 @@ const verify = async (payload) => {
         await user.save();
 
         const { id, firstName, lastName } = user;
-        const token = jwt.sign({ id, firstName, lastName, status: user.status }, env.jwtSecret, { expiresIn: '12h' });
+        const token = jwt.sign({ id, firstName, lastName, status: user.status, role: user.role }, env.jwtSecret, { expiresIn: '12h' });
         return {
             token,
             data: user
@@ -171,6 +171,12 @@ const reset = async (payload) => {
 const invite = async (payload) => {
     try {
         const { email } = payload;
+
+        const user = await userRepo.findOne({ email });
+        if (user) {
+            throw CustomError(STATUS_CODE.CONFLICT, 'Email already registered');
+        }
+
         const data = {
             id: uuidv4(),
             email: payload.email,
@@ -187,7 +193,7 @@ const invite = async (payload) => {
         };
 
         const token = CryptoJS.AES.encrypt(JSON.stringify(options), env.cryptoSecret).toString();
-        await sendEmail({ token, name: payload.name }, email, EMAIL_ACTIONS.INVITE_ADMIN);
+        await sendEmail({ token, name: payload.name }, email, EMAIL_ACTIONS.INVITE_MANAGER);
         return { message: 'Invite link sent' };
     } catch (error) {
         throw CustomError(error.code, error.message);

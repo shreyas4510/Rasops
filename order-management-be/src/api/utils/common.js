@@ -9,13 +9,14 @@ export const STATUS_CODE = {
     INTERNAL_SERVER_ERROR: 500,
     BAD_GATEWAY: 502,
     SERVICE_UNAVAILABLE: 503,
-    TOO_MANY_REQUEST: 429
+    TOO_MANY_REQUEST: 429,
+    CONFLICT: 409
 }
 
 export const EMAIL_ACTIONS = {
     VERIFY_USER: 'verify-user',
     FORGOT_PASSWORD: 'forgot-password',
-    INVITE_ADMIN: 'invite-admin'
+    INVITE_MANAGER: 'invite-manager'
 }
 
 export const TABLES = {
@@ -33,4 +34,3 @@ export const CustomError = (
     error.code = code;
     return error;
 }
-

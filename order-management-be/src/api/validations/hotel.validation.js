@@ -6,7 +6,7 @@ export const registerationValidation = ( payload ) => {
         const schema = Joi.object({
             name: Joi.string().min(3).required(),
             address: Joi.string().min(10).required(),
-            admin: Joi.array().items(Joi.string()).optional(),
+            manager: Joi.array().items(Joi.string()).optional(),
             care_number: Joi.number().min(10 ** 9).max(10 ** 10 - 1).required(),
             open_time: Joi.string().optional(),
             close_time: Joi.string().optional()

@@ -50,19 +50,19 @@ export const create = {
             status: STATUS_CODE.CREATED,
         }
     },
-    adminTest: {
+    managerTest: {
         req: {
             user: { id: 'test-owner-id' },
             body: {
                 "name": "test-hotel",
                 "address": "test hotel address",
                 "care_number": "1234567890",
-                "admin": ["test-admin-id"]
+                "manager": ["test-manager-id"]
             }
         },
         db: {
             hotel: { id: 'test-hotel-id' },
-            admin: { role: USER_ROLES[1] }
+            manager: { role: USER_ROLES[1] }
         },
         res: {
             status: STATUS_CODE.CREATED,
@@ -162,7 +162,7 @@ export const remove = {
         response: {
             status: STATUS_CODE.OK,
             data: {
-                "message": "Hotel, Admins and Owners removed successfully"
+                "message": "Hotel, Managers and Owners removed successfully"
             }
         }
     },

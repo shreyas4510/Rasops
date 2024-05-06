@@ -47,7 +47,7 @@
 									"role": {
 										"type": "string",
 										"example": "OWNER",
-										"description": "Values could be OWNER, ADMIN, CUSTOMER"
+										"description": "Values could be OWNER, MANAGER, CUSTOMER"
 									}
 								}
 							}
@@ -669,7 +669,7 @@
 							"properties": {
 								"message": {
 									"type": "string",
-									"example": "Hotel, Admins and Owners removed successfully"
+									"example": "Hotel, Managers and Owners removed successfully"
 								}
 							}
 						}

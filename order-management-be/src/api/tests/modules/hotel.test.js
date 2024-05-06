@@ -54,7 +54,7 @@ describe('testing hotel cases', () => {
         expect(res.send).toHaveBeenCalledWith(tooManyRequest.response.data);
     })
 
-    test('test create hotel without admin', async () => {
+    test('test create hotel without manager', async () => {
         const { ownerTest } = create;
 
         // Mocking resolved values for repository functions
@@ -72,21 +72,21 @@ describe('testing hotel cases', () => {
         expect(res.send).toHaveBeenCalledWith(ownerTest.db.hotel);
     })
 
-    test('test create hotel with admin', async () => {
-        const { adminTest } = create;
+    test('test create hotel with manager', async () => {
+        const { managerTest } = create;
 
         // Mocking resolved values for repository functions
-        hotelRepoSaveSpy.mockResolvedValue(adminTest.db.hotel);
+        hotelRepoSaveSpy.mockResolvedValue(managerTest.db.hotel);
         hotelUserRelationRepoSaveSpy.mockResolvedValue();        
         hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 })
 
         // Calling the hotel registration controller function
-        await hotelController.register(adminTest.req, res);
+        await hotelController.register(managerTest.req, res);
 
         // Expectations for function calls and response data
-        expect(res.status).toHaveBeenCalledWith(adminTest.res.status);
+        expect(res.status).toHaveBeenCalledWith(managerTest.res.status);
         expect(hotelUserRelationRepoSaveSpy).toHaveBeenCalledTimes(2);
-        expect(res.send).toHaveBeenCalledWith(adminTest.db.hotel);
+        expect(res.send).toHaveBeenCalledWith(managerTest.db.hotel);
     })
 
     test('test create hotel error', async () => {

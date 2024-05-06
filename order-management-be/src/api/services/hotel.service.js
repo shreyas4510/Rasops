@@ -34,21 +34,21 @@ const create = async (payload, ownerId) => {
         }
         await hotelUserRelationRepo.save(ownerRelation);
 
-        let admin = undefined;
-        // Creating a relation between the admin and the hotel
-        if (payload.admin && payload.admin.length) {
-            const adminRelation = payload.admin.map(item => ({
+        let manager = undefined;
+        // Creating a relation between the manager and the hotel
+        if (payload.manager && payload.manager.length) {
+            const managerRelation = payload.manager.map(item => ({
                 id: uuidv4(),
                 hotelId: data.id,
                 userId: item
             }));
-            await hotelUserRelationRepo.save(adminRelation).catch(err => {
-                admin = { code: err.code, message: err.message };
+            await hotelUserRelationRepo.save(managerRelation).catch(err => {
+                manager = { code: err.code, message: err.message };
             });
         }
 
         let result = JSON.parse(JSON.stringify(data, null, 4));
-        if( admin ) result.admin = { ...admin }
+        if( manager ) result.manager = { ...manager }
 
         return result;
     } catch (error) {
@@ -90,10 +90,10 @@ const remove = async ( hotelId ) => {
         await hotelRepo.remove(hotelOptions);
         result.push("Hotel");
 
-        // remove admin and owner ralation with hotel
+        // remove manager and owner ralation with hotel
         const relationOption = { where: { hotelId } };
         await hotelUserRelationRepo.remove(relationOption);
-        result.push("Admins and Owners");
+        result.push("Managers and Owners");
 
         return { message: `${result.join(', ')} removed successfully` };
     } catch (error) {

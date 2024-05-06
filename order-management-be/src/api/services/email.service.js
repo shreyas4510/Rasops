@@ -25,13 +25,13 @@ const getEmailData = ( action, payload ) => {
                 subject: 'Re: Recover Password',
                 template: Mustache.render(template, { appUrl: url })
             }
-        case EMAIL_ACTIONS.INVITE_ADMIN:
-            path = `${process.cwd()}/src/api/templates/inviteAdmin.html`;
+        case EMAIL_ACTIONS.INVITE_MANAGER:
+            path = `${process.cwd()}/src/api/templates/inviteManager.html`;
             template = readFileSync(path, 'utf8');
             url = `${env.app.appUrl}/signup?token=${encodeURIComponent(payload.token)}`;
 
             return {
-                subject: 'Re: Invite Admin',
+                subject: 'Re: Invite Manager',
                 template: Mustache.render(template, { appUrl: url, ownerName: payload.name })
             }
         default:
@@ -51,7 +51,7 @@ export const sendEmail = async ( payload, to, action ) => {
         };
     
         // send email to the user
-        return await transporter.sendMail(options);;
+        return await transporter.sendMail(options);
     } catch (error) {
         console.log(`Error sending verification email ${error}`);
         throw CustomError(error.code, error.message);   
