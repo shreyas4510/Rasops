@@ -1,6 +1,6 @@
-import createReducerManager from './reducers/index'
+import createReducerManager from './reducers'
 import createSagaMiddleware from 'redux-saga'
-import createSagaManager from './sagas/index'
+import createSagaManager from './sagas'
 import { configureStore } from '@reduxjs/toolkit'
 
 
