@@ -45,12 +45,21 @@ function OTMModal({
                 <CustomButton
                     className="secondary-button"
                     onClick={() => {
-                        handleClose(false);
+                        handleClose(false)
                     }}
                     label={closeText}
+                    disabled={false}
                 />
             )}
-            {submitText && <CustomButton type="submit" className="custom-button" onClick={handleSubmit} disabled={disabled} label={submitText} />}
+            {submitText &&(
+                <CustomButton
+                    type="submit"
+                    className="custom-button"
+                    onClick={handleSubmit}
+                    disabled={disabled}
+                    label={submitText}
+                />
+            )}
         </Modal.Footer>
     );
 

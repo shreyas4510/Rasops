@@ -4,13 +4,15 @@ function CustomButton({
     disabled = true,
     label = '',
     type = 'button',
-    className = ''
+    className = '',
+    onClick = () => {}
 }) {
     return (
         <Button
             disabled={disabled}
             type={type}
             className={`custom-button btn-block px-4 ${className}`}
+            onClick={onClick}
         >{label}</Button>
     )
 }

@@ -150,7 +150,7 @@ function Invites() {
         <>
             <div className="position-relative">
                 <div className="heading-container">
-                    <h4 className="text-center text-white pt-5">Invite Admin</h4>
+                    <h4 className="text-center text-white pt-5">Invite Manager</h4>
                 </div>
                 <div className="position-absolute top-100 start-50 translate-middle email-container">
                     <input
@@ -188,6 +188,7 @@ function Invites() {
             </div>
             <OTMModal
                 show={removeInvite}
+                size="md"
                 closeText={'Cancel'}
                 submitText={'Delete'}
                 title={'Delete Invite'}
