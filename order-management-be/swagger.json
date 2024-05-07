@@ -43,11 +43,6 @@
 										"pattern": "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
 										"example": "U2FsdGVkX1+ILQ91VejAVpr/xiaq/Mf0XsHxR7fEKR4=",
 										"description": "Password@123"
-									},
-									"role": {
-										"type": "string",
-										"example": "OWNER",
-										"description": "Values could be OWNER, MANAGER, CUSTOMER"
 									}
 								}
 							}
@@ -102,6 +97,12 @@
 					},
 					"401": {
 						"description": "Unauthorized"
+					},
+					"404": {
+						"description": "Not Found"
+					},
+					"403": {
+						"description": "Forbidden"
 					}
 				},
 				"tags": [
@@ -126,8 +127,8 @@
 									},
 									"expires": {
 										"type": "string",
-										"format": "date-time",
-										"example": "2024-03-15T12:00:00Z"
+										"format": "number",
+										"example": "1715277149154"
 									}
 								}
 							}
@@ -141,8 +142,11 @@
 					"400": {
 						"description": "Bad Request"
 					},
-					"403": {
-						"description": "Forbidden"
+					"404": {
+						"description": "Not Found"
+					},
+					"410": {
+						"description": "Gone"
 					}
 				},
 				"tags": [
@@ -209,8 +213,8 @@
 									},
 									"expires": {
 										"type": "string",
-										"format": "date-time",
-										"example": "2024-03-15T12:00:00Z"
+										"format": "number",
+										"example": "1714932121605"
 									}
 								}
 							}
@@ -226,6 +230,9 @@
 					},
 					"403": {
 						"description": "Forbidden"
+					},
+					"410": {
+						"description": "Gone"
 					}
 				},
 				"tags": [
