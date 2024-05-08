@@ -20,9 +20,9 @@ const create = async (payload, ownerId) => {
             id: uuidv4(),
             name: payload.name,
             address: payload.address,
-            care_number: payload.care_number,
-            open_time: payload.open_time,
-            close_time: payload.close_time
+            careNumber: payload.careNumber,
+            openTime: payload.openTime,
+            closeTime: payload.closeTime
         }        // Saving the hotel data
         const data = await hotelRepo.save(hotel);
 

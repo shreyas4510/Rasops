@@ -7,9 +7,9 @@ export const registerationValidation = ( payload ) => {
             name: Joi.string().min(3).required(),
             address: Joi.string().min(10).required(),
             manager: Joi.array().items(Joi.string()).optional(),
-            care_number: Joi.number().min(10 ** 9).max(10 ** 10 - 1).required(),
-            open_time: Joi.string().optional(),
-            close_time: Joi.string().optional()
+            careNumber: Joi.number().min(10 ** 9).max(10 ** 10 - 1).required(),
+            openTime: Joi.string().optional(),
+            closeTime: Joi.string().optional()
         });
         return schema.validate(payload);
     } catch (error) {
@@ -21,12 +21,12 @@ export const registerationValidation = ( payload ) => {
 export const updateValidation = ( payload ) => {
     try {
         const schema = Joi.object({
-            open_time: Joi.string().optional(),
-            close_time: Joi.string().optional(),
+            openTime: Joi.string().optional(),
+            closeTime: Joi.string().optional(),
             name: Joi.string().min(3).optional(),
-            care_number: Joi.number().min(10 ** 9).max(10 ** 10 - 1),
+            careNumber: Joi.number().min(10 ** 9).max(10 ** 10 - 1),
             address: Joi.string().min(10),
-        }).or( 'open_time', 'close_time', 'name', 'care_number', 'address' );
+        }).or( 'openTime', 'closeTime', 'name', 'careNumber', 'address' );
         return schema.validate(payload);
     } catch (error) {
         console.log(`Error in validating hotel update ${error.message}`);

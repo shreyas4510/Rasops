@@ -11,11 +11,11 @@ const hotelModel = (sequelize) => (
             type: DataTypes.STRING,
             allowNull: false
         },
-        open_time: {
+        openTime: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        close_time: {
+        closeTime: {
             type: DataTypes.STRING,
             allowNull: true
         },
@@ -23,7 +23,7 @@ const hotelModel = (sequelize) => (
             type: DataTypes.STRING,
             allowNull: false
         },
-        care_number: {
+        careNumber: {
             type: DataTypes.STRING,
             allowNull: false
         },

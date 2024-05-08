@@ -284,6 +284,9 @@
 					"401": {
 						"description": "Unauthorized"
 					},
+					"403": {
+						"description": "Forbidden"
+					},
 					"409": {
 						"description": "Conflict"
 					}
@@ -340,6 +343,9 @@
 					},
 					"401": {
 						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
 					}
 				}
 			}
@@ -373,13 +379,16 @@
 					"401": {
 						"description": "Unauthorized"
 					},
+					"403": {
+						"description": "Forbidden"
+					},
 					"404": {
 						"description": "Not Found"
 					}
 				}
 			}
 		},
-		"/hotels": {
+		"/hotel": {
 			"post": {
 				"tags": [
 					"Hotel"
@@ -387,7 +396,7 @@
 				"summary": "Create a new hotel",
 				"security": [
 					{
-						"bearerAuth": []
+						"BearerAuth": []
 					}
 				],
 				"requestBody": {
@@ -398,28 +407,30 @@
 								"type": "object",
 								"properties": {
 									"name": {
-										"type": "string"
+										"type": "string",
+										"required": true
 									},
 									"address": {
+										"type": "string",
+										"required": true
+									},
+									"careNumber": {
+										"type": "string",
+										"required": true
+									},
+									"manager": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									},
+									"openTime": {
 										"type": "string"
 									},
-									"care_number": {
-										"type": "string"
-									},
-									"open_time": {
-										"type": "string"
-									},
-									"close_time": {
+									"closeTime": {
 										"type": "string"
 									}
-								},
-								"required": [
-									"name",
-									"address",
-									"care_number",
-									"open_time",
-									"close_time"
-								]
+								}
 							}
 						}
 					}
@@ -439,6 +450,30 @@
 					}
 				}
 			},
+			"get": {
+				"summary": "Get a list of hotels",
+				"tags": [
+					"Hotel"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		},
+		"/hotel/{id}": {
 			"put": {
 				"tags": [
 					"Hotel"
@@ -446,17 +481,14 @@
 				"summary": "Update an existing hotel",
 				"security": [
 					{
-						"bearerAuth": []
+						"BearerAuth": []
 					}
 				],
 				"parameters": [
 					{
 						"in": "path",
 						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
+						"required": true
 					}
 				],
 				"requestBody": {
@@ -472,23 +504,16 @@
 									"address": {
 										"type": "string"
 									},
-									"care_number": {
+									"careNumber": {
 										"type": "string"
 									},
-									"open_time": {
+									"openTime": {
 										"type": "string"
 									},
-									"close_time": {
+									"closeTime": {
 										"type": "string"
 									}
-								},
-								"required": [
-									"name",
-									"address",
-									"care_number",
-									"open_time",
-									"close_time"
-								]
+								}
 							}
 						}
 					}
@@ -502,63 +527,20 @@
 					},
 					"401": {
 						"description": "Unauthorized"
-					}
-				}
-			},
-			"get": {
-				"summary": "Get a list of hotels",
-				"tags": [
-					"Hotel"
-				],
-				"parameters": [
-					{
-						"name": "userId",
-						"in": "query",
-						"description": "User ID",
-						"required": true,
-						"schema": {
-							"type": "integer"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"count": {
-											"type": "integer",
-											"description": "Total count of hotels"
-										},
-										"rows": {
-											"type": "array",
-											"items": {
-												"$ref": "#/components/schemas/Hotel"
-											}
-										}
-									}
-								}
-							}
-						}
 					},
-					"default": {
-						"description": "Error response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
+					"403": {
+						"description": "Forbidden"
 					}
 				}
 			},
 			"delete": {
 				"tags": [
 					"Hotel"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
 				],
 				"summary": "Delete a hotel by ID",
 				"parameters": [
@@ -572,64 +554,13 @@
 				],
 				"responses": {
 					"200": {
-						"description": "Hotel deleted successfully",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string",
-									"example": "Hotel, Managers and Owners removed successfully"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string",
-									"example": "Invalid input"
-								}
-							}
-						}
+						"description": "Hotel deleted successfully"
 					},
 					"401": {
-						"description": "Unauthorized",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string",
-									"example": "Unauthorized access"
-								}
-							}
-						}
+						"description": "Unauthorized"
 					},
-					"404": {
-						"description": "Not Found",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string",
-									"example": "Hotel not found"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal Server Error",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string",
-									"example": "Internal server error"
-								}
-							}
-						}
+					"403": {
+						"description": "Forbidden"
 					}
 				}
 			}

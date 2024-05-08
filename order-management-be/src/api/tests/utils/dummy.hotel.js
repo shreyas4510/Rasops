@@ -12,7 +12,7 @@ export const create = {
         },
         res: {
             status: STATUS_CODE.BAD_REQUEST,
-            data: { "message": "\"care_number\" is required" }
+            data: { "message": "\"careNumber\" is required" }
         }
     },
     tooManyRequest: {
@@ -21,7 +21,7 @@ export const create = {
             body: {
                 "name": "test-hotel",
                 "address": "test hotel address",
-                "care_number": "1234567890"
+                "careNumber": "1234567890"
             }
         },
         db: {
@@ -38,7 +38,7 @@ export const create = {
             body: {
                 "name": "test-hotel",
                 "address": "test hotel address",
-                "care_number": "1234567890"
+                "careNumber": "1234567890"
             }
         },
         db: {
@@ -56,7 +56,7 @@ export const create = {
             body: {
                 "name": "test-hotel",
                 "address": "test hotel address",
-                "care_number": "1234567890",
+                "careNumber": "1234567890",
                 "manager": ["test-manager-id"]
             }
         },
@@ -74,7 +74,7 @@ export const create = {
             body: {
                 "name": "test-hotel",
                 "address": "test hotel address",
-                "care_number": "1234567890"
+                "careNumber": "1234567890"
             }
         },
         error: new Error('Internal Server Error'),
@@ -90,8 +90,8 @@ export const update = {
         req: {
             params: { id: 'test-hotel-id' },
             body: {
-                "open_time": "10:00 AM",
-                "close_time": "11:00 PM"
+                "openTime": "10:00 AM",
+                "closeTime": "11:00 PM"
             }
         },
         res: {
@@ -103,8 +103,8 @@ export const update = {
         req: {
             params: { id: 'test-hotel-id' },
             body: {
-                "open_time": "10:00 AM",
-                "close_time": "11:00 PM"
+                "openTime": "10:00 AM",
+                "closeTime": "11:00 PM"
             }
         },
         error: 'test error',
