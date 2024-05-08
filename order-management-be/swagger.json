@@ -10,6 +10,15 @@
 			"url": "http://localhost:8080/api"
 		}
 	],
+	"components": {
+		"securitySchemes": {
+			"BearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	},
 	"paths": {
 		"/user/register": {
 			"post": {
@@ -242,89 +251,52 @@
 		},
 		"/user/invite": {
 			"post": {
-				"tags": [
-					"User Invitation"
-				],
 				"summary": "Invite a user",
-				"description": "Invites a user by email.",
 				"security": [
 					{
 						"BearerAuth": []
 					}
 				],
-				"parameters": [
-					{
-						"in": "body",
-						"name": "body",
-						"description": "User invitation details",
-						"required": true,
-						"schema": {
-							"type": "object",
-							"properties": {
-								"email": {
-									"type": "string",
-									"format": "email"
-								},
-								"invite": {
-									"type": "string"
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string",
+										"format": "email",
+										"example": "john@example.com"
+									}
 								}
 							}
 						}
 					}
-				],
+				},
 				"responses": {
 					"200": {
-						"description": "OK",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+						"description": "OK"
 					},
 					"400": {
-						"description": "Bad Request",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+						"description": "Bad Request"
 					},
 					"401": {
-						"description": "Unauthorized",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+						"description": "Unauthorized"
 					},
-					"403": {
-						"description": "Forbidden",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+					"409": {
+						"description": "Conflict"
 					}
-				}
+				},
+				"tags": [
+					"Invite"
+				]
 			},
 			"get": {
 				"tags": [
-					"User Invitation"
+					"Invite"
 				],
 				"summary": "List invites",
-				"description": "Lists all invites sent by the authenticated user.",
 				"security": [
 					{
 						"BearerAuth": []
@@ -334,80 +306,50 @@
 					{
 						"in": "query",
 						"name": "limit",
-						"description": "Number of invites to return (default: 10)",
 						"type": "integer"
 					},
 					{
 						"in": "query",
 						"name": "skip",
-						"description": "Number of invites to skip (default: 0)",
 						"type": "integer"
 					},
 					{
 						"in": "query",
 						"name": "sort_key",
-						"description": "Key to sort invites by (default: 'updatedAt')",
 						"type": "string"
 					},
 					{
 						"in": "query",
 						"name": "sort_order",
-						"description": "Order to sort invites by (default: 'DESC')",
 						"type": "string"
 					},
 					{
 						"in": "query",
 						"name": "filter_key",
-						"description": "Key to filter invites by",
 						"type": "string"
 					},
 					{
 						"in": "query",
 						"name": "filter_value",
-						"description": "Value to filter invites by",
 						"type": "string"
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "OK",
-						"schema": {
-							"type": "array",
-							"items": {
-								"$ref": "#/definitions/Invite"
-							}
-						}
+						"description": "OK"
 					},
 					"401": {
-						"description": "Unauthorized",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"403": {
-						"description": "Forbidden",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+						"description": "Unauthorized"
 					}
 				}
-			},
+			}
+		},
+		"/user/invite/{id}": {
 			"delete": {
 				"tags": [
-					"User Invitation"
+					"Invite"
 				],
 				"summary": "Remove invite",
-				"description": "Removes an invite sent by the authenticated user.",
 				"security": [
 					{
 						"BearerAuth": []
@@ -415,64 +357,24 @@
 				],
 				"parameters": [
 					{
-						"in": "body",
-						"name": "body",
-						"description": "Invite ID to remove",
+						"in": "path",
+						"name": "id",
 						"required": true,
-						"schema": {
-							"type": "object",
-							"properties": {
-								"id": {
-									"type": "string"
-								}
-							}
-						}
+						"type": "string"
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "OK",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+						"description": "OK"
 					},
 					"400": {
-						"description": "Bad Request",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+						"description": "Bad Request"
 					},
 					"401": {
-						"description": "Unauthorized",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+						"description": "Unauthorized"
 					},
-					"403": {
-						"description": "Forbidden",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"message": {
-									"type": "string"
-								}
-							}
-						}
+					"404": {
+						"description": "Not Found"
 					}
 				}
 			}

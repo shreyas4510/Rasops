@@ -26,9 +26,9 @@ export const list = async (
     }
 }
 
-export const remove = async (payload) => {
+export const remove = async (id) => {
     try {
-        return await api(method.DELETE, `/user/invite`, payload );
+        return await api(method.DELETE, `/user/invite/${id}` );
     } catch (error) {
         console.error(`Error in deleting invite ${error}`);
         throw error;

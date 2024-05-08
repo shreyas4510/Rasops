@@ -17,6 +17,7 @@ router.route('/invite')
     .all(authenticate, ownerAuthentication)
     .post(userController.invite)
     .get(userController.listInvites)
-    .delete(userController.removeInvite);
+
+router.delete('/invite/:id', authenticate, ownerAuthentication, userController.removeInvite);
 
 export default router;

@@ -91,8 +91,7 @@ function Invites() {
 
     const handleDelete = async () => {
         try {
-            const payload = { id: removeInvite }
-            await remove(payload);
+            await remove(removeInvite);
             setChange(!change);
             setRemoveInvite(false);
             toast.success('Invite record deleted successfully');
