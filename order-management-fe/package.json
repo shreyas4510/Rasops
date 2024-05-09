@@ -28,7 +28,7 @@
 	"scripts": {
 		"start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
 		"build": "react-scripts build",
-		"test": "react-scripts test --watchAll",
+		"test": "react-scripts test --watchAll=false",
 		"eject": "react-scripts eject",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
