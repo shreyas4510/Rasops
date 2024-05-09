@@ -1,19 +1,29 @@
-import { act, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import RouterDom from "react-router-dom";
-import { toast } from "react-toastify";
-import * as apiClient from "../../../api/apiClient";
-import Login from "../../../pages/Login";
-import { emailTestIdRegex, loginFailed, loginSuccess, navigateForgotPassword, navigateSignup, passwordTestIdRegex, requiredCredentials, validCredentials } from "../../utils/pages/dummy.login";
+import React from 'react';
+import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import RouterDom from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as apiClient from '../../../api/apiClient';
+import Login from '../../../pages/Login';
+import {
+	emailTestIdRegex,
+	loginFailed,
+	loginSuccess,
+	navigateForgotPassword,
+	navigateSignup,
+	passwordTestIdRegex,
+	requiredCredentials,
+	validCredentials
+} from '../../utils/pages/dummy.login';
 
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => jest.fn(),
+	...jest.requireActual('react-router-dom'),
+	useNavigate: () => jest.fn()
 }));
 
 const localStorageMock = {
-    setItem: jest.fn(),
-    getItem: jest.fn()
+	setItem: jest.fn(),
+	getItem: jest.fn()
 };
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
@@ -21,204 +31,180 @@ console.error = jest.fn();
 console.log = jest.fn();
 
 describe('test login page', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
 
-    test("test email and password required", async () => {
-        render(<Login />);
+	test('test email and password required', async () => {
+		render(<Login />);
 
-        const {
-            emailRequiredErrorText,
-            passwordRequiredErrorText,
-            loginText,
-        } = requiredCredentials;
+		const { emailRequiredErrorText, passwordRequiredErrorText, loginText } = requiredCredentials;
 
-        // check if the error messages are already not present on screen
-        expect(screen.queryByText(emailRequiredErrorText)).toBeNull();
-        expect(screen.queryByText(passwordRequiredErrorText)).toBeNull();
+		// check if the error messages are already not present on screen
+		expect(screen.queryByText(emailRequiredErrorText)).toBeNull();
+		expect(screen.queryByText(passwordRequiredErrorText)).toBeNull();
 
-        // check occurance of login keyword
-        const login = screen.getAllByText(loginText);
-        expect(login.length).toBe(2);
+		// check occurance of login keyword
+		const login = screen.getAllByText(loginText);
+		expect(login.length).toBe(2);
 
-        // focus and blur the email field
-        const email = screen.getByTestId(emailTestIdRegex);
-        email.focus();
-        expect(document.activeElement).toBe(email);
+		// focus and blur the email field
+		const email = screen.getByTestId(emailTestIdRegex);
+		email.focus();
+		expect(document.activeElement).toBe(email);
 
-        await act(async () => {
-            email.blur();
-        });
-        expect(document.activeElement).not.toBe(email);
+		await act(async () => {
+			email.blur();
+		});
+		expect(document.activeElement).not.toBe(email);
 
-        // focus and blur the password field
-        const password = screen.getByTestId(passwordTestIdRegex);
-        password.focus();
-        expect(document.activeElement).toBe(password);
+		// focus and blur the password field
+		const password = screen.getByTestId(passwordTestIdRegex);
+		password.focus();
+		expect(document.activeElement).toBe(password);
 
-        await act(async () => {
-            password.blur();
-        })
-        expect(document.activeElement).not.toBe(password);
+		await act(async () => {
+			password.blur();
+		});
+		expect(document.activeElement).not.toBe(password);
 
-        // check error messages are desplayed on screen
-        expect(screen.getByText(emailRequiredErrorText)).toBeInTheDocument();
-        expect(screen.getByText(passwordRequiredErrorText)).toBeInTheDocument();
-        expect(login[1]).toBeDisabled();
-    });
+		// check error messages are desplayed on screen
+		expect(screen.getByText(emailRequiredErrorText)).toBeInTheDocument();
+		expect(screen.getByText(passwordRequiredErrorText)).toBeInTheDocument();
+		expect(login[1]).toBeDisabled();
+	});
 
-    test("test email and password validations", async () => {
-        const {
-            emailValidationErrorText,
-            passwordValidationErrorText,
-            emailValue,
-            passwordValue,
-            loginText
-        } = validCredentials;
+	test('test email and password validations', async () => {
+		const { emailValidationErrorText, passwordValidationErrorText, emailValue, passwordValue, loginText } =
+			validCredentials;
 
-        render(<Login />)
+		render(<Login />);
 
-        // check if the error messages are already not present on screen
-        expect(screen.queryByText(emailValidationErrorText)).toBeNull();
-        expect(screen.queryByText(passwordValidationErrorText)).toBeNull();
+		// check if the error messages are already not present on screen
+		expect(screen.queryByText(emailValidationErrorText)).toBeNull();
+		expect(screen.queryByText(passwordValidationErrorText)).toBeNull();
 
-        // enter inavlid email in the field
-        const email = screen.getByTestId(emailTestIdRegex);
-        await act(async () => {
-            userEvent.type(email, emailValue);
-            email.blur();
-        })
-        expect(email).toHaveValue(emailValue);
+		// enter inavlid email in the field
+		const email = screen.getByTestId(emailTestIdRegex);
+		await act(async () => {
+			userEvent.type(email, emailValue);
+			email.blur();
+		});
+		expect(email).toHaveValue(emailValue);
 
-        // enter invalid password in the field
-        const password = screen.getByTestId(passwordTestIdRegex);
-        await act(async () => {
-            userEvent.type(password, passwordValue);
-            password.blur();
-        })
-        expect(password).toHaveValue(passwordValue);
+		// enter invalid password in the field
+		const password = screen.getByTestId(passwordTestIdRegex);
+		await act(async () => {
+			userEvent.type(password, passwordValue);
+			password.blur();
+		});
+		expect(password).toHaveValue(passwordValue);
 
-        // check the expected errors displayed on the component
-        expect(screen.queryByText(emailValidationErrorText)).toBeInTheDocument();
-        expect(screen.queryByText(passwordValidationErrorText)).toBeInTheDocument();
-        expect(screen.getAllByText(loginText)[1]).toBeDisabled();
-    });
+		// check the expected errors displayed on the component
+		expect(screen.queryByText(emailValidationErrorText)).toBeInTheDocument();
+		expect(screen.queryByText(passwordValidationErrorText)).toBeInTheDocument();
+		expect(screen.getAllByText(loginText)[1]).toBeDisabled();
+	});
 
-    test('test navigate to signup page', async () => {
+	test('test navigate to signup page', async () => {
+		const { signUpText, path } = navigateSignup;
+		// spy on the useNavigate function
+		const navigate = jest.fn();
+		jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        const { signUpText, path } = navigateSignup;
-        // spy on the useNavigate function
-        const navigate = jest.fn();
-        jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
+		// click on the sign up link
+		const { getByText } = render(<Login />);
+		const signup = getByText(signUpText);
+		userEvent.click(signup);
 
-        // click on the sign up link
-        const { getByText } = render(<Login />);
-        const signup = getByText(signUpText);
-        userEvent.click(signup);
+		// check the naviaget function was called with /signup route
+		expect(navigate).toHaveBeenCalledWith(path);
+	});
 
-        // check the naviaget function was called with /signup route
-        expect(navigate).toHaveBeenCalledWith(path);
-    });
+	test('test navigate to forgot passwrod page', async () => {
+		const { forgotPasswordText, path } = navigateForgotPassword;
+		// spy on the useNavigate function
+		const navigate = jest.fn();
+		jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-    test('test navigate to forgot passwrod page', async () => {
+		// click om forgot password link
+		const { getByText } = render(<Login />);
+		const forgotPassword = getByText(forgotPasswordText);
+		userEvent.click(forgotPassword);
 
-        const { forgotPasswordText, path } = navigateForgotPassword;
-        // spy on the useNavigate function
-        const navigate = jest.fn();
-        jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
+		// check the navigate function was called with /forgot-password route
+		expect(navigate).toHaveBeenCalledWith(path);
+	});
 
-        // click om forgot password link
-        const { getByText } = render(<Login />);
-        const forgotPassword = getByText(forgotPasswordText);
-        userEvent.click(forgotPassword);
+	test('test api error', async () => {
+		const { errorText, validEmail, validPassword, loginText, toastMessage } = loginFailed;
+		// Mock the API function before rendering the component
+		jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(errorText));
 
-        // check the navigate function was called with /forgot-password route
-        expect(navigate).toHaveBeenCalledWith(path);
-    });
+		// render the login api
+		render(<Login />);
 
-    test('test api error', async () => {
-        const {
-            errorText,
-            validEmail,
-            validPassword,
-            loginText,
-            toastMessage
-        } = loginFailed;
-        // Mock the API function before rendering the component
-        jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(errorText));
+		// type email in the email field
+		const email = screen.getByTestId(emailTestIdRegex);
+		await act(async () => {
+			userEvent.type(email, validEmail);
+			email.blur();
+		});
+		expect(email).toHaveValue(validEmail);
 
-        // render the login api
-        render(<Login />);
-    
-        // type email in the email field
-        const email = screen.getByTestId(emailTestIdRegex);
-        await act(async () => {
-            userEvent.type(email, validEmail);
-            email.blur();
-        });
-        expect(email).toHaveValue(validEmail);
-    
-        // type password in the password field
-        const password = screen.getByTestId(passwordTestIdRegex);
-        await act(async () => {
-            userEvent.type(password, validPassword);
-            password.blur();
-        });
-        expect(password).toHaveValue(validPassword);
-    
-        // check the button is no more disabled
-        const login = screen.getAllByText(loginText); 
-        expect(login[1]).not.toBeDisabled();
-    
-        // mock the toast function
-        jest.spyOn(toast, 'error');
-        await act(async () => {
-            userEvent.click(login[1]);
-        });
-    
-        expect(toast.error).toHaveBeenCalledWith(toastMessage);
-    });
+		// type password in the password field
+		const password = screen.getByTestId(passwordTestIdRegex);
+		await act(async () => {
+			userEvent.type(password, validPassword);
+			password.blur();
+		});
+		expect(password).toHaveValue(validPassword);
 
-    test('test successful login', async () => {
-        const {
-            token,
-            validEmail,
-            validPassword,
-            loginText,
-            toastMessage,
-            path
-        } = loginSuccess;
-        
-        jest.spyOn(apiClient, 'api').mockResolvedValue({ token });
-        
-        const navigate = jest.fn();
-        jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
+		// check the button is no more disabled
+		const login = screen.getAllByText(loginText);
+		expect(login[1]).not.toBeDisabled();
 
-        render(<Login />);
+		// mock the toast function
+		jest.spyOn(toast, 'error');
+		await act(async () => {
+			userEvent.click(login[1]);
+		});
 
-        const email = screen.getByTestId(emailTestIdRegex);
-        await act(async () => {
-            userEvent.type(email, validEmail);
-            email.blur();
-        })
+		expect(toast.error).toHaveBeenCalledWith(toastMessage);
+	});
 
-        const password = screen.getByTestId(passwordTestIdRegex);
-        await act(async () => {
-            userEvent.type(password, validPassword);
-            password.blur();
-        })
+	test('test successful login', async () => {
+		const { token, validEmail, validPassword, loginText, toastMessage, path } = loginSuccess;
 
-        const login = screen.getAllByText(loginText);
-        expect(login[1]).not.toBeDisabled();
+		jest.spyOn(apiClient, 'api').mockResolvedValue({ token });
 
-        jest.spyOn(toast, 'success');
-        await act(async () => {
-            userEvent.click(login[1]);
-        })
+		const navigate = jest.fn();
+		jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        expect(localStorage.setItem).toHaveBeenCalledWith('token', token);        
-        expect(toast.success).toHaveBeenCalledWith(toastMessage);
-        expect(navigate).toHaveBeenCalledWith(path);
-    });
+		render(<Login />);
+
+		const email = screen.getByTestId(emailTestIdRegex);
+		await act(async () => {
+			userEvent.type(email, validEmail);
+			email.blur();
+		});
+
+		const password = screen.getByTestId(passwordTestIdRegex);
+		await act(async () => {
+			userEvent.type(password, validPassword);
+			password.blur();
+		});
+
+		const login = screen.getAllByText(loginText);
+		expect(login[1]).not.toBeDisabled();
+
+		jest.spyOn(toast, 'success');
+		await act(async () => {
+			userEvent.click(login[1]);
+		});
+
+		expect(localStorage.setItem).toHaveBeenCalledWith('token', token);
+		expect(toast.success).toHaveBeenCalledWith(toastMessage);
+		expect(navigate).toHaveBeenCalledWith(path);
+	});
 });

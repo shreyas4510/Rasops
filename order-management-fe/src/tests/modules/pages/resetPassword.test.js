@@ -1,161 +1,177 @@
-import { render, screen } from "@testing-library/react";
-import RouterDom from "react-router-dom";
-import { toast } from "react-toastify";
-import { act } from "react-test-renderer";
-import userEvent from "@testing-library/user-event";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import RouterDom from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { act } from 'react-test-renderer';
+import userEvent from '@testing-library/user-event';
 
-import ResetPassword from "../../../pages/ResetPassword/index.jsx";
-import { invalidToken, notFoundRedirection, validToken, token, invalidCredentials, passwordTestIdRegex, confirmPasswordTestIdRegex, apiFailure, apiSuccess } from "../../utils/pages/dummy.resetPassword.js";
-import * as apiClient from '../../../api/apiClient.js'
+import ResetPassword from '../../../pages/ResetPassword/index.jsx';
+import {
+	invalidToken,
+	notFoundRedirection,
+	validToken,
+	token,
+	invalidCredentials,
+	passwordTestIdRegex,
+	confirmPasswordTestIdRegex,
+	apiFailure,
+	apiSuccess
+} from '../../utils/pages/dummy.resetPassword.js';
+import * as apiClient from '../../../api/apiClient.js';
 
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: jest.fn()
+	...jest.requireActual('react-router-dom'),
+	useNavigate: jest.fn()
 }));
+
 console.error = jest.fn();
 
 describe('test reset password page', () => {
-    test('test redirect to 404', () => {
-        const { path } = notFoundRedirection;
+	test('test redirect to 404', () => {
+		const { path } = notFoundRedirection;
 
-        // mock url to be called with empty token
-        window.history.pushState({}, 'test page', '/?token=');
+		// mock url to be called with empty token
+		window.history.pushState({}, 'test page', '/?token=');
 
-        const navigate = jest.fn();
-        jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
+		const navigate = jest.fn();
+		jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        render(<ResetPassword />);
+		render(<ResetPassword />);
 
-        // expected to be redirected to /404
-        expect(navigate).toHaveBeenCalledWith(path);
-    });
+		// expected to be redirected to /404
+		expect(navigate).toHaveBeenCalledWith(path);
+	});
 
-    test('test invalid token', () => {
-        const { screenText, toastMessage, token } = invalidToken;
-        // mock url with invalid token
-        window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
+	test('test invalid token', () => {
+		const { screenText, toastMessage, token } = invalidToken;
+		// mock url with invalid token
+		window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
 
-        jest.spyOn(toast, 'error');
-        render(<ResetPassword />);
+		jest.spyOn(toast, 'error');
+		render(<ResetPassword />);
 
-        // expected toast message with error message and the reset password is not rendered
-        expect(toast.error).toHaveBeenCalledWith(expect.stringContaining(toastMessage));
-        expect(screen.queryByText(screenText)).not.toBeInTheDocument();
-    });
+		// expected toast message with error message and the reset password is not rendered
+		expect(toast.error).toHaveBeenCalledWith(expect.stringContaining(toastMessage));
+		expect(screen.queryByText(screenText)).not.toBeInTheDocument();
+	});
 
-    test('test valid token', () => {
-        const { screenText } = validToken;
+	test('test valid token', () => {
+		const { screenText } = validToken;
 
-        // mock the url with valid token
-        window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
-        render(<ResetPassword />);
+		// mock the url with valid token
+		window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
+		render(<ResetPassword />);
 
-        // check the screen is rendered
-        expect(screen.getByText(screenText)).toBeInTheDocument();
-    });
+		// check the screen is rendered
+		expect(screen.getByText(screenText)).toBeInTheDocument();
+	});
 
-    test('test invalid credentials', async () => {
-        const { screenText, values, errors, submitText } = invalidCredentials;
+	test('test invalid credentials', async () => {
+		const { screenText, values, errors, submitText } = invalidCredentials;
 
-        // mock the url with valid token
-        window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
-        render(<ResetPassword />);
+		// mock the url with valid token
+		window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
+		render(<ResetPassword />);
 
-        // check the screen is rendered
-        expect(screen.getByText(screenText)).toBeInTheDocument();
+		// check the screen is rendered
+		expect(screen.getByText(screenText)).toBeInTheDocument();
 
-        const inputs = {
-            password: screen.getAllByTestId(passwordTestIdRegex)[0],
-            cpassword: screen.getByTestId(confirmPasswordTestIdRegex)
-        }
+		const inputs = {
+			password: screen.getAllByTestId(passwordTestIdRegex)[0],
+			cpassword: screen.getByTestId(confirmPasswordTestIdRegex)
+		};
 
-        // add password and confirm password fields values
-        await act( async () => {
-            userEvent.type( inputs.password, values.password );
-            userEvent.type( inputs.cpassword, values.cpassword );
-            
-            inputs.password.blur();
-            inputs.cpassword.blur();
-        });
+		// add password and confirm password fields values
+		await act(async () => {
+			userEvent.type(inputs.password, values.password);
+			userEvent.type(inputs.cpassword, values.cpassword);
 
-        // expect the password and confirm password error to be displayed on screen
-        expect(screen.getByText(errors.password)).toBeInTheDocument();
-        expect(screen.getByText(errors.cpassword)).toBeInTheDocument();
-        expect(screen.getByText(submitText)).toBeDisabled();
-    });
+			inputs.password.blur();
+			inputs.cpassword.blur();
+		});
 
-    test('test failed api request', async () => {
-        const { screenText, values, submitText, error, toastMessage } = apiFailure;
+		// expect the password and confirm password error to be displayed on screen
+		expect(screen.getByText(errors.password)).toBeInTheDocument();
+		expect(screen.getByText(errors.cpassword)).toBeInTheDocument();
+		expect(screen.getByText(submitText)).toBeDisabled();
+	});
 
-        // mock the url with valid token
-        window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
-        jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(error.message));
-        jest.spyOn(toast, 'error');
+	test('test failed api request', async () => {
+		const { screenText, values, submitText, error, toastMessage } = apiFailure;
 
-        render(<ResetPassword />);
+		// mock the url with valid token
+		window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
+		jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(error.message));
+		jest.spyOn(toast, 'error');
 
-        // check the screen is rendered
-        expect(screen.getByText(screenText)).toBeInTheDocument();
+		render(<ResetPassword />);
 
-        const inputs = {
-            password: screen.getAllByTestId(passwordTestIdRegex)[0],
-            cpassword: screen.getByTestId(confirmPasswordTestIdRegex)
-        }
+		// check the screen is rendered
+		expect(screen.getByText(screenText)).toBeInTheDocument();
 
-        await act(async () => {
-            userEvent.type(inputs.password, values.password);
-            userEvent.type(inputs.cpassword, values.cpassword);
+		const inputs = {
+			password: screen.getAllByTestId(passwordTestIdRegex)[0],
+			cpassword: screen.getByTestId(confirmPasswordTestIdRegex)
+		};
 
-            inputs.password.blur();
-            inputs.cpassword.blur();
-        })
+		await act(async () => {
+			userEvent.type(inputs.password, values.password);
+			userEvent.type(inputs.cpassword, values.cpassword);
 
-        // click on the button
-        const submit = screen.getByText(submitText); 
-        expect(submit).not.toBeDisabled();
-        await act(async () => { userEvent.click(submit); });
+			inputs.password.blur();
+			inputs.cpassword.blur();
+		});
 
-        // compare the error toast message
-        expect(toast.error).toHaveBeenCalledWith(toastMessage);
-    });
+		// click on the button
+		const submit = screen.getByText(submitText);
+		expect(submit).not.toBeDisabled();
+		await act(async () => {
+			userEvent.click(submit);
+		});
 
-    test('test success api request', async () => {
-        const { screenText, values, submitText, path, toastMessage } = apiSuccess;
+		// compare the error toast message
+		expect(toast.error).toHaveBeenCalledWith(toastMessage);
+	});
 
-        // mock the url with valid token
-        window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
-        jest.spyOn(apiClient, 'api').mockResolvedValue({});
-        jest.spyOn(toast, 'success');
+	test('test success api request', async () => {
+		const { screenText, values, submitText, path, toastMessage } = apiSuccess;
 
-        const navigate = jest.fn();
-        jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
+		// mock the url with valid token
+		window.history.pushState({}, 'Test page', `/?token=${encodeURIComponent(token)}`);
+		jest.spyOn(apiClient, 'api').mockResolvedValue({});
+		jest.spyOn(toast, 'success');
 
-        render(<ResetPassword />);
+		const navigate = jest.fn();
+		jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        // check the screen is rendered
-        expect(screen.getByText(screenText)).toBeInTheDocument();
+		render(<ResetPassword />);
 
-        const inputs = {
-            password: screen.getAllByTestId(passwordTestIdRegex)[0],
-            cpassword: screen.getByTestId(confirmPasswordTestIdRegex)
-        }
+		// check the screen is rendered
+		expect(screen.getByText(screenText)).toBeInTheDocument();
 
-        // enter the values in the input fields
-        await act(async () => {
-            userEvent.type(inputs.password, values.password);
-            userEvent.type(inputs.cpassword, values.cpassword);
+		const inputs = {
+			password: screen.getAllByTestId(passwordTestIdRegex)[0],
+			cpassword: screen.getByTestId(confirmPasswordTestIdRegex)
+		};
 
-            inputs.password.blur();
-            inputs.cpassword.blur();
-        })
+		// enter the values in the input fields
+		await act(async () => {
+			userEvent.type(inputs.password, values.password);
+			userEvent.type(inputs.cpassword, values.cpassword);
 
-        // the button is enabled and clicked
-        const submit = screen.getByText(submitText); 
-        expect(submit).not.toBeDisabled();
-        await act(async () => { userEvent.click(submit); });
+			inputs.password.blur();
+			inputs.cpassword.blur();
+		});
 
-        // check the toast message and navigate to login screen
-        expect(toast.success).toHaveBeenCalledWith(toastMessage);
-        expect(navigate).toHaveBeenCalledWith(path);
-    });
+		// the button is enabled and clicked
+		const submit = screen.getByText(submitText);
+		expect(submit).not.toBeDisabled();
+		await act(async () => {
+			userEvent.click(submit);
+		});
+
+		// check the toast message and navigate to login screen
+		expect(toast.success).toHaveBeenCalledWith(toastMessage);
+		expect(navigate).toHaveBeenCalledWith(path);
+	});
 });

@@ -1,38 +1,38 @@
 .view {
-    background: linear-gradient(135deg, #49AC60, #08182D);
-    font-family: Arial, sans-serif;
-    background-size: 200% 135%;
-    animation: gradientBG 10s ease infinite;
-    height: 100%;
+	background: linear-gradient(135deg, #49ac60, #08182d);
+	font-family: Arial, sans-serif;
+	background-size: 200% 135%;
+	animation: gradientBG 10s ease infinite;
+	height: 100%;
 }
 
 @keyframes gradientBG {
-    0% {
-        background-position: 0% 50%;
-    }
+	0% {
+		background-position: 0% 50%;
+	}
 
-    50% {
-        background-position: 100% 50%;
-    }
+	50% {
+		background-position: 100% 50%;
+	}
 
-    100% {
-        background-position: 0% 50%;
-    }
+	100% {
+		background-position: 0% 50%;
+	}
 }
 
 .label-font {
-    font-size: 14px;
+	font-size: 14px;
 }
 
 .error-message {
-    font-size: 12px;
+	font-size: 12px;
 }
 
 .welcome-image {
-    max-width: 170px;
-    max-height: 170px;
+	max-width: 170px;
+	max-height: 170px;
 }
 
 .custom-label {
-    color: #08182D !important;
+	color: #08182d !important;
 }

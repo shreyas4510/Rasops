@@ -13,98 +13,123 @@ import CustomButton from '../../components/CustomButton';
 import CustomLink from '../../components/CustomLink';
 
 function Signup() {
-  const [initialValues, setInitialValues] = useState({
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
+	const [initialValues, setInitialValues] = useState({
+		firstName: '',
+		lastName: '',
+		phoneNumber: '',
+		email: '',
+		password: '',
+		confirmPassword: ''
+	});
 
-  const navigate = useNavigate();
-  
-  const [ invite, setInvite ] = useState({ status: false, email: '', id: '' });
-  useEffect(() => {
-    (async () => {
-      try {
-          const url = new URL(window.location.href);
-          const token = decodeURIComponent(url.searchParams.get('token'));
-          if (!token || token === 'null') return;
+	const navigate = useNavigate();
 
-          const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
-          const keys = Object.keys(data);
-          if (keys.length === 3 && keys.includes('email') && keys.includes('inviteId') && keys.includes('expires')) {
-            setInitialValues(prevValues => ({
-              ...prevValues,
-              email: data.email
-            }));
-            setInvite({ status: true, email: data.email, id: data.inviteId });
-          }
-      } catch (err) {
-          toast.error(`Failed to validate invite: ${err.message}`);
-      }
-  })();
-  }, [])
+	const [invite, setInvite] = useState({ status: false, email: '', id: '' });
+	useEffect(() => {
+		(async () => {
+			try {
+				const url = new URL(window.location.href);
+				const token = decodeURIComponent(url.searchParams.get('token'));
+				if (!token || token === 'null') return;
 
-  // handle request to register user
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      setSubmitting(true);
-      const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
-      const payload = { ...values, password: enpass };
-      delete payload.confirmPassword;
+				const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
+				const keys = Object.keys(data);
+				if (keys.length === 3 && keys.includes('email') && keys.includes('inviteId') && keys.includes('expires')) {
+					setInitialValues((prevValues) => ({
+						...prevValues,
+						email: data.email
+					}));
+					setInvite({ status: true, email: data.email, id: data.inviteId });
+				}
+			} catch (err) {
+				toast.error(`Failed to validate invite: ${err.message}`);
+			}
+		})();
+	}, []);
 
-      if( invite.status ) {
-        payload.invite = invite.id;
-      }
+	// handle request to register user
+	const handleSubmit = async (values, { setSubmitting }) => {
+		try {
+			setSubmitting(true);
+			const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
+			const payload = { ...values, password: enpass };
+			delete payload.confirmPassword;
 
-      await registerUser(payload);
-      setSubmitting(false);
-      toast.success('User registered successfully. Please verify your email');
-      navigate('/');
-    } catch (err) {
-      setSubmitting(false);
-      toast.error(`Failed to register user: ${err.message}`);
-    }
-  };
+			if (invite.status) {
+				payload.invite = invite.id;
+			}
 
-  const handleOnClickLogin = (e) => {
-    e.preventDefault();
-    navigate('/');
-  }
+			await registerUser(payload);
+			setSubmitting(false);
+			toast.success('User registered successfully. Please verify your email');
+			navigate('/');
+		} catch (err) {
+			setSubmitting(false);
+			toast.error(`Failed to register user: ${err.message}`);
+		}
+	};
 
-  return (
-    <AuthContainer title={'Registration'}>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={userRegistrationSchema}
-        onSubmit={handleSubmit}
-        enableReinitialize={true}
-      >
-        {({ isSubmitting, isValid, dirty }) => (
-          <Form className='d-flex flex-column'>
-            <Row className='mt-2'>
-              <Col><CustomFormGroup name='firstName' type='text' label='First Name' /></Col>
-              <Col><CustomFormGroup name='lastName' type='text' label='Last Name' /></Col>
-            </Row>
-            <Row className='mt-2'>
-              <Col><CustomFormGroup name='email' type='email' label='Email' disabled={invite.status} value={invite.email}/></Col>
-              <Col><CustomFormGroup name='phoneNumber' type='number' label='Phone Number' /></Col>
-            </Row>
-            <Row className='mt-2'>
-              <Col><CustomFormGroup name='password' type='password' label='Password' /></Col>
-              <Col><CustomFormGroup name='confirmPassword' type='password' label='Confirm Password' /></Col>
-            </Row>
-            <CustomButton type='submit' disabled={isSubmitting || !isValid || !dirty} label='Submit' className='mx-auto my-4' />
-            <div className='text-center mx-3'>
-              <p className='label-font m-0'>Already have an account ? <CustomLink text='Login' onClick={handleOnClickLogin} /></p>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </AuthContainer>
-  );
-};
+	const handleOnClickLogin = (e) => {
+		e.preventDefault();
+		navigate('/');
+	};
+
+	return (
+		<AuthContainer title={'Registration'}>
+			<Formik
+				initialValues={initialValues}
+				validationSchema={userRegistrationSchema}
+				onSubmit={handleSubmit}
+				enableReinitialize={true}
+			>
+				{({ isSubmitting, isValid, dirty }) => (
+					<Form className="d-flex flex-column">
+						<Row className="mt-2">
+							<Col>
+								<CustomFormGroup name="firstName" type="text" label="First Name" />
+							</Col>
+							<Col>
+								<CustomFormGroup name="lastName" type="text" label="Last Name" />
+							</Col>
+						</Row>
+						<Row className="mt-2">
+							<Col>
+								<CustomFormGroup
+									name="email"
+									type="email"
+									label="Email"
+									disabled={invite.status}
+									value={invite.email}
+								/>
+							</Col>
+							<Col>
+								<CustomFormGroup name="phoneNumber" type="number" label="Phone Number" />
+							</Col>
+						</Row>
+						<Row className="mt-2">
+							<Col>
+								<CustomFormGroup name="password" type="password" label="Password" />
+							</Col>
+							<Col>
+								<CustomFormGroup name="confirmPassword" type="password" label="Confirm Password" />
+							</Col>
+						</Row>
+						<CustomButton
+							type="submit"
+							disabled={isSubmitting || !isValid || !dirty}
+							label="Submit"
+							className="mx-auto my-4"
+						/>
+						<div className="text-center mx-3">
+							<p className="label-font m-0">
+								Already have an account ? <CustomLink text="Login" onClick={handleOnClickLogin} />
+							</p>
+						</div>
+					</Form>
+				)}
+			</Formik>
+		</AuthContainer>
+	);
+}
 
 export default Signup;

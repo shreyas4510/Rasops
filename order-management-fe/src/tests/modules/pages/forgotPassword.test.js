@@ -1,100 +1,115 @@
-import { render, screen } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
-import userEvent from "@testing-library/user-event";
-import { toast } from "react-toastify";
-import RouterDom from "react-router-dom";
-import ForgotPassword from "../../../pages/ForgetPassword/index.jsx";
-import * as apiClient from "../../../api/apiClient.js";
-import { emailTestIdRegex, failedRequest, requiredFields, successRequest, validateCredentials } from "../../utils/pages/dummy.forgotPassword.js";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import userEvent from '@testing-library/user-event';
+import { toast } from 'react-toastify';
+import RouterDom from 'react-router-dom';
+import ForgotPassword from '../../../pages/ForgetPassword/index.jsx';
+import * as apiClient from '../../../api/apiClient.js';
+import {
+	emailTestIdRegex,
+	failedRequest,
+	requiredFields,
+	successRequest,
+	validateCredentials
+} from '../../utils/pages/dummy.forgotPassword.js';
 
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: jest.fn(),
+	...jest.requireActual('react-router-dom'),
+	useNavigate: jest.fn()
 }));
+
 console.error = jest.fn();
 
 describe('test forgot password page', () => {
-    test('test required fields', async () => {
-        const { errorMessage, submitText } = requiredFields;
-        render(<ForgotPassword />)
+	test('test required fields', async () => {
+		const { errorMessage, submitText } = requiredFields;
+		render(<ForgotPassword />);
 
-        // expect the error message to not be on screen 
-        expect(screen.queryByText(errorMessage)).not.toBeInTheDocument();
-        
-        // focus and blur the email field
-        const emailInput = screen.getByTestId(emailTestIdRegex);
-        emailInput.focus();
-        await act( async () => { emailInput.blur(); });
+		// expect the error message to not be on screen
+		expect(screen.queryByText(errorMessage)).not.toBeInTheDocument();
 
-        // expect the error message to be on screen and the submit button is disabled
-        expect(screen.getByText(errorMessage)).toBeInTheDocument();
-        expect(screen.getByText(submitText)).toBeDisabled();
-    });
+		// focus and blur the email field
+		const emailInput = screen.getByTestId(emailTestIdRegex);
+		emailInput.focus();
+		await act(async () => {
+			emailInput.blur();
+		});
 
-    test('test invalid email', async () => {
+		// expect the error message to be on screen and the submit button is disabled
+		expect(screen.getByText(errorMessage)).toBeInTheDocument();
+		expect(screen.getByText(submitText)).toBeDisabled();
+	});
 
-        const { error, values, submitText } = validateCredentials;
-        render(<ForgotPassword />);
-        
-        // check the error message is not already on the screen
-        expect( screen.queryByText(error.message) ).not.toBeInTheDocument();
+	test('test invalid email', async () => {
+		const { error, values, submitText } = validateCredentials;
+		render(<ForgotPassword />);
 
-        // find and fill the email input box with invalid email
-        const emailInput = screen.getByTestId(emailTestIdRegex);
-        await act( async () => {
-            userEvent.type(emailInput, values.email)
-            emailInput.blur();
-        });
+		// check the error message is not already on the screen
+		expect(screen.queryByText(error.message)).not.toBeInTheDocument();
 
-        // expect the error message on th screen and submit button is disabled
-        expect( screen.getByText(error.message) ).toBeInTheDocument();
-        expect( screen.getByText(submitText) ).toBeDisabled();
-    });
+		// find and fill the email input box with invalid email
+		const emailInput = screen.getByTestId(emailTestIdRegex);
+		await act(async () => {
+			userEvent.type(emailInput, values.email);
+			emailInput.blur();
+		});
 
-    test('test api failure', async () => {
-        const { values, errors, submitText, toastMessage } = failedRequest;
-        jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(errors.message));
-        jest.spyOn(toast, 'error');
+		// expect the error message on th screen and submit button is disabled
+		expect(screen.getByText(error.message)).toBeInTheDocument();
+		expect(screen.getByText(submitText)).toBeDisabled();
+	});
 
-        render(<ForgotPassword />);
+	test('test api failure', async () => {
+		const { values, errors, submitText, toastMessage } = failedRequest;
+		jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(errors.message));
+		jest.spyOn(toast, 'error');
 
-        // fill the email field with valid email.
-        const emailInput = screen.getByTestId(emailTestIdRegex);
-        await act( async () => { userEvent.type(emailInput, values.email) });
+		render(<ForgotPassword />);
 
-        // find and click the submit button
-        const sumbit = screen.getByText(submitText);
-        expect(sumbit).not.toBeDisabled();
-        await act(async () => { userEvent.click(sumbit); });
+		// fill the email field with valid email.
+		const emailInput = screen.getByTestId(emailTestIdRegex);
+		await act(async () => {
+			userEvent.type(emailInput, values.email);
+		});
 
-        // expect the toast on api failure
-        expect(toast.error).toHaveBeenCalledWith(toastMessage);
-    });
+		// find and click the submit button
+		const sumbit = screen.getByText(submitText);
+		expect(sumbit).not.toBeDisabled();
+		await act(async () => {
+			userEvent.click(sumbit);
+		});
 
-    test('test api success', async () => {
-        const { values, submitText, toastMessage, path } = successRequest;
+		// expect the toast on api failure
+		expect(toast.error).toHaveBeenCalledWith(toastMessage);
+	});
 
-        jest.spyOn(apiClient, 'api').mockResolvedValue({});
-        jest.spyOn(toast, 'success');
+	test('test api success', async () => {
+		const { values, submitText, toastMessage, path } = successRequest;
 
-        const navigate = jest.fn();
-        jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
+		jest.spyOn(apiClient, 'api').mockResolvedValue({});
+		jest.spyOn(toast, 'success');
 
-        render(<ForgotPassword />);
+		const navigate = jest.fn();
+		jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        // fill the email input box
-        const emailInput = screen.getByTestId(emailTestIdRegex);
-        await act( async () => { userEvent.type(emailInput, values.email) });
+		render(<ForgotPassword />);
 
-        // check the submit button is not disabled and click
-        const submit = screen.getByText(submitText);
-        expect(submit).not.toBeDisabled();
-        await act(async () => {
-            userEvent.click(submit);
-        })
+		// fill the email input box
+		const emailInput = screen.getByTestId(emailTestIdRegex);
+		await act(async () => {
+			userEvent.type(emailInput, values.email);
+		});
 
-        // expect succes toaster after api success and navigate to login screen
-        expect(toast.success).toHaveBeenCalledWith(toastMessage);
-        expect(navigate).toHaveBeenCalledWith(path);
-    });
+		// check the submit button is not disabled and click
+		const submit = screen.getByText(submitText);
+		expect(submit).not.toBeDisabled();
+		await act(async () => {
+			userEvent.click(submit);
+		});
+
+		// expect succes toaster after api success and navigate to login screen
+		expect(toast.success).toHaveBeenCalledWith(toastMessage);
+		expect(navigate).toHaveBeenCalledWith(path);
+	});
 });

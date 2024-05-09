@@ -1,21 +1,20 @@
 export default function createSagaManager() {
-    let sagas = {}
-    let emitSagaAdditionListener = null
+	let sagas = {};
+	let emitSagaAdditionListener = null;
 
-    return {
+	return {
+		addSaga: function (name, saga) {
+			if (sagas[name]) {
+				return;
+			}
+			sagas = { ...sagas, [name]: saga };
+			if (emitSagaAdditionListener) {
+				emitSagaAdditionListener(saga);
+			}
+		},
 
-        addSaga: function (name, saga) {
-            if (sagas[name]) {
-                return
-            }
-            sagas = { ...sagas, [name]: saga }
-            if (emitSagaAdditionListener) {
-                emitSagaAdditionListener(saga)
-            }
-        },
-
-        setAddSagaListener: function (listener) {
-            emitSagaAdditionListener = listener
-        }
-    }
+		setAddSagaListener: function (listener) {
+			emitSagaAdditionListener = listener;
+		}
+	};
 }

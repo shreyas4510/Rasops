@@ -1,27 +1,26 @@
-import createReducerManager from './reducers'
-import createSagaMiddleware from 'redux-saga'
-import createSagaManager from './sagas'
-import { configureStore } from '@reduxjs/toolkit'
+import createReducerManager from './reducers';
+import createSagaMiddleware from 'redux-saga';
+import createSagaManager from './sagas';
+import { configureStore } from '@reduxjs/toolkit';
 
-
-const sagaMiddleware = createSagaMiddleware()
-const middleware = [sagaMiddleware]
-const initialState = {}
-const reducerManager = createReducerManager(initialState)
+const sagaMiddleware = createSagaMiddleware();
+const middleware = [sagaMiddleware];
+const initialState = {};
+const reducerManager = createReducerManager(initialState);
 
 const store = configureStore({
-    reducer: reducerManager.reduce,
-    middleware: middleware,
-    preloadedState: initialState
-})
+	reducer: reducerManager.reduce,
+	middleware,
+	preloadedState: initialState
+});
 
-let sagaManager = createSagaManager(sagaMiddleware)
+const sagaManager = createSagaManager(sagaMiddleware);
 
-sagaManager.setAddSagaListener(saga => {
-    sagaMiddleware.run(saga)
-})
+sagaManager.setAddSagaListener((saga) => {
+	sagaMiddleware.run(saga);
+});
 
-store.reducerManager = reducerManager
-store.sagaManager = sagaManager
+store.reducerManager = reducerManager;
+store.sagaManager = sagaManager;
 
-export default store
+export default store;
