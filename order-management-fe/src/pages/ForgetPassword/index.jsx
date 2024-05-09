@@ -3,24 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
 import { emailSchema } from '../../validations/auth';
-import { forgotPassword } from '../../services/user.service';
 import AuthContainer from '../../components/AuthContainer';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomLink from '../../components/CustomLink';
 import CustomButton from '../../components/CustomButton';
+import { useDispatch } from 'react-redux';
+import { forgotPassword } from '../../store/actions/auth.action';
 
 const ForgotPassword = () => {
     const navigate = useNavigate();
+    const dispatch=useDispatch();
     const initialValues = {
         email: ''
     };
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
             setSubmitting(true);
-            await forgotPassword(values);
-            toast.success('Reset password email sent successfully');
+            dispatch(forgotPassword({payload:values,navigate}))
             setSubmitting(false);
-            navigate('/');
         } catch (err) {
             setSubmitting(false);
             toast.error(`Failed to send: ${err.message}`);

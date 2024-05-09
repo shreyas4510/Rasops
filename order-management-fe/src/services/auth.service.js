@@ -9,7 +9,7 @@ export const registerUser = async (payload) => {
     }
 };
 
-export const login = async (payload) => {
+export const loginUser = async ( payload ) => {
     try {
         return await api(method.POST, '/user/login', payload);
     } catch (error) {
@@ -18,7 +18,7 @@ export const login = async (payload) => {
     }
 };
 
-export const verify = async (payload) => {
+export const verifyUser = async ( payload ) => {
     try {
         return await api(method.POST, '/user/verify', payload);
     } catch (error) {
@@ -27,7 +27,7 @@ export const verify = async (payload) => {
     }
 };
 
-export const forgotPassword = async (payload) => {
+export const forgotPasswordUser = async ( payload ) => {
     try {
         return await api(method.POST, '/user/forget', payload);
     } catch (error) {
@@ -36,7 +36,7 @@ export const forgotPassword = async (payload) => {
     }
 };
 
-export const resetPassword = async (payload) => {
+export const resetPasswordUser = async ( payload ) => {
     try {
         return await api(method.POST, '/user/reset', payload);
     } catch (error) {

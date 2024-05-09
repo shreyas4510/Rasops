@@ -4,14 +4,16 @@ import CryptoJS from 'crypto-js';
 import { toast } from 'react-toastify';
 import AuthContainer from '../../components/AuthContainer';
 import { loginSchema } from '../../validations/auth';
-import { login } from '../../services/user.service';
 import env from '../../config/env';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
 import CustomLink from '../../components/CustomLink';
+import { useDispatch } from "react-redux";
+import { login } from "../../store/actions/auth.action";
 
 function Login() {
     let navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleOnClickSignup = (e) => {
         e.preventDefault();
@@ -33,12 +35,8 @@ function Login() {
             setSubmitting(true);
             const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
             const payload = { ...values, password: enpass };
-
-            const res = await login(payload);
-            localStorage.setItem('token', res.token);
-            toast.success('Login successfully');
+            dispatch(login({ payload, navigate }));
             setSubmitting(false);
-            navigate('/dashboard');
         } catch (err) {
             setSubmitting(false);
             toast.error(`Failed to login: ${err.message}`);

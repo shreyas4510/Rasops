@@ -1,20 +1,11 @@
-export default function createSagaManager() {
-    let sagas = {};
-    let emitSagaAdditionListener = null;
+import { all, fork } from "redux-saga/effects";
+import authSaga from "./auth.saga";
 
-    return {
-        addSaga: function (name, saga) {
-            if (sagas[name]) {
-                return;
-            }
-            sagas = { ...sagas, [name]: saga };
-            if (emitSagaAdditionListener) {
-                emitSagaAdditionListener(saga);
-            }
-        },
 
-        setAddSagaListener: function (listener) {
-            emitSagaAdditionListener = listener;
-        }
-    };
-}
+const rootSaga = function* () {
+  yield all([
+    fork(authSaga),
+  ]);
+};
+
+export default rootSaga;
