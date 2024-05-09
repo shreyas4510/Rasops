@@ -1,96 +1,99 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Verification</title>
-  <style>
-    /* Add your custom styles here */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-      margin: 0;
-      padding: 0;
-    }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Email Verification</title>
+		<style>
+			/* Add your custom styles here */
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f8f9fa;
+				margin: 0;
+				padding: 0;
+			}
 
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+			.container {
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 20px;
+			}
 
-    .content {
-      border-radius: 10px;
-      padding: 40px;
-      border: 2px solid #A0EDB1;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+			.content {
+				border-radius: 10px;
+				padding: 40px;
+				border: 2px solid #a0edb1;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			}
 
-    h2 {
-      color: #0D233F;
-      text-align: center;
-      margin-bottom: 20px;
-    }
+			h2 {
+				color: #0d233f;
+				text-align: center;
+				margin-bottom: 20px;
+			}
 
-    p {
-      color: #555555;
-      text-align: center;
-      margin-bottom: 20px;
-    }
+			p {
+				color: #555555;
+				text-align: center;
+				margin-bottom: 20px;
+			}
 
-    .btn {
-      display: inline-block;
-      background-color: #49AC60;
-      color: #ffffff;
-      text-decoration: none;
-      padding: 15px 30px;
-      border-radius: 5px;
-      text-align: center;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+			.btn {
+				display: inline-block;
+				background-color: #49ac60;
+				color: #ffffff;
+				text-decoration: none;
+				padding: 15px 30px;
+				border-radius: 5px;
+				text-align: center;
+				transition: background-color 0.3s ease;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			}
 
-    .btn:hover {
-      background-color: #3b7a44;
-    }
+			.btn:hover {
+				background-color: #3b7a44;
+			}
 
-    .footer {
-      margin-top: 20px;
-      text-align: center;
-      color: #999999;
-    }
+			.footer {
+				margin-top: 20px;
+				text-align: center;
+				color: #999999;
+			}
 
-    .footer a {
-      color: #0D233F;
-      text-decoration: none;
-    }
+			.footer a {
+				color: #0d233f;
+				text-decoration: none;
+			}
 
-    .footer a:hover {
-      text-decoration: underline;
-    }
+			.footer a:hover {
+				text-decoration: underline;
+			}
 
-    .decoration {
-      text-align: center;
-      margin-top: 40px;
-    }
+			.decoration {
+				text-align: center;
+				margin-top: 40px;
+			}
 
-    .decoration span {
-      font-size: 24px;
-      color: #0D233F;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="content">
-      <h2>Verify Your Email Address</h2>
-      <p>Thank you for signing up for our order management product. To complete your registration, please click the button below to verify your email address.</p>
-      <p><a href="{{appUrl}}" class="btn">Verify Email Address</a></p>
-      <p><strong>Note:</strong> The link expires in 1 hour.</p>
-    </div>
-    <div class="footer">
-      <p>If you did not sign up for our product, you can ignore this email.</p>
-    </div>
-  </div>
-</body>
+			.decoration span {
+				font-size: 24px;
+				color: #0d233f;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="content">
+				<h2>Verify Your Email Address</h2>
+				<p>
+					Thank you for signing up for our order management product. To complete your registration, please click the
+					button below to verify your email address.
+				</p>
+				<p><a href="{{appUrl}}" class="btn">Verify Email Address</a></p>
+				<p><strong>Note:</strong> The link expires in 1 hour.</p>
+			</div>
+			<div class="footer">
+				<p>If you did not sign up for our product, you can ignore this email.</p>
+			</div>
+		</div>
+	</body>
 </html>

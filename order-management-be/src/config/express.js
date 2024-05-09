@@ -1,8 +1,8 @@
-import express from "express";
-import cors from "cors";
-import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../../swagger.json" with { type: "json" };
-import routes from "../api/routes/index.js";
+import express from 'express';
+import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import routes from '../api/routes/index.js';
+import { swaggerDocument } from '../../swagger.js';
 
 // create app using express
 const app = express();
@@ -13,7 +13,7 @@ app.use(express.json());
 // allow all origins for cors
 app.use(cors({ origin: '*' }));
 
-// serve swaggger documentation
+// console.log(swaggerDocument);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // prefix for all the routes

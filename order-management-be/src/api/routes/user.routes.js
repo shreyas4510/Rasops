@@ -1,7 +1,7 @@
-import { Router } from "express";
-import userController from "../controllers/user.controllers.js";
-import authenticate from "../middlewares/auth.js";
-import { ownerAuthentication } from "../middlewares/roleAuth.js";
+import { Router } from 'express';
+import userController from '../controllers/user.controllers.js';
+import authenticate from '../middlewares/auth.js';
+import { ownerAuthentication } from '../middlewares/roleAuth.js';
 
 const router = Router();
 
@@ -13,10 +13,11 @@ router.post('/forget', userController.forget);
 router.post('/reset', userController.reset);
 
 // invite apis
-router.route('/invite')
-    .all(authenticate, ownerAuthentication)
-    .post(userController.invite)
-    .get(userController.listInvites)
+router
+	.route('/invite')
+	.all(authenticate, ownerAuthentication)
+	.post(userController.invite)
+	.get(userController.listInvites);
 
 router.delete('/invite/:id', authenticate, ownerAuthentication, userController.removeInvite);
 

@@ -1,11 +1,12 @@
-import hotelController from "../../controllers/hotel.controller.js";
-import { create, list, remove, update } from "../utils/dummy.hotel.js";
-import hotelRepo from "../../repositories/hotel.repository.js";
-import hotelUserRelationRepo from "../../repositories/hotelUserRelation.repository.js";
+import hotelController from '../../controllers/hotel.controller.js';
+import { create, list, remove, update } from '../utils/dummy.hotel.js';
+import hotelRepo from '../../repositories/hotel.repository.js';
+import hotelUserRelationRepo from '../../repositories/hotelUserRelation.repository.js';
 
 // Initializing an empty response object
 let res = {};
 
+// eslint-disable-next-line no-console
 console.log = jest.fn();
 
 // Creating spies to track function calls
@@ -16,164 +17,162 @@ const hotelUserRelationRepoSaveSpy = jest.spyOn(hotelUserRelationRepo, 'save');
 const hotelUserRelationRepoFindSpy = jest.spyOn(hotelUserRelationRepo, 'find');
 const hotelUserRelationRepoRemoveSpy = jest.spyOn(hotelUserRelationRepo, 'remove');
 
-
 // Describing the test suite for hotel registration functionality
 describe('testing hotel cases', () => {
-    // Resetting all mocks before each test
-    beforeEach(() => {
-        jest.resetAllMocks();
-        // Resetting response object
-        res = {
-            status: jest.fn().mockReturnThis(),
-            send: jest.fn()
-        }
-    });
+	// Resetting all mocks before each test
+	beforeEach(() => {
+		jest.resetAllMocks();
+		// Resetting response object
+		res = {
+			status: jest.fn().mockReturnThis(),
+			send: jest.fn()
+		};
+	});
 
-    // create hotel
-    test('test payload validation', async () => {
-        const { validationTest } = create;
-        await hotelController.register(validationTest.req, res);
-        
-        // Expectations for response status and data
-        expect(res.status).toHaveBeenCalledWith(validationTest.res.status);
-        expect(res.send).toHaveBeenCalledWith(validationTest.res.data);
-    })
+	// create hotel
+	test('test payload validation', async () => {
+		const { validationTest } = create;
+		await hotelController.register(validationTest.req, res);
 
-    test('test too many request error', async () => {
-        const { tooManyRequest } = create;
+		// Expectations for response status and data
+		expect(res.status).toHaveBeenCalledWith(validationTest.res.status);
+		expect(res.send).toHaveBeenCalledWith(validationTest.res.data);
+	});
 
-        // Mocking resolved values for repository functions
-        hotelUserRelationRepoFindSpy.mockResolvedValue(tooManyRequest.db.data);
+	test('test too many request error', async () => {
+		const { tooManyRequest } = create;
 
-        // Calling the hotel registration controller function
-        await hotelController.register(tooManyRequest.req, res);
+		// Mocking resolved values for repository functions
+		hotelUserRelationRepoFindSpy.mockResolvedValue(tooManyRequest.db.data);
 
-        // Expectations for function calls and response data
-        expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(tooManyRequest.response.status);
-        expect(res.send).toHaveBeenCalledWith(tooManyRequest.response.data);
-    })
+		// Calling the hotel registration controller function
+		await hotelController.register(tooManyRequest.req, res);
 
-    test('test create hotel without manager', async () => {
-        const { ownerTest } = create;
+		// Expectations for function calls and response data
+		expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(tooManyRequest.response.status);
+		expect(res.send).toHaveBeenCalledWith(tooManyRequest.response.data);
+	});
 
-        // Mocking resolved values for repository functions
-        hotelRepoSaveSpy.mockResolvedValue(ownerTest.db.hotel);
-        hotelUserRelationRepoSaveSpy.mockResolvedValue({});
-        hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 })
+	test('test create hotel without manager', async () => {
+		const { ownerTest } = create;
 
-        // Calling the hotel registration controller function
-        await hotelController.register(ownerTest.req, res);
+		// Mocking resolved values for repository functions
+		hotelRepoSaveSpy.mockResolvedValue(ownerTest.db.hotel);
+		hotelUserRelationRepoSaveSpy.mockResolvedValue({});
+		hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 });
 
-        // Expectations for function calls and response data
-        expect(hotelRepoSaveSpy).toHaveBeenCalled();
-        expect(hotelUserRelationRepoSaveSpy).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(ownerTest.res.status);
-        expect(res.send).toHaveBeenCalledWith(ownerTest.db.hotel);
-    })
+		// Calling the hotel registration controller function
+		await hotelController.register(ownerTest.req, res);
 
-    test('test create hotel with manager', async () => {
-        const { managerTest } = create;
+		// Expectations for function calls and response data
+		expect(hotelRepoSaveSpy).toHaveBeenCalled();
+		expect(hotelUserRelationRepoSaveSpy).toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(ownerTest.res.status);
+		expect(res.send).toHaveBeenCalledWith(ownerTest.db.hotel);
+	});
 
-        // Mocking resolved values for repository functions
-        hotelRepoSaveSpy.mockResolvedValue(managerTest.db.hotel);
-        hotelUserRelationRepoSaveSpy.mockResolvedValue();        
-        hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 })
+	test('test create hotel with manager', async () => {
+		const { managerTest } = create;
 
-        // Calling the hotel registration controller function
-        await hotelController.register(managerTest.req, res);
+		// Mocking resolved values for repository functions
+		hotelRepoSaveSpy.mockResolvedValue(managerTest.db.hotel);
+		hotelUserRelationRepoSaveSpy.mockResolvedValue();
+		hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 });
 
-        // Expectations for function calls and response data
-        expect(res.status).toHaveBeenCalledWith(managerTest.res.status);
-        expect(hotelUserRelationRepoSaveSpy).toHaveBeenCalledTimes(2);
-        expect(res.send).toHaveBeenCalledWith(managerTest.db.hotel);
-    })
+		// Calling the hotel registration controller function
+		await hotelController.register(managerTest.req, res);
 
-    test('test create hotel error', async () => {
-        const { errorTest } = create;
-        // Mocking rejected value for repository function
-        hotelRepoSaveSpy.mockRejectedValue(errorTest.error);
-        hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 })
+		// Expectations for function calls and response data
+		expect(res.status).toHaveBeenCalledWith(managerTest.res.status);
+		expect(hotelUserRelationRepoSaveSpy).toHaveBeenCalledTimes(2);
+		expect(res.send).toHaveBeenCalledWith(managerTest.db.hotel);
+	});
 
-        // Calling the hotel registration controller function
-        await hotelController.register(errorTest.req, res)
+	test('test create hotel error', async () => {
+		const { errorTest } = create;
+		// Mocking rejected value for repository function
+		hotelRepoSaveSpy.mockRejectedValue(errorTest.error);
+		hotelUserRelationRepoFindSpy.mockResolvedValue({ count: 5 });
 
-        // Expectations for error handling
-        expect(res.status).toHaveBeenCalledWith(errorTest.res.status);
-        expect(res.send).toHaveBeenCalledWith(errorTest.res.data);
-    })
+		// Calling the hotel registration controller function
+		await hotelController.register(errorTest.req, res);
 
-    // update hotel
-    test('test update hotel successfully', async () => {
+		// Expectations for error handling
+		expect(res.status).toHaveBeenCalledWith(errorTest.res.status);
+		expect(res.send).toHaveBeenCalledWith(errorTest.res.data);
+	});
 
-        const { success } = update;
+	// update hotel
+	test('test update hotel successfully', async () => {
+		const { success } = update;
 
-        hotelRepoUpdateSpy.mockResolvedValue(1);
+		hotelRepoUpdateSpy.mockResolvedValue(1);
 
-        await hotelController.update(success.req, res);
+		await hotelController.update(success.req, res);
 
-        expect(res.status).toHaveBeenCalledWith(success.res.status);
-        expect(hotelRepoUpdateSpy).toHaveBeenCalled();
-        expect(res.send).toHaveBeenCalledWith(success.res.data);
-    })
+		expect(res.status).toHaveBeenCalledWith(success.res.status);
+		expect(hotelRepoUpdateSpy).toHaveBeenCalled();
+		expect(res.send).toHaveBeenCalledWith(success.res.data);
+	});
 
-    test('test update hotel throw error', async () => {
-        const { error } = update;
-        hotelRepoUpdateSpy.mockRejectedValue(new Error(error.error));
-        await hotelController.update(error.req, res);
+	test('test update hotel throw error', async () => {
+		const { error } = update;
+		hotelRepoUpdateSpy.mockRejectedValue(new Error(error.error));
+		await hotelController.update(error.req, res);
 
-        expect(res.status).toHaveBeenCalledWith(error.res.status);
-        expect(hotelRepoUpdateSpy).toHaveBeenCalled();
-        expect(res.send).toHaveBeenCalledWith(error.res.data);
-    })
+		expect(res.status).toHaveBeenCalledWith(error.res.status);
+		expect(hotelRepoUpdateSpy).toHaveBeenCalled();
+		expect(res.send).toHaveBeenCalledWith(error.res.data);
+	});
 
-    // list hotels
-    test('test list hotel success', async () => {
-        const { success } = list;
-        hotelUserRelationRepoFindSpy.mockResolvedValue(success.db.data);
+	// list hotels
+	test('test list hotel success', async () => {
+		const { success } = list;
+		hotelUserRelationRepoFindSpy.mockResolvedValue(success.db.data);
 
-        await hotelController.list(success.req, res);
+		await hotelController.list(success.req, res);
 
-        expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(success.res.status);
-        expect(res.send).toHaveBeenCalledWith(success.res.data);
-    })
+		expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(success.res.status);
+		expect(res.send).toHaveBeenCalledWith(success.res.data);
+	});
 
-    test('test list hotel failed', async () => {
-        const { error } = list;
+	test('test list hotel failed', async () => {
+		const { error } = list;
 
-        hotelUserRelationRepoFindSpy.mockRejectedValue(new Error(error.error));
-        await hotelController.list(error.req, res);
+		hotelUserRelationRepoFindSpy.mockRejectedValue(new Error(error.error));
+		await hotelController.list(error.req, res);
 
-        expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(error.res.status);
-        expect(res.send).toHaveBeenCalledWith(error.res.data);
-    })
-  
-    // remove hotel
-    test('test remove hotel success', async () => {
-        const { success } = remove;
+		expect(hotelUserRelationRepoFindSpy).toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(error.res.status);
+		expect(res.send).toHaveBeenCalledWith(error.res.data);
+	});
 
-        hotelRepoRemoveSpy.mockResolvedValue(success.db);
-        hotelUserRelationRepoRemoveSpy.mockResolvedValue(success.db);
+	// remove hotel
+	test('test remove hotel success', async () => {
+		const { success } = remove;
 
-        await hotelController.remove(success.req, res);
+		hotelRepoRemoveSpy.mockResolvedValue(success.db);
+		hotelUserRelationRepoRemoveSpy.mockResolvedValue(success.db);
 
-        expect(hotelRepoRemoveSpy).toHaveBeenCalled();
-        expect(hotelUserRelationRepoRemoveSpy).toHaveBeenCalled();
+		await hotelController.remove(success.req, res);
 
-        expect(res.status).toHaveBeenCalledWith(success.response.status);
-        expect(res.send).toHaveBeenCalledWith(success.response.data)
-    })
+		expect(hotelRepoRemoveSpy).toHaveBeenCalled();
+		expect(hotelUserRelationRepoRemoveSpy).toHaveBeenCalled();
 
-    test('test remove hotel error', async () => {
-        const { error } = remove;
-        hotelRepoRemoveSpy.mockRejectedValue(new Error(error.error));
+		expect(res.status).toHaveBeenCalledWith(success.response.status);
+		expect(res.send).toHaveBeenCalledWith(success.response.data);
+	});
 
-        await hotelController.remove(error.req, res);
+	test('test remove hotel error', async () => {
+		const { error } = remove;
+		hotelRepoRemoveSpy.mockRejectedValue(new Error(error.error));
 
-        expect(hotelRepoRemoveSpy).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(error.response.status);
-        expect(res.send).toHaveBeenCalledWith(error.response.data)
-    })
-})
+		await hotelController.remove(error.req, res);
+
+		expect(hotelRepoRemoveSpy).toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(error.response.status);
+		expect(res.send).toHaveBeenCalledWith(error.response.data);
+	});
+});
