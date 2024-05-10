@@ -25,7 +25,7 @@ module.exports = {
         'object-curly-spacing': ['error', 'always'],
         'no-trailing-spaces': 'error',
         'eol-last': ['error', 'always'],
-        quotes: ['error', 'single'],
+        quotes: ['error', 'single', { allowTemplateLiterals: true }],
         'linebreak-style': ['error', 'unix'],
         'space-before-function-paren': 'off'
     }
