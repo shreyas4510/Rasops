@@ -1,88 +1,88 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Invitation Email</title>
-		<style>
-			body {
-				font-family: Arial, sans-serif;
-				background-color: #f8f9fa;
-				margin: 0;
-				padding: 0;
-			}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Invitation Email</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f8f9fa;
+                margin: 0;
+                padding: 0;
+            }
 
-			.container {
-				max-width: 600px;
-				margin: 0 auto;
-				padding: 20px;
-			}
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
 
-			.content {
-				border-radius: 10px;
-				padding: 40px;
-				border: 2px solid #a0edb1;
-				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-			}
+            .content {
+                border-radius: 10px;
+                padding: 40px;
+                border: 2px solid #a0edb1;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
 
-			h2 {
-				color: #0d233f;
-				text-align: center;
-				margin-bottom: 20px;
-			}
+            h2 {
+                color: #0d233f;
+                text-align: center;
+                margin-bottom: 20px;
+            }
 
-			p {
-				color: #555555;
-				text-align: center;
-				margin-bottom: 20px;
-			}
+            p {
+                color: #555555;
+                text-align: center;
+                margin-bottom: 20px;
+            }
 
-			.btn {
-				display: inline-block;
-				background-color: #49ac60;
-				color: #ffffff;
-				text-decoration: none;
-				padding: 15px 30px;
-				border-radius: 5px;
-				text-align: center;
-				transition: background-color 0.3s ease;
-				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-			}
+            .btn {
+                display: inline-block;
+                background-color: #49ac60;
+                color: #ffffff;
+                text-decoration: none;
+                padding: 15px 30px;
+                border-radius: 5px;
+                text-align: center;
+                transition: background-color 0.3s ease;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
 
-			.btn:hover {
-				background-color: #3b7a44;
-			}
+            .btn:hover {
+                background-color: #3b7a44;
+            }
 
-			.footer {
-				margin-top: 20px;
-				text-align: center;
-				color: #999999;
-			}
+            .footer {
+                margin-top: 20px;
+                text-align: center;
+                color: #999999;
+            }
 
-			.footer a {
-				color: #0d233f;
-				text-decoration: none;
-			}
+            .footer a {
+                color: #0d233f;
+                text-decoration: none;
+            }
 
-			.footer a:hover {
-				text-decoration: underline;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<div class="content">
-				<h2>Welcome to OTM!</h2>
-				<p>
-					{{ownerName}} has invited you to manage the Hotel on OTM as an manager. To create your account, click the
-					button below:
-				</p>
-				<p><a href="{{appUrl}}" class="btn">Join OTM</a></p>
-				<p><strong>Note:</strong> This link is valid for 24 hours.</p>
-			</div>
-			<div class="footer">
-				<p>If you did not request this invitation, you can ignore this email.</p>
-			</div>
-		</div>
-	</body>
+            .footer a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="content">
+                <h2>Welcome to OTM!</h2>
+                <p>
+                    {{ownerName}} has invited you to manage the Hotel on OTM as an manager. To create your account,
+                    click the button below:
+                </p>
+                <p><a href="{{appUrl}}" class="btn">Join OTM</a></p>
+                <p><strong>Note:</strong> This link is valid for 24 hours.</p>
+            </div>
+            <div class="footer">
+                <p>If you did not request this invitation, you can ignore this email.</p>
+            </div>
+        </div>
+    </body>
 </html>

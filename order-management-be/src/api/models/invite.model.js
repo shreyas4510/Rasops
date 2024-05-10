@@ -4,39 +4,39 @@ import { TABLES } from '../utils/common.js';
 export const INVITE_STATUS = ['PENDING', 'ACCEPTED'];
 
 const inviteModel = (sequelize) =>
-	sequelize.define(
-		TABLES.INVITE,
-		{
-			id: {
-				type: DataTypes.STRING,
-				primaryKey: true
-			},
-			email: {
-				type: DataTypes.STRING,
-				allowNull: false,
-				unique: true
-			},
-			status: {
-				type: DataTypes.ENUM,
-				values: INVITE_STATUS,
-				allowNull: false
-			},
-			ownerId: {
-				type: DataTypes.STRING,
-				allowNull: false,
-				references: {
-					model: TABLES.USERS,
-					key: 'id'
-				}
-			},
-			deletedAt: {
-				type: DataTypes.DATE,
-				allowNull: true
-			}
-		},
-		{
-			paranoid: true
-		}
-	);
+    sequelize.define(
+        TABLES.INVITE,
+        {
+            id: {
+                type: DataTypes.STRING,
+                primaryKey: true
+            },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                unique: true
+            },
+            status: {
+                type: DataTypes.ENUM,
+                values: INVITE_STATUS,
+                allowNull: false
+            },
+            ownerId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: TABLES.USERS,
+                    key: 'id'
+                }
+            },
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true
+            }
+        },
+        {
+            paranoid: true
+        }
+    );
 
 export default inviteModel;

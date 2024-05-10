@@ -14,10 +14,10 @@ router.post('/reset', userController.reset);
 
 // invite apis
 router
-	.route('/invite')
-	.all(authenticate, ownerAuthentication)
-	.post(userController.invite)
-	.get(userController.listInvites);
+    .route('/invite')
+    .all(authenticate, ownerAuthentication)
+    .post(userController.invite)
+    .get(userController.listInvites);
 
 router.delete('/invite/:id', authenticate, ownerAuthentication, userController.removeInvite);
 
