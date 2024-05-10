@@ -1,36 +1,36 @@
 .hide-dropdown-arrow .dropdown-toggle::after {
-	display: none !important;
+    display: none !important;
 }
 
 .hide-dropdown-arrow .dropdown-menu {
-	right: 25px !important;
-	left: auto !important;
+    right: 25px !important;
+    left: auto !important;
 }
 
 .navbar-container {
-	background: #49ac60;
+    background: #49ac60;
 }
 
 .notification-text {
-	background: red;
-	color: white;
-	font-size: 10px;
-	border-radius: 100px;
-	height: 15px;
-	width: 15px;
-	text-align: center;
-	margin-left: 12px;
-	font-weight: bold;
-	position: absolute;
+    background: red;
+    color: white;
+    font-size: 10px;
+    border-radius: 100px;
+    height: 15px;
+    width: 15px;
+    text-align: center;
+    margin-left: 12px;
+    font-weight: bold;
+    position: absolute;
 }
 
 .notification-bell {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .user-logo {
-	height: 40px;
-	width: 40px;
-	border-radius: 100px;
-	margin-left: 'auto';
+    height: 40px;
+    width: 40px;
+    border-radius: 100px;
+    margin-left: 'auto';
 }

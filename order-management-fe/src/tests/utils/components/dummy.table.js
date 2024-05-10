@@ -5,17 +5,17 @@ export const rowRole = 'row';
 export const noRecordsId = 'no-records';
 
 export const getData = (len) => {
-	return [...Array(len)].map((item, i) => ({
-		id: `test-id-${i}`,
-		name: `test-name-${i}`
-	}));
+    return [...Array(len)].map((item, i) => ({
+        id: `test-id-${i}`,
+        name: `test-name-${i}`
+    }));
 };
 
 export const defaultRows = 10;
 
 export const pagination = {
-	pageIndex: 0,
-	pageSize: 10
+    pageIndex: 0,
+    pageSize: 10
 };
 
 export const pagesTestId = 'page-count';

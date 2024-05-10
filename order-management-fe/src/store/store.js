@@ -9,15 +9,15 @@ const initialState = {};
 const reducerManager = createReducerManager(initialState);
 
 const store = configureStore({
-	reducer: reducerManager.reduce,
-	middleware,
-	preloadedState: initialState
+    reducer: reducerManager.reduce,
+    middleware,
+    preloadedState: initialState
 });
 
 const sagaManager = createSagaManager(sagaMiddleware);
 
 sagaManager.setAddSagaListener((saga) => {
-	sagaMiddleware.run(saga);
+    sagaMiddleware.run(saga);
 });
 
 store.reducerManager = reducerManager;
