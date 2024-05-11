@@ -3,6 +3,7 @@ import Mustache from 'mustache';
 import { transporter } from '../../config/email.js';
 import env from '../../config/env.js';
 import { EMAIL_ACTIONS, CustomError } from '../utils/common.js';
+import logger from '../../config/logger.js';
 
 const getEmailData = (action, payload) => {
     let path = '';
@@ -48,6 +49,8 @@ export const sendEmail = async (payload, to, action) => {
     try {
         // create the email data
         const data = getEmailData(action, payload);
+
+        logger('debug', `Email data prepared: ${JSON.stringify(data)}`);
         const options = {
             from: env.email.user,
             to,
@@ -56,10 +59,10 @@ export const sendEmail = async (payload, to, action) => {
         };
 
         // send email to the user
+        logger('info', `Sending email to: ${to}`);
         return await transporter.sendMail(options);
     } catch (error) {
-        // TODO: Add logger
-        // console.log(`Error sending verification email ${error}`);
+        logger('error', `Error occurred while sending email: ${error}`);
         throw CustomError(error.code, error.message);
     }
 };

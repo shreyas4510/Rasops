@@ -6,6 +6,7 @@ import hotelUserRelationModel from '../api/models/hotelUserRelation.model.js';
 import defineAssociations from '../api/models/associations.js';
 import { CustomError } from '../api/utils/common.js';
 import env from './env.js';
+import logger from './logger.js';
 
 const config = {
     host: env.db.host,
@@ -16,23 +17,25 @@ const config = {
 };
 export const db = {};
 
-// TODO: Implement logging in this file properly
 const createDatabase = async () => {
     try {
+        logger('info', '🚀 Connecting to the database...');
         const sequelize = new Sequelize({ ...config });
 
-        // authenticate the connection
         await sequelize.authenticate();
+        logger('info', '✅ Database connection authenticated successfully.');
 
-        // create table if not exists
+        logger('info', '🏗️ Creating database if not exists...');
         await sequelize.query(`CREATE DATABASE IF NOT EXISTS \`${env.db.name}\`;`);
-        return new Sequelize({ ...config, database: env.db.name });
+        logger('info', '🏢 Database created successfully.');
+
+        return new Sequelize({ ...config, database: env.db.name, logging: false });
     } catch (error) {
+        logger(`error`, `❌ Error creating database: ${error}`);
         throw CustomError(error.code, error.message);
     }
 };
 
-// Define all database models
 const defineModels = (sequelize) => {
     db.Sequelize = Sequelize;
     db.users = userModel(sequelize);
@@ -43,15 +46,19 @@ const defineModels = (sequelize) => {
 
 const initDb = async () => {
     try {
-        // Initialize database connection and create database if necessary
+        logger('info', '🚀 Initializing database...');
         const sequelize = await createDatabase();
 
-        // Define and associate models
+        logger('info', '🛠️ Defining database models...');
         defineModels(sequelize);
         defineAssociations(db);
-        // Sync models with database
+
+        logger('info', '🔄 Syncing models with database...');
         await sequelize.sync({ force: false });
+
+        logger('info', '🎉 Database initialization completed successfully.');
     } catch (error) {
+        logger(`error`, `❌ Error initializing database: ${error}`);
         throw CustomError(error.code, error.message);
     }
 };

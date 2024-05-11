@@ -10,11 +10,13 @@ import moment from 'moment';
 import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
 import { INVITE_STATUS } from '../models/invite.model.js';
 import { Op } from 'sequelize';
+import logger from '../../config/logger.js';
 
 const create = async (payload) => {
     try {
         // check if invited user
         if (payload.invite) {
+            logger('debug', `Updating invite status for invite ID: ${payload.invite}`);
             await inviteRepo.update({ id: payload.invite }, { status: INVITE_STATUS[1] });
         }
 
@@ -31,7 +33,10 @@ const create = async (payload) => {
         };
         // save the user details to the database
         const data = await userRepo.save(user);
+        logger('info', "User details saved successfully:", data);
+
         // send verification email to the user
+        logger('debug', "Sending verification email to the user");
         const verifyOptions = {
             email: user.email,
             name: `${user.firstName} ${user.lastName}`,
@@ -42,6 +47,7 @@ const create = async (payload) => {
         await sendEmail({ token }, user.email, EMAIL_ACTIONS.VERIFY_USER);
         return data;
     } catch (error) {
+        logger('error', `Error occurred during user creation: ${error}`);
         throw CustomError(error.code, error.message);
     }
 };
@@ -49,17 +55,23 @@ const create = async (payload) => {
 const login = async (payload) => {
     try {
         const { email, password } = payload;
+
+        logger('debug', `Login request received for email: ${email}`);
         const user = await userRepo.findOne({ email });
+
         if (!user) {
+            logger('error', `Email ${email} not registered.`);
             throw CustomError(STATUS_CODE.NOT_FOUND, 'Email not registered');
         }
 
         const pass = CryptoJS.AES.decrypt(user.password, env.cryptoSecret).toString(CryptoJS.enc.Utf8);
         if (password !== pass) {
+            logger('error', "Invalid password provided.");
             throw CustomError(STATUS_CODE.UNAUTHORIZED, 'Invalid password');
         }
 
         if (user.status === USER_STATUS[1]) {
+            logger('error', "Email not verified.");
             throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
         }
 
@@ -75,12 +87,12 @@ const login = async (payload) => {
             env.jwtSecret,
             { expiresIn: '12h' }
         );
-
         return {
             token,
             data: user
         };
     } catch (error) {
+        logger('error', `Error occurred during login: ${error.message}`);
         throw CustomError(error.code, error.message);
     }
 };
@@ -88,16 +100,21 @@ const login = async (payload) => {
 const verify = async (payload) => {
     try {
         const { email, expires } = payload;
+        logger('debug', `Verifying user with email: ${email}`);
+
         const user = await userRepo.findOne({ email });
         if (!user) {
+            logger('error', "User not found for verification.");
             throw CustomError(STATUS_CODE.NOT_FOUND, 'Invalid request');
         }
 
         if (user.status === USER_STATUS[0]) {
+            logger('error', "User is already verified.");
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'User already verified Please try login');
         }
 
         if (moment().valueOf() > expires) {
+            logger('info', "Verification link expired. Resending email for verification.");
             const verifyOptions = {
                 email: user.email,
                 name: `${user.firstName} ${user.lastName}`,
@@ -126,11 +143,13 @@ const verify = async (payload) => {
             env.jwtSecret,
             { expiresIn: '12h' }
         );
+
         return {
             token,
             data: user
         };
     } catch (error) {
+        logger('error', `Error occurred during user verification: ${error.message}`);
         throw CustomError(error.code, error.message);
     }
 };
@@ -138,13 +157,16 @@ const verify = async (payload) => {
 const forget = async (payload) => {
     try {
         const { email } = payload;
+        logger('debug', `Initiating forgot password for email: ${email}`);
 
         const user = await userRepo.findOne({ email });
         if (!user) {
+            logger('error', "User not found with the provided email.");
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid Email');
         }
 
         if (user.status === USER_STATUS[1]) {
+            logger('error', "User has not verified email.");
             throw CustomError(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
         // send verification email to the user
@@ -154,9 +176,13 @@ const forget = async (payload) => {
         };
 
         const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
+
+        logger('info', "Sending verification email for forgot password");
         await sendEmail({ token }, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
+
         return { message: 'Recover password link sent. Please check your email.' };
     } catch (error) {
+        logger('error', `Error occurred during forgot password process: ${error.message}`);
         throw CustomError(error.code, error.message);
     }
 };
@@ -164,16 +190,21 @@ const forget = async (payload) => {
 const reset = async (payload) => {
     try {
         const { email, newPassword, expires } = payload;
+        logger('debug', `Initiating password reset for email: ${email}`);
+
         const user = await userRepo.findOne({ email });
         if (!user) {
+            logger('error', "User not found for password reset.");
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid request');
         }
 
         if (user.status === USER_STATUS[1]) {
+            logger('error', "User has not verified email.");
             throw CustomError(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
 
         if (moment().valueOf() > expires) {
+            logger('info', "Password reset link expired. Resending email for password reset.");
             const options = {
                 email: user.email,
                 password: user.password,
@@ -191,6 +222,7 @@ const reset = async (payload) => {
         await user.save();
         return { message: 'Password reset successfully' };
     } catch (error) {
+        logger('error', `Error occurred during password reset process: ${error.message}`);
         throw CustomError(error.code, error.message);
     }
 };

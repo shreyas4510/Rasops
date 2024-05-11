@@ -1,20 +1,26 @@
 import initDb from './config/database.js';
 import app from './config/express.js';
 import env from './config/env.js';
+import logger from './config/logger.js';
 
 const startServer = async () => {
     try {
-        // Establish database connection
+        logger('info', '🚀 Starting server...');
+
+        logger('info', '🔗 Establishing database connection...');
         await initDb();
 
-        // TODO: Implement logging in this file properly
+        logger('info', `🌐 Server running on port ${env.app.port}...`);
+        app.listen(env.app.port, () => {
+            logger('info', `✅ Server started successfully on port ${env.app.port}.`);
+        });
 
-        // Start the server
-        app.listen(env.app.port, () => {});
-
-        // Error in starting server
-        app.on('error', () => {});
-    } catch (error) {}
+        app.on('error', (error) => {
+            logger('error', `❌ Error starting server: ${error}`);
+        });
+    } catch (error) {
+        logger('error', `❌ Error starting server: ${error}`);
+    }
 };
 
 startServer();
