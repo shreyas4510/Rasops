@@ -10,7 +10,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint --fix .",
         "prettier:write": "prettier --write .",
-        "prepare": "cd .. && husky order-management-be/.husky"
+        "prepare": "cd .. && husky order-management-be/.husky",
+        "sonarqube": "sonar-scanner"
     },
     "keywords": [],
     "author": "",
