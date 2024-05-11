@@ -13,7 +13,7 @@ module.exports = {
     rules: {
         indent: ['error', 4, { SwitchCase: 1 }],
         semi: ['error', 'always'],
-        camelcase: ['error', { properties: 'never', ignoreDestructuring: true }],
+        camelcase: ['error', { properties: 'always' }],
         'no-unused-vars': 'error',
         'no-extra-semi': 'error',
         eqeqeq: 'error',

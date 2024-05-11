@@ -233,6 +233,7 @@ const invite = async (payload) => {
 
         const user = await userRepo.findOne({ email });
         if (user) {
+            logger('error', 'Email already registered', { email });
             throw CustomError(STATUS_CODE.CONFLICT, 'Email already registered');
         }
 
@@ -253,8 +254,11 @@ const invite = async (payload) => {
 
         const token = CryptoJS.AES.encrypt(JSON.stringify(options), env.cryptoSecret).toString();
         await sendEmail({ token, name: payload.name }, email, EMAIL_ACTIONS.INVITE_MANAGER);
+        logger('info', 'Invite link sent successfully', { email });
+
         return { message: 'Invite link sent' };
     } catch (error) {
+        logger('error', 'Error while sending invitation', { error });
         throw CustomError(error.code, error.message);
     }
 };
@@ -289,8 +293,11 @@ const listInvites = async (payload) => {
             offset: Number(skip) || defaults.offset,
             limit: Number(limit) || defaults.limit
         };
+        logger('debug', 'Fetching invites with options:', { options });
+
         return await inviteRepo.find(options);
     } catch (error) {
+        logger('error', 'Error while fetching invites', { error });
         throw CustomError(error.code, error.message);
     }
 };
@@ -299,11 +306,13 @@ const removeInvite = async (id) => {
     try {
         const data = await inviteRepo.find({ where: { id } });
         if (!data.rows.length) {
+            logger('error', 'Invited user not found', { id });
             await inviteRepo.remove({ where: { id } });
             throw CustomError(STATUS_CODE.NOT_FOUND, 'Invited user not found');
         }
 
         if (data.rows[0].status === INVITE_STATUS[1]) {
+            logger('error', 'Invited user is active', { id });
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invited user is active');
         }
 
@@ -316,6 +325,7 @@ const removeInvite = async (id) => {
         await inviteRepo.remove(options);
         return { message: 'Invite deleted successfully' };
     } catch (error) {
+        logger('error', 'Error while removing invite', { id, error });
         throw CustomError(error.code, error.message);
     }
 };

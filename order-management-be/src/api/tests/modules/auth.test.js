@@ -16,9 +16,6 @@ jest.mock('../../../config/email.js', () => ({
     transporter: { sendMail: jest.fn() }
 }));
 
-// eslint-disable-next-line no-console
-console.log = jest.fn();
-
 // mocking express res
 let res = {};
 

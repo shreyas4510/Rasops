@@ -23,9 +23,6 @@ jest.mock('../../../config/email.js', () => ({
     transporter: { sendMail: jest.fn() }
 }));
 
-// eslint-disable-next-line no-console
-console.log = jest.fn();
-
 // mocking express res
 let res = {};
 
@@ -102,12 +99,12 @@ describe('test invite cases', () => {
 
         await userController.removeInvite(remove.req, res);
 
-        expect(res.status).toHaveBeenCalledWith(remove.error.error_invite_user.status);
+        expect(res.status).toHaveBeenCalledWith(remove.error.errorInviteUser.status);
         expect(db.invites.findAndCountAll).toHaveBeenCalled();
         expect(db.invites.destroy).toHaveBeenCalled();
 
         const data = res.send.mock.calls[0][0];
-        expect(data.message).toEqual(remove.error.error_invite_user.message);
+        expect(data.message).toEqual(remove.error.errorInviteUser.message);
     });
 
     test('test invited user is active', async () => {
@@ -115,11 +112,11 @@ describe('test invite cases', () => {
 
         await userController.removeInvite(remove.req, res);
 
-        expect(res.status).toHaveBeenCalledWith(remove.error.error_active_invite.status);
+        expect(res.status).toHaveBeenCalledWith(remove.error.errorActiveUser.status);
         expect(db.invites.findAndCountAll).toHaveBeenCalled();
 
         const data = res.send.mock.calls[0][0];
-        expect(data.message).toEqual(remove.error.error_active_invite.message);
+        expect(data.message).toEqual(remove.error.errorActiveUser.message);
     });
 
     test('test invited user deleted successfully', async () => {
@@ -139,16 +136,16 @@ describe('test invite cases', () => {
 
     test('test remove invite error', async () => {
         db.invites.findAndCountAll.mockResolvedValue(remove.db.findAndCountAll.success);
-        db.invites.destroy.mockRejectedValue(new Error(remove.error.error_internal_server.message));
+        db.invites.destroy.mockRejectedValue(new Error(remove.error.errorInternalUser.message));
 
         await userController.removeInvite(remove.req, res);
 
-        expect(res.status).toHaveBeenCalledWith(remove.error.error_internal_server.status);
+        expect(res.status).toHaveBeenCalledWith(remove.error.errorInternalUser.status);
 
         expect(db.invites.findAndCountAll).toHaveBeenCalled();
         expect(db.invites.destroy).toHaveBeenCalled();
 
         const data = res.send.mock.calls[0][0];
-        expect(data.message).toEqual(remove.error.error_internal_server.message);
+        expect(data.message).toEqual(remove.error.errorInternalUser.message);
     });
 });

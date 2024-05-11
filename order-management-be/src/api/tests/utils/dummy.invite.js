@@ -50,15 +50,15 @@ export const remove = {
         }
     },
     error: {
-        error_invite_user: {
+        errorInviteUser: {
             status: STATUS_CODE.NOT_FOUND,
             message: 'Invited user not found'
         },
-        error_active_invite: {
+        errorActiveUser: {
             status: STATUS_CODE.BAD_REQUEST,
             message: 'Invited user is active'
         },
-        error_internal_server: {
+        errorInternalUser: {
             status: STATUS_CODE.INTERNAL_SERVER_ERROR,
             message: 'Failed to remove invite'
         }

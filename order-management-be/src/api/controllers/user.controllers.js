@@ -112,8 +112,11 @@ const reset = async (req, res) => {
 const invite = async (req, res) => {
     try {
         const { body } = req;
+        logger('debug', 'Received invite request with data:', { data: body });
+
         const valid = emailValidation(body);
         if (valid.error) {
+            logger('error', 'Invalid email format in invitation request', { error: valid.error });
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
         }
 
@@ -123,10 +126,11 @@ const invite = async (req, res) => {
             name: `${req.user.firstName} ${req.user.lastName}`
         };
         const result = await userService.invite(data);
+        logger('info', 'Invitation sent successfully', { data: result });
+
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
-        // TODO: Add loggers
-        // console.log(`Failed to invite ${error}`);
+        logger('error', 'Error while sending invitation', { error });
         return res.status(error.code).send({ message: error.message });
     }
 };
@@ -134,23 +138,25 @@ const invite = async (req, res) => {
 const listInvites = async (req, res) => {
     try {
         const { query } = req;
-        const { limit, skip, sort_key, sort_order, filter_key, filter_value } = query;
+        const { limit, skip, sortKey, sortOrder, filterKey, filterValue } = query;
 
         const payload = {
             limit,
             skip,
-            sort_key,
-            sort_order,
-            filter_key,
-            filter_value,
+            sortKey,
+            sortOrder,
+            filterKey,
+            filterValue,
             owner: req.user.id
         };
+        logger('debug', 'Received request to list invites with query:', { query });
 
         const result = await userService.listInvites(payload);
+        logger('info', 'List of invites fetched successfully');
+
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
-        // TODO: Add loggers
-        // console.log(`Failed to get invite list ${error}`);
+        logger('error', 'Error while listing invites', { error });
         return res.status(error.code).send({ message: error.message });
     }
 };
@@ -158,12 +164,14 @@ const listInvites = async (req, res) => {
 const removeInvite = async (req, res) => {
     try {
         const id = req.body.id;
+        logger('debug', 'Received request to remove invite with ID:', { id });
 
         const result = await userService.removeInvite(id);
+        logger('info', 'Invite removed successfully', { result });
+
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
-        // TODO: Add loggers
-        // console.log(`Failed to remove invite ${error}`);
+        logger('error', 'Error while removing invite', { error });
         return res.status(error.code).send({ message: error.message });
     }
 };

@@ -13,7 +13,6 @@ app.use(express.json());
 // allow all origins for cors
 app.use(cors({ origin: '*' }));
 
-// console.log(swaggerDocument);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // prefix for all the routes
