@@ -26,7 +26,6 @@ jest.mock('react-router-dom', () => ({
 }));
 
 console.error = jest.fn();
-console.log = jest.fn();
 
 describe('test signup page', () => {
     test('test required field validations', async () => {
