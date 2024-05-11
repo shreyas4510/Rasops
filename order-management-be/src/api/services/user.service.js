@@ -33,10 +33,10 @@ const create = async (payload) => {
         };
         // save the user details to the database
         const data = await userRepo.save(user);
-        logger('info', "User details saved successfully:", data);
+        logger('info', 'User details saved successfully:', data);
 
         // send verification email to the user
-        logger('debug', "Sending verification email to the user");
+        logger('debug', 'Sending verification email to the user');
         const verifyOptions = {
             email: user.email,
             name: `${user.firstName} ${user.lastName}`,
@@ -66,12 +66,12 @@ const login = async (payload) => {
 
         const pass = CryptoJS.AES.decrypt(user.password, env.cryptoSecret).toString(CryptoJS.enc.Utf8);
         if (password !== pass) {
-            logger('error', "Invalid password provided.");
+            logger('error', 'Invalid password provided.');
             throw CustomError(STATUS_CODE.UNAUTHORIZED, 'Invalid password');
         }
 
         if (user.status === USER_STATUS[1]) {
-            logger('error', "Email not verified.");
+            logger('error', 'Email not verified.');
             throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
         }
 
@@ -104,17 +104,17 @@ const verify = async (payload) => {
 
         const user = await userRepo.findOne({ email });
         if (!user) {
-            logger('error', "User not found for verification.");
+            logger('error', 'User not found for verification.');
             throw CustomError(STATUS_CODE.NOT_FOUND, 'Invalid request');
         }
 
         if (user.status === USER_STATUS[0]) {
-            logger('error', "User is already verified.");
+            logger('error', 'User is already verified.');
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'User already verified Please try login');
         }
 
         if (moment().valueOf() > expires) {
-            logger('info', "Verification link expired. Resending email for verification.");
+            logger('info', 'Verification link expired. Resending email for verification.');
             const verifyOptions = {
                 email: user.email,
                 name: `${user.firstName} ${user.lastName}`,
@@ -161,12 +161,12 @@ const forget = async (payload) => {
 
         const user = await userRepo.findOne({ email });
         if (!user) {
-            logger('error', "User not found with the provided email.");
+            logger('error', 'User not found with the provided email.');
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid Email');
         }
 
         if (user.status === USER_STATUS[1]) {
-            logger('error', "User has not verified email.");
+            logger('error', 'User has not verified email.');
             throw CustomError(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
         // send verification email to the user
@@ -177,7 +177,7 @@ const forget = async (payload) => {
 
         const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
 
-        logger('info', "Sending verification email for forgot password");
+        logger('info', 'Sending verification email for forgot password');
         await sendEmail({ token }, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
 
         return { message: 'Recover password link sent. Please check your email.' };
@@ -194,17 +194,17 @@ const reset = async (payload) => {
 
         const user = await userRepo.findOne({ email });
         if (!user) {
-            logger('error', "User not found for password reset.");
+            logger('error', 'User not found for password reset.');
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid request');
         }
 
         if (user.status === USER_STATUS[1]) {
-            logger('error', "User has not verified email.");
+            logger('error', 'User has not verified email.');
             throw CustomError(STATUS_CODE.FORBIDDEN, 'User has not verified email');
         }
 
         if (moment().valueOf() > expires) {
-            logger('info', "Password reset link expired. Resending email for password reset.");
+            logger('info', 'Password reset link expired. Resending email for password reset.');
             const options = {
                 email: user.email,
                 password: user.password,

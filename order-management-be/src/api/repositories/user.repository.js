@@ -4,7 +4,7 @@ import { CustomError } from '../utils/common.js';
 
 const save = async (payload) => {
     try {
-        logger('info', "Saving user data to the database");
+        logger('info', 'Saving user data to the database');
         return await db.users.create(payload);
     } catch (error) {
         const err = error?.errors[0]?.message;
@@ -15,7 +15,7 @@ const save = async (payload) => {
 
 const findOne = async (payload) => {
     try {
-        logger('debug', "Fetching user data in the database");
+        logger('debug', 'Fetching user data in the database');
         return await db.users.findOne({ where: payload });
     } catch (error) {
         const err = error?.errors[0]?.message;
