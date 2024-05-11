@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { CustomError } from '../utils/common.js';
+import logger from '../../config/logger.js';
 
 export const registerationValidation = (payload) => {
     try {
@@ -16,8 +17,7 @@ export const registerationValidation = (payload) => {
         });
         return schema.validate(payload);
     } catch (error) {
-        // TODO: add error loggers
-        // console.log(`Error in validating hotel registeration ${error.message}`);
+        logger('error', 'Error in registration validation', { error });
         throw CustomError(error.code, error.message);
     }
 };
@@ -35,8 +35,7 @@ export const updateValidation = (payload) => {
         }).or('openTime', 'closeTime', 'name', 'careNumber', 'address');
         return schema.validate(payload);
     } catch (error) {
-        // TODO: add error loggers
-        // console.log(`Error in validating hotel update ${error.message}`);
+        logger('error', 'Error in update validation', { error });
         throw CustomError(error.code, error.message);
     }
 };
