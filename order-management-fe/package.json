@@ -28,17 +28,39 @@
     "scripts": {
         "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test --watchAll=false",
+        "test": "react-scripts test --watchAll=false --coverage",
         "eject": "react-scripts eject",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "prettier:write": "prettier --write .",
-        "prepare": "cd .. && husky order-management-fe/.husky"
+        "prepare": "cd .. && husky order-management-fe/.husky",
+        "sonarqube": "sonar-scanner"
     },
     "jest": {
         "moduleNameMapper": {
             "^axios$": "axios/dist/node/axios.cjs"
-        }
+        },
+        "coverageReporters": [
+            "json",
+            "lcov",
+            "text",
+            "clover"
+        ],
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx}",
+            "!src/**/*.test.{js,jsx}"
+        ],
+        "coveragePathIgnorePatterns": [
+            "node_modules",
+            "src/assets",
+            "src/config"
+        ]
+    },
+    "jestSonar": {
+        "sonar56x": true,
+        "reportPath": "./coverage",
+        "reportFile": "sonar-report.xml",
+        "indent": 4
     },
     "eslintConfig": {
         "extends": [
