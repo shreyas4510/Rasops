@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
 import { emailSchema } from '../../validations/auth';
 import AuthContainer from '../../components/AuthContainer';
@@ -12,19 +11,14 @@ import { forgotPassword } from '../../store/actions/auth.action';
 
 const ForgotPassword = () => {
     const navigate = useNavigate();
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
     const initialValues = {
         email: ''
     };
     const handleSubmit = async (values, { setSubmitting }) => {
-        try {
-            setSubmitting(true);
-            dispatch(forgotPassword({payload:values,navigate}))
-            setSubmitting(false);
-        } catch (err) {
-            setSubmitting(false);
-            toast.error(`Failed to send: ${err.message}`);
-        }
+        setSubmitting(true);
+        dispatch(forgotPassword({ payload: values, navigate }))
+        setSubmitting(false);
     };
 
     const handleOnClickLogin = (e) => {
@@ -36,18 +30,11 @@ const ForgotPassword = () => {
         <AuthContainer title={'Forgot Password'}>
             <Formik initialValues={initialValues} validationSchema={emailSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting, dirty, isValid }) => (
-                    <Form className="d-flex flex-column">
-                        <CustomFormGroup name="email" type="email" label="Email" />
-                        <CustomButton
-                            label="Send Email"
-                            type="submit"
-                            disabled={isSubmitting || !isValid || !dirty}
-                            className="mx-auto my-4"
-                        />
-                        <div className="text-center">
-                            <p className="label-font m-0">
-                                Already have an account ? <CustomLink onClick={handleOnClickLogin} text="Login" />
-                            </p>
+                    <Form className='d-flex flex-column'>
+                        <CustomFormGroup name='email' type='email' label='Email' />
+                        <CustomButton label='Send Email' type='submit' disabled={isSubmitting || !isValid || !dirty} className='mx-auto my-4' />
+                        <div className='text-center'>
+                            <p className='label-font m-0'>Already have an account ? <CustomLink onClick={handleOnClickLogin} text='Login' /></p>
                         </div>
                     </Form>
                 )}

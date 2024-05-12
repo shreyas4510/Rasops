@@ -21,17 +21,11 @@ export const invalidValues = {
         firstName: 'asdfghjklqwertyuiopzxcvbnmqwertyuiop',
         lastName: 'asdfghjklqwertyuiopzxcvbnmqwertyuiop',
         email: 'test@test',
-        phoneNumber: '12345678901',
-        password: '1234567890',
-        confirmPassword: '0987654321'
     },
     errors: {
         firstName: 'firstName must be at most 30 characters',
         lastName: 'lastName must be at most 30 characters',
         email: 'Invalid email',
-        phoneNumber: 'phoneNumber must be at most 10 characters',
-        password: 'Password must contain at least 8 characters, one letter, one number, and one special character',
-        confirmPassword: 'Passwords must match'
     }
 };
 

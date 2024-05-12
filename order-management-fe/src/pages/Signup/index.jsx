@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Formik, Form } from 'formik';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import { userRegistrationSchema } from '../../validations/auth';
@@ -54,24 +53,19 @@ function Signup() {
         })();
     }, []);
 
-    // handle request to register user
-    const handleSubmit = async (values, { setSubmitting }) => {
-        try {
-            setSubmitting(true);
-            const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
-            const payload = { ...values, password: enpass };
-            delete payload.confirmPassword;
+  // handle request to register user
+  const handleSubmit = (values, { setSubmitting }) => {
+      setSubmitting(true);
+      const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
+      const payload = { ...values, password: enpass };
+      delete payload.confirmPassword;
 
-            if (invite.status) {
-                payload.invite = invite.id;
-            }
-            dispatch(register({ payload, navigate }))
-            setSubmitting(false);
-        } catch (err) {
-            setSubmitting(false);
-            toast.error(`Failed to register user: ${err.message}`);
-        }
-    };
+      if( invite.status ) {
+        payload.invite = invite.id;
+      }
+      dispatch(register({payload,navigate}))
+      setSubmitting(false);
+  };
 
     const handleOnClickLogin = (e) => {
         e.preventDefault();

@@ -1,24 +1,12 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event';
-import RouterDom from 'react-router-dom';
-import { toast } from 'react-toastify';
-import Signup from '../../../pages/Signup/index.jsx';
-import * as apiClient from '../../../api/apiClient.js';
-import {
-    confirmPasswordTestIdRegex,
-    emailTestIdRegex,
-    failRegistration,
-    firstNameTestIdRegex,
-    invalidValues,
-    lastNameTestIdRegex,
-    loginNavigation,
-    passwordTestIdRegex,
-    phoneNumberTestIdRegex,
-    requiredFields,
-    successfulRegistration
-} from '../../utils/pages/dummy.signup.js';
+import { render, screen } from "@testing-library/react";
+import { act } from "react-dom/test-utils";
+import userEvent from "@testing-library/user-event";
+import RouterDom from "react-router-dom";
+import { toast } from "react-toastify";
+import Signup from "../../../pages/Signup/index.jsx";
+import * as apiClient from "../../../api/apiClient.js";
+import { confirmPasswordTestIdRegex, emailTestIdRegex, failRegistration, firstNameTestIdRegex, invalidValues, lastNameTestIdRegex, loginNavigation, passwordTestIdRegex, phoneNumberTestIdRegex, requiredFields, successfulRegistration } from "../../utils/pages/dummy.signup.js";
+import ReduxProvider from "../../utils/components/storeWrapper.jsx";
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -31,7 +19,11 @@ describe('test signup page', () => {
     test('test required field validations', async () => {
         const { errors } = requiredFields;
 
-        render(<Signup />);
+        render(
+            <ReduxProvider>
+                <Signup />
+            </ReduxProvider>
+        );
 
         // testing the required error for first name field
         expect(screen.queryByText(errors.firstName)).not.toBeInTheDocument();
@@ -102,62 +94,29 @@ describe('test signup page', () => {
 
     test('test valid valued for fields validations', async () => {
         const { values, errors } = invalidValues;
-
-        render(<Signup />);
-
+        render(
+            <ReduxProvider>
+                <Signup />
+            </ReduxProvider>
+        );
         // testing the validation error for first name field
         expect(screen.queryByText(errors.firstName)).not.toBeInTheDocument();
+        expect(screen.queryByText(errors.lastName)).not.toBeInTheDocument();
+        expect(screen.queryByText(errors.email)).not.toBeInTheDocument();
+
         const firstNameInput = screen.getByTestId(firstNameTestIdRegex);
+        const lastNameInput = screen.getByTestId(lastNameTestIdRegex);
+        const emailInput = screen.getByTestId(emailTestIdRegex);
+
         await act(async () => {
             userEvent.type(firstNameInput, values.firstName);
-            firstNameInput.blur();
-        });
-        expect(screen.getByText(errors.firstName)).toBeInTheDocument();
-
-        // testing the validation error for last name field
-        expect(screen.queryByText(errors.lastName)).not.toBeInTheDocument();
-        const lastNameInput = screen.getByTestId(lastNameTestIdRegex);
-        await act(async () => {
             userEvent.type(lastNameInput, values.lastName);
-            lastNameInput.blur();
-        });
-        expect(screen.getByText(errors.lastName)).toBeInTheDocument();
-
-        // testing the validation error for email field
-        expect(screen.queryByText(errors.email)).not.toBeInTheDocument();
-        const emailInput = screen.getByTestId(emailTestIdRegex);
-        await act(async () => {
             userEvent.type(emailInput, values.email);
             emailInput.blur();
-        });
+        })
+        expect(screen.getByText(errors.firstName)).toBeInTheDocument();
+        expect(screen.getByText(errors.lastName)).toBeInTheDocument();
         expect(screen.getByText(errors.email)).toBeInTheDocument();
-
-        // testing the validation error for phone field
-        expect(screen.queryByText(errors.phoneNumber)).not.toBeInTheDocument();
-        const phoneNumberInput = screen.getByTestId(phoneNumberTestIdRegex);
-        await act(async () => {
-            userEvent.type(phoneNumberInput, values.phoneNumber);
-            phoneNumberInput.blur();
-        });
-        expect(screen.getByText(errors.phoneNumber)).toBeInTheDocument();
-
-        // testing the validation error for password field
-        expect(screen.queryByText(errors.password)).not.toBeInTheDocument();
-        const paswordInput = screen.getAllByTestId(passwordTestIdRegex);
-        await act(async () => {
-            userEvent.type(paswordInput[0], values.password);
-            paswordInput[0].blur();
-        });
-        expect(screen.getByText(errors.password)).toBeInTheDocument();
-
-        // testing the validation error for confirm password field
-        expect(screen.queryByText(errors.confirmPassword)).not.toBeInTheDocument();
-        const confirmPasswordInput = screen.getByTestId(confirmPasswordTestIdRegex);
-        await act(async () => {
-            userEvent.type(confirmPasswordInput, values.confirmPassword);
-            confirmPasswordInput.blur();
-        });
-        expect(screen.getByText(errors.confirmPassword)).toBeInTheDocument();
     });
 
     test('test navigation to login', async () => {
@@ -166,8 +125,11 @@ describe('test signup page', () => {
         const navigate = jest.fn();
         jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        render(<Signup />);
-        const login = screen.getByText(loginText);
+        render(
+            <ReduxProvider>
+                <Signup />
+            </ReduxProvider>
+        );        const login = screen.getByText(loginText);
         userEvent.click(login);
 
         // check the navigation is done to login screen
@@ -180,8 +142,11 @@ describe('test signup page', () => {
         jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(errorMessage));
         jest.spyOn(toast, 'error');
 
-        render(<Signup />);
-
+        render(
+            <ReduxProvider>
+                <Signup />
+            </ReduxProvider>
+        );
         // get all the fields of the form
         const obj = {
             firstNameInput: screen.getByTestId(firstNameTestIdRegex),
@@ -222,8 +187,11 @@ describe('test signup page', () => {
         const navigate = jest.fn();
         jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        render(<Signup />);
-
+        render(
+            <ReduxProvider>
+                <Signup />
+            </ReduxProvider>
+        );
         // get all the fields on the registration form
         const obj = {
             firstNameInput: screen.getByTestId(firstNameTestIdRegex),

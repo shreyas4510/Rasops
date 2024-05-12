@@ -39,8 +39,8 @@ export const apiFailure = {
         cpassword: 'Test@1234'
     },
     error: { message: 'failed to send email' },
-    toastMessage: 'Failed to send: failed to send email'
-};
+    toastMessage: 'Failed to reset password: failed to send email'
+}
 
 export const apiSuccess = {
     screenText,

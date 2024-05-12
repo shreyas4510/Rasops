@@ -1,10 +1,10 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import VerifyUser from '../../../pages/VerifyUser/index.jsx';
-import RouterDom from 'react-router-dom';
-import { apiFailure, apiSuccess, invalidToken, notFoundRedirection } from '../../utils/pages/dummy.verifyUser.js';
-import { toast } from 'react-toastify';
-import * as apiClient from '../../../api/apiClient.js';
+import { render, screen, waitFor } from "@testing-library/react";
+import VerifyUser from "../../../pages/VerifyUser/index.jsx";
+import RouterDom from "react-router-dom";
+import { apiFailure, apiResponse, apiSuccess, invalidToken, notFoundRedirection, validToken } from "../../utils/pages/dummy.verifyUser.js";
+import { toast } from "react-toastify";
+import * as apiClient from "../../../api/apiClient.js";
+import ReduxProvider from "../../utils/components/storeWrapper.jsx";
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -27,7 +27,11 @@ describe('test verify user page', () => {
         const navigate = jest.fn();
         jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        render(<VerifyUser />);
+        render(
+            <ReduxProvider>
+                <VerifyUser />
+            </ReduxProvider>
+        );
 
         // redirect to /404
         expect(navigate).toHaveBeenCalledWith(path);
@@ -39,7 +43,11 @@ describe('test verify user page', () => {
         // mock url with invalid token
         window.history.pushState({}, 'test page', `/?token=${token}`);
         jest.spyOn(toast, 'error');
-        render(<VerifyUser />);
+        render(
+            <ReduxProvider>
+                <VerifyUser />
+            </ReduxProvider>
+        );
 
         // element with Welcome !! text not found and error toast popped up
         expect(screen.queryByText(screenText)).not.toBeInTheDocument();
@@ -54,7 +62,11 @@ describe('test verify user page', () => {
         jest.spyOn(toast, 'error');
         jest.spyOn(apiClient, 'api').mockRejectedValue(new Error(errorMessage));
 
-        render(<VerifyUser />);
+        render(
+            <ReduxProvider>
+                <VerifyUser />
+            </ReduxProvider>
+        );
 
         // expect the api is failed
         await waitFor(() => {
@@ -72,8 +84,11 @@ describe('test verify user page', () => {
         const navigate = jest.fn();
         jest.spyOn(RouterDom, 'useNavigate').mockReturnValue(navigate);
 
-        render(<VerifyUser />);
-
+        render(
+            <ReduxProvider>
+                <VerifyUser />
+            </ReduxProvider>
+        );
         // on api success render the screen and token is set in localstorage
         await waitFor(async () => {
             expect(screen.getByText(screenText)).toBeInTheDocument();

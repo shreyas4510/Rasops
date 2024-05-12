@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import WelcomeImage from '../../assets/images/welcome.png';
 import env from '../../config/env';
-import { toast } from 'react-toastify';
 import AuthContainer from '../../components/AuthContainer';
 import { useDispatch } from "react-redux";
 import { verify } from '../../store/actions/auth.action';
+import { toast } from 'react-toastify';
 
 function VerifyUser() {
     const [name, setName] = useState('');

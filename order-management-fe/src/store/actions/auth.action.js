@@ -1,7 +1,15 @@
+import {
+    FORGOT_PASSWORD_TYPE,
+    LOGIN_USER_TYPE,
+    REGISTER_USER_TYPE,
+    RESET_PASSWORD_TYPE,
+    VERIFY_USER_TYPE
+} from "../types";
+
 export const { login } = {
     login: (payload) => {
         return {
-            type: "LOGIN/USER_SECTION",
+            type: LOGIN_USER_TYPE,
             payload,
         };
     },
@@ -9,7 +17,7 @@ export const { login } = {
 export const { register } = {
     register: (payload) => {
         return {
-            type: "USER/REGISTER_USER",
+            type: REGISTER_USER_TYPE,
             payload,
         };
     },
@@ -17,7 +25,7 @@ export const { register } = {
 export const { verify } = {
     verify: (payload) => {
         return {
-            type: "USER/VERIFY_USER",
+            type: VERIFY_USER_TYPE,
             payload,
         };
     },
@@ -25,7 +33,7 @@ export const { verify } = {
 export const { forgotPassword } = {
     forgotPassword: (payload) => {
         return {
-            type: "USER/FORGOT_PASSWORD",
+            type: FORGOT_PASSWORD_TYPE,
             payload,
         };
     },
@@ -33,9 +41,8 @@ export const { forgotPassword } = {
 export const { resetPassword } = {
     resetPassword: (payload) => {
         return {
-            type: "USER/RESET_PASSWORD",
+            type: RESET_PASSWORD_TYPE,
             payload,
         };
     },
 }
-
