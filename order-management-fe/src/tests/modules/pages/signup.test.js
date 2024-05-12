@@ -1,12 +1,25 @@
-import { render, screen } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
-import userEvent from "@testing-library/user-event";
-import RouterDom from "react-router-dom";
-import { toast } from "react-toastify";
-import Signup from "../../../pages/Signup/index.jsx";
-import * as apiClient from "../../../api/apiClient.js";
-import { confirmPasswordTestIdRegex, emailTestIdRegex, failRegistration, firstNameTestIdRegex, invalidValues, lastNameTestIdRegex, loginNavigation, passwordTestIdRegex, phoneNumberTestIdRegex, requiredFields, successfulRegistration } from "../../utils/pages/dummy.signup.js";
-import ReduxProvider from "../../utils/components/storeWrapper.jsx";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import userEvent from '@testing-library/user-event';
+import RouterDom from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Signup from '../../../pages/Signup/index.jsx';
+import * as apiClient from '../../../api/apiClient.js';
+import {
+    confirmPasswordTestIdRegex,
+    emailTestIdRegex,
+    failRegistration,
+    firstNameTestIdRegex,
+    invalidValues,
+    lastNameTestIdRegex,
+    loginNavigation,
+    passwordTestIdRegex,
+    phoneNumberTestIdRegex,
+    requiredFields,
+    successfulRegistration
+} from '../../utils/pages/dummy.signup.js';
+import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -113,7 +126,7 @@ describe('test signup page', () => {
             userEvent.type(lastNameInput, values.lastName);
             userEvent.type(emailInput, values.email);
             emailInput.blur();
-        })
+        });
         expect(screen.getByText(errors.firstName)).toBeInTheDocument();
         expect(screen.getByText(errors.lastName)).toBeInTheDocument();
         expect(screen.getByText(errors.email)).toBeInTheDocument();
@@ -129,7 +142,8 @@ describe('test signup page', () => {
             <ReduxProvider>
                 <Signup />
             </ReduxProvider>
-        );        const login = screen.getByText(loginText);
+        );
+        const login = screen.getByText(loginText);
         userEvent.click(login);
 
         // check the navigation is done to login screen

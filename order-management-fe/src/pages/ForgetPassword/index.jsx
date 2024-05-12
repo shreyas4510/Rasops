@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     };
     const handleSubmit = async (values, { setSubmitting }) => {
         setSubmitting(true);
-        dispatch(forgotPassword({ payload: values, navigate }))
+        dispatch(forgotPassword({ payload: values, navigate }));
         setSubmitting(false);
     };
 
@@ -30,11 +30,18 @@ const ForgotPassword = () => {
         <AuthContainer title={'Forgot Password'}>
             <Formik initialValues={initialValues} validationSchema={emailSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting, dirty, isValid }) => (
-                    <Form className='d-flex flex-column'>
-                        <CustomFormGroup name='email' type='email' label='Email' />
-                        <CustomButton label='Send Email' type='submit' disabled={isSubmitting || !isValid || !dirty} className='mx-auto my-4' />
-                        <div className='text-center'>
-                            <p className='label-font m-0'>Already have an account ? <CustomLink onClick={handleOnClickLogin} text='Login' /></p>
+                    <Form className="d-flex flex-column">
+                        <CustomFormGroup name="email" type="email" label="Email" />
+                        <CustomButton
+                            label="Send Email"
+                            type="submit"
+                            disabled={isSubmitting || !isValid || !dirty}
+                            className="mx-auto my-4"
+                        />
+                        <div className="text-center">
+                            <p className="label-font m-0">
+                                Already have an account ? <CustomLink onClick={handleOnClickLogin} text="Login" />
+                            </p>
                         </div>
                     </Form>
                 )}

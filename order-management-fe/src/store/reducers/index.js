@@ -1,4 +1,4 @@
-import authSlice from "./auth.slice";
+import authSlice from './auth.slice';
 
 const rootReducers = {
     users: authSlice?.reducer

@@ -20,12 +20,12 @@ export const invalidValues = {
     values: {
         firstName: 'asdfghjklqwertyuiopzxcvbnmqwertyuiop',
         lastName: 'asdfghjklqwertyuiopzxcvbnmqwertyuiop',
-        email: 'test@test',
+        email: 'test@test'
     },
     errors: {
         firstName: 'firstName must be at most 30 characters',
         lastName: 'lastName must be at most 30 characters',
-        email: 'Invalid email',
+        email: 'Invalid email'
     }
 };
 

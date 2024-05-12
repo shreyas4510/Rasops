@@ -1,12 +1,23 @@
-import { render, screen } from "@testing-library/react";
-import RouterDom from "react-router-dom";
-import { toast } from "react-toastify";
-import { act } from "react-test-renderer";
-import userEvent from "@testing-library/user-event";
-import ResetPassword from "../../../pages/ResetPassword/index.jsx";
-import { invalidToken, notFoundRedirection, validToken, token, invalidCredentials, passwordTestIdRegex, confirmPasswordTestIdRegex, apiFailure, apiSuccess } from "../../utils/pages/dummy.resetPassword.js";
-import * as apiClient from '../../../api/apiClient.js'
-import ReduxProvider from "../../utils/components/storeWrapper.jsx";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import RouterDom from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { act } from 'react-test-renderer';
+import userEvent from '@testing-library/user-event';
+import ResetPassword from '../../../pages/ResetPassword/index.jsx';
+import {
+    invalidToken,
+    notFoundRedirection,
+    validToken,
+    token,
+    invalidCredentials,
+    passwordTestIdRegex,
+    confirmPasswordTestIdRegex,
+    apiFailure,
+    apiSuccess
+} from '../../utils/pages/dummy.resetPassword.js';
+import * as apiClient from '../../../api/apiClient.js';
+import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -29,7 +40,7 @@ describe('test reset password page', () => {
             <ReduxProvider>
                 <ResetPassword />
             </ReduxProvider>
-        )
+        );
 
         // expected to be redirected to /404
         expect(navigate).toHaveBeenCalledWith(path);
@@ -45,7 +56,7 @@ describe('test reset password page', () => {
             <ReduxProvider>
                 <ResetPassword />
             </ReduxProvider>
-        )
+        );
 
         // expected toast message with error message and the reset password is not rendered
         expect(toast.error).toHaveBeenCalledWith(expect.stringContaining(toastMessage));
@@ -61,7 +72,7 @@ describe('test reset password page', () => {
             <ReduxProvider>
                 <ResetPassword />
             </ReduxProvider>
-        )
+        );
 
         // check the screen is rendered
         expect(screen.getByText(screenText)).toBeInTheDocument();
@@ -76,7 +87,7 @@ describe('test reset password page', () => {
             <ReduxProvider>
                 <ResetPassword />
             </ReduxProvider>
-        )
+        );
 
         // check the screen is rendered
         expect(screen.getByText(screenText)).toBeInTheDocument();
@@ -113,7 +124,7 @@ describe('test reset password page', () => {
             <ReduxProvider>
                 <ResetPassword />
             </ReduxProvider>
-        )
+        );
 
         // check the screen is rendered
         expect(screen.getByText(screenText)).toBeInTheDocument();
@@ -157,7 +168,7 @@ describe('test reset password page', () => {
             <ReduxProvider>
                 <ResetPassword />
             </ReduxProvider>
-        )
+        );
 
         // check the screen is rendered
         expect(screen.getByText(screenText)).toBeInTheDocument();

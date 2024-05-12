@@ -17,7 +17,7 @@ const ResetPassword = () => {
     const initialValues = {
         password: '',
         confirmPassword: ''
-    }
+    };
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -44,27 +44,29 @@ const ResetPassword = () => {
     const handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
         const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
-        dispatch(resetPassword({ payload: enpass, ...data, navigate }))
+        dispatch(resetPassword({ payload: enpass, ...data, navigate }));
         setSubmitting(false);
     };
 
     return (
-        data &&
-        <AuthContainer title='Reset Password'>
-            <Formik
-                initialValues={initialValues}
-                validationSchema={passwordSchema}
-                onSubmit={handleSubmit}
-            >
-                {({ isSubmitting, dirty, isValid }) => (
-                    <Form className='d-flex flex-column'>
-                        <CustomFormGroup name='password' type='password' label='New Passwoord' />
-                        <CustomFormGroup name='confirmPassword' type='password' label='Confirm Passwoord' />
-                        <CustomButton label='Reset' disabled={isSubmitting || !isValid || !dirty} type='submit' className='mx-auto my-4' />
-                    </Form>
-                )}
-            </Formik>
-        </AuthContainer>
+        data && (
+            <AuthContainer title="Reset Password">
+                <Formik initialValues={initialValues} validationSchema={passwordSchema} onSubmit={handleSubmit}>
+                    {({ isSubmitting, dirty, isValid }) => (
+                        <Form className="d-flex flex-column">
+                            <CustomFormGroup name="password" type="password" label="New Passwoord" />
+                            <CustomFormGroup name="confirmPassword" type="password" label="Confirm Passwoord" />
+                            <CustomButton
+                                label="Reset"
+                                disabled={isSubmitting || !isValid || !dirty}
+                                type="submit"
+                                className="mx-auto my-4"
+                            />
+                        </Form>
+                    )}
+                </Formik>
+            </AuthContainer>
+        )
     );
 };
 

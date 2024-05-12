@@ -40,7 +40,7 @@ export const apiFailure = {
     },
     error: { message: 'failed to send email' },
     toastMessage: 'Failed to reset password: failed to send email'
-}
+};
 
 export const apiSuccess = {
     screenText,

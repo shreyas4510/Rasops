@@ -1,11 +1,21 @@
-import { act, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import RouterDom from "react-router-dom";
-import { toast } from "react-toastify";
-import * as apiClient from "../../../api/apiClient";
-import Login from "../../../pages/Login";
-import { emailTestIdRegex, loginFailed, loginSuccess, navigateForgotPassword, navigateSignup, passwordTestIdRegex, requiredCredentials, validCredentials } from "../../utils/pages/dummy.login";
-import ReduxProvider from "../../utils/components/storeWrapper.jsx";
+import React from 'react';
+import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import RouterDom from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as apiClient from '../../../api/apiClient';
+import Login from '../../../pages/Login';
+import {
+    emailTestIdRegex,
+    loginFailed,
+    loginSuccess,
+    navigateForgotPassword,
+    navigateSignup,
+    passwordTestIdRegex,
+    requiredCredentials,
+    validCredentials
+} from '../../utils/pages/dummy.login';
+import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -25,12 +35,12 @@ describe('test login page', () => {
         jest.clearAllMocks();
     });
 
-    test("test email and password required", async () => {
+    test('test email and password required', async () => {
         render(
             <ReduxProvider>
                 <Login />
             </ReduxProvider>
-        )
+        );
 
         const { emailRequiredErrorText, passwordRequiredErrorText, loginText } = requiredCredentials;
 
@@ -76,7 +86,7 @@ describe('test login page', () => {
             <ReduxProvider>
                 <Login />
             </ReduxProvider>
-        )
+        );
         // check if the error messages are already not present on screen
         expect(screen.queryByText(emailValidationErrorText)).toBeNull();
         expect(screen.queryByText(passwordValidationErrorText)).toBeNull();
@@ -151,7 +161,7 @@ describe('test login page', () => {
             <ReduxProvider>
                 <Login />
             </ReduxProvider>
-        )
+        );
         // type email in the email field
         const email = screen.getByTestId(emailTestIdRegex);
         await act(async () => {
@@ -182,14 +192,7 @@ describe('test login page', () => {
     });
 
     test('test successful login', async () => {
-        const {
-            token,
-            validEmail,
-            validPassword,
-            loginText,
-            toastMessage,
-            path
-        } = loginSuccess;
+        const { token, validEmail, validPassword, loginText, toastMessage, path } = loginSuccess;
 
         jest.spyOn(apiClient, 'api').mockResolvedValue({ token });
 
@@ -200,7 +203,7 @@ describe('test login page', () => {
             <ReduxProvider>
                 <Login />
             </ReduxProvider>
-        )
+        );
 
         const email = screen.getByTestId(emailTestIdRegex);
         await act(async () => {

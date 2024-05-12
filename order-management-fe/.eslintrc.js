@@ -27,6 +27,7 @@ module.exports = {
         'eol-last': ['error', 'always'],
         quotes: ['error', 'single', { allowTemplateLiterals: true }],
         'linebreak-style': ['error', 'unix'],
-        'space-before-function-paren': 'off'
+        'space-before-function-paren': 'off',
+        'generator-star-spacing': 'off'
     }
 };

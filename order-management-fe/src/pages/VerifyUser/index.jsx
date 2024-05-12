@@ -4,7 +4,7 @@ import CryptoJS from 'crypto-js';
 import WelcomeImage from '../../assets/images/welcome.png';
 import env from '../../config/env';
 import AuthContainer from '../../components/AuthContainer';
-import { useDispatch } from "react-redux";
+import { useDispatch } from 'react-redux';
 import { verify } from '../../store/actions/auth.action';
 import { toast } from 'react-toastify';
 
@@ -27,7 +27,7 @@ function VerifyUser() {
                 if (keys.length === 3 && keys.includes('email') && keys.includes('name') && keys.includes('expires')) {
                     setName(data.name);
                     const payload = { email: data.email, expires: data.expires };
-                    dispatch(verify({payload,navigate}));
+                    dispatch(verify({ payload, navigate }));
                 }
             } catch (err) {
                 toast.error(`Failed to verify email: ${err.message}`);
