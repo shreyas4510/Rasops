@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, render, screen } from '@testing-library/react';
-import OTMModal from '../../../components/Modal';
 import userEvent from '@testing-library/user-event';
+import OTMModal from '../../../components/Modal';
 import { closebtn, description, submitbtn, title } from '../../utils/components/dummy.modal';
 
 const testFn = jest.fn();

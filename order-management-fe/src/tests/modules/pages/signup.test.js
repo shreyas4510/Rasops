@@ -1,11 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
 import RouterDom from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Signup from '../../../pages/Signup/index.jsx';
 import * as apiClient from '../../../api/apiClient.js';
+import Signup from '../../../pages/Signup/index.jsx';
+import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 import {
     confirmPasswordTestIdRegex,
     emailTestIdRegex,
@@ -19,7 +20,6 @@ import {
     requiredFields,
     successfulRegistration
 } from '../../utils/pages/dummy.signup.js';
-import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),

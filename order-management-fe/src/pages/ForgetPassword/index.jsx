@@ -7,7 +7,7 @@ import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomLink from '../../components/CustomLink';
 import CustomButton from '../../components/CustomButton';
 import { useDispatch } from 'react-redux';
-import { forgotPassword } from '../../store/actions/auth.action';
+import { forgotPasswordRequest } from '../../store/slice';
 
 const ForgotPassword = () => {
     const navigate = useNavigate();
@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     };
     const handleSubmit = async (values, { setSubmitting }) => {
         setSubmitting(true);
-        dispatch(forgotPassword({ payload: values, navigate }));
+        dispatch(forgotPasswordRequest({ data: values, navigate }));
         setSubmitting(false);
     };
 

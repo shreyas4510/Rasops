@@ -1,8 +1,8 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
-import Table from '../../../components/Table';
 import { createColumnHelper } from '@tanstack/react-table';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import Table from '../../../components/Table';
 import {
     columnText,
     defaultRows,

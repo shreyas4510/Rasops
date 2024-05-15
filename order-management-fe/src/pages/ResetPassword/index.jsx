@@ -9,7 +9,7 @@ import AuthContainer from '../../components/AuthContainer';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
 import { useDispatch } from 'react-redux';
-import { resetPassword } from '../../store/actions/auth.action';
+import { resetPasswordRequest } from '../../store/slice';
 
 const ResetPassword = () => {
     const [data, setData] = useState('');
@@ -44,7 +44,7 @@ const ResetPassword = () => {
     const handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
         const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
-        dispatch(resetPassword({ payload: enpass, ...data, navigate }));
+        dispatch(resetPasswordRequest({ data: { newPassword: enpass, ...data }, navigate }));
         setSubmitting(false);
     };
 

@@ -1,9 +1,15 @@
 .custom-button {
-    background-color: #49ac60 !important;
+    background: #49ac60 !important;
     border: none !important;
 }
 
 .secondary-button {
     background: black !important;
     border: none !important;
+}
+
+.switch-button {
+    background: white !important;
+    border: none !important;
+    color: #49ac60 !important;
 }

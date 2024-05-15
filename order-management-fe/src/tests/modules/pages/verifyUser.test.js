@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import VerifyUser from '../../../pages/VerifyUser/index.jsx';
 import RouterDom from 'react-router-dom';
-import { apiFailure, apiSuccess, invalidToken, notFoundRedirection } from '../../utils/pages/dummy.verifyUser.js';
 import { toast } from 'react-toastify';
 import * as apiClient from '../../../api/apiClient.js';
+import VerifyUser from '../../../pages/VerifyUser/index.jsx';
 import ReduxProvider from '../../utils/components/storeWrapper.jsx';
+import { apiFailure, apiSuccess, invalidToken, notFoundRedirection } from '../../utils/pages/dummy.verifyUser.js';
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),

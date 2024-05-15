@@ -44,3 +44,12 @@ export const resetPasswordUser = async (payload) => {
         throw error;
     }
 };
+
+export const getUser = async () => {
+    try {
+        return await api(method.GET, '/user');
+    } catch (error) {
+        console.error(`Error to login user ${error}`);
+        throw error;
+    }
+};

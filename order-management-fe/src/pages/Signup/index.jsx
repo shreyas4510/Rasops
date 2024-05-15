@@ -10,7 +10,7 @@ import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
 import CustomLink from '../../components/CustomLink';
 import { useDispatch } from 'react-redux';
-import { register } from '../../store/actions/auth.action';
+import { registerRequest } from '../../store/slice';
 
 function Signup() {
     const [initialValues, setInitialValues] = useState({
@@ -57,13 +57,13 @@ function Signup() {
     const handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
         const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
-        const payload = { ...values, password: enpass };
-        delete payload.confirmPassword;
+        const data = { ...values, password: enpass };
+        delete data.confirmPassword;
 
         if (invite.status) {
-            payload.invite = invite.id;
+            data.invite = invite.id;
         }
-        dispatch(register({ payload, navigate }));
+        dispatch(registerRequest({ data, navigate }));
         setSubmitting(false);
     };
 

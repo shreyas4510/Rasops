@@ -1,5 +1,7 @@
-export const LOGIN_USER_TYPE = 'USER/LOGIN_USER';
-export const REGISTER_USER_TYPE = 'USER/REGISTER_USER';
-export const VERIFY_USER_TYPE = 'USER/VERIFY_USER';
-export const FORGOT_PASSWORD_TYPE = 'USER/FORGOT_PASSWORD';
-export const RESET_PASSWORD_TYPE = 'USER/RESET_PASSWORD';
+export const USER = `USER`;
+export const LOGIN_USER_REQUEST = `${USER}/loginRequest`;
+export const REGISTER_USER_REQUEST = `${USER}/registerRequest`;
+export const VERIFY_USER_REQUEST = `${USER}/verifyRequest`;
+export const FORGOT_PASSWORD_REQUEST = `${USER}/forgotPasswordRequest`;
+export const RESET_PASSWORD_REQUEST = `${USER}/resetPasswordRequest`;
+export const GET_USER_REQUEST = `${USER}/getUserRequest`;

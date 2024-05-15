@@ -1,11 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
-import { toast } from 'react-toastify';
+import { act } from 'react-dom/test-utils';
 import RouterDom from 'react-router-dom';
-import ForgotPassword from '../../../pages/ForgetPassword/index.jsx';
+import { toast } from 'react-toastify';
 import * as apiClient from '../../../api/apiClient.js';
+import ForgotPassword from '../../../pages/ForgetPassword/index.jsx';
+import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 import {
     emailTestIdRegex,
     failedRequest,
@@ -13,7 +14,6 @@ import {
     successRequest,
     validateCredentials
 } from '../../utils/pages/dummy.forgotPassword.js';
-import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),

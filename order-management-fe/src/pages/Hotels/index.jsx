@@ -4,8 +4,13 @@ import { FcPlus } from 'react-icons/fc';
 import OTMModal from '../../components/Modal';
 import { toast } from 'react-toastify';
 import { hotelRegistrationSchema } from './hotelSchema';
+import CryptoJS from 'crypto-js';
+import env from '../../config/env';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function Hotels() {
+    const user = useSelector((state) => state.user);
     const [createHotelModal, setCreateHotelModal] = useState(false);
     const initialValues = {
         hotelName: '',
@@ -15,6 +20,8 @@ function Hotels() {
         customerCareNumber: '',
         admin: ''
     };
+    const navigate = useNavigate();
+
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
             setSubmitting(true);
@@ -30,7 +37,22 @@ function Hotels() {
     return (
         <>
             <div className="heading-container">
-                <h4 className="text-center text-white pt-5">Hotels</h4>
+                <h4
+                    className="text-center text-white pt-5"
+                    onClick={() => {
+                        const details = CryptoJS.AES.encrypt(
+                            JSON.stringify({
+                                role: user.data.role,
+                                managerId: 'test-manager-id'
+                            }),
+                            env.cryptoSecret
+                        ).toString();
+                        localStorage.setItem('data', details);
+                        navigate('/dashboard');
+                    }}
+                >
+                    Hotels
+                </h4>
             </div>
             <div className="text-end mx-4 my-3 ">
                 <Button

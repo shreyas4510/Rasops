@@ -5,6 +5,7 @@ import RouterDom from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as apiClient from '../../../api/apiClient';
 import Login from '../../../pages/Login';
+import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 import {
     emailTestIdRegex,
     loginFailed,
@@ -15,7 +16,6 @@ import {
     requiredCredentials,
     validCredentials
 } from '../../utils/pages/dummy.login';
-import ReduxProvider from '../../utils/components/storeWrapper.jsx';
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),

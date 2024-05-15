@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { Form, Formik } from 'formik';
 import CryptoJS from 'crypto-js';
+import { useDispatch } from 'react-redux';
 import AuthContainer from '../../components/AuthContainer';
 import { loginSchema } from '../../validations/auth';
-import env from '../../config/env';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
 import CustomLink from '../../components/CustomLink';
-import { useDispatch } from 'react-redux';
-import { login } from '../../store/actions/auth.action';
+import env from '../../config/env';
+import { loginRequest } from '../../store/slice';
 
 function Login() {
     let navigate = useNavigate();
@@ -32,8 +32,8 @@ function Login() {
     const handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
         const enpass = CryptoJS.AES.encrypt(values.password, env.cryptoSecret).toString();
-        const payload = { ...values, password: enpass };
-        dispatch(login({ payload, navigate }));
+        const data = { ...values, password: enpass };
+        dispatch(loginRequest({ data, navigate }));
         setSubmitting(false);
     };
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { Formik } from 'formik';
-import { id, text } from '../../utils/components/dummy.customFormGroup'; // Assuming `id` and `text` are imported constants
 import CustomFormGroup from '../../../components/CustomFormGroup';
+import { id, text } from '../../utils/components/dummy.customFormGroup'; // Assuming `id` and `text` are imported constants
 
 describe('test custom form group component', () => {
     test('test rendering of form group component', async () => {

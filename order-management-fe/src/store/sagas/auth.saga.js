@@ -1,81 +1,98 @@
 import { toast } from 'react-toastify';
-import { all, takeLatest } from 'redux-saga/effects';
-import { forgotPassword, login, register, resetPassword, verify } from '../actions/auth.action';
+import { all, put, takeLatest } from 'redux-saga/effects';
+import * as service from '../../services/auth.service';
+import { getUserRequest, getUserSuccess } from '../slice';
 import {
-    forgotPasswordUser,
-    loginUser,
-    registerUser,
-    resetPasswordUser,
-    verifyUser
-} from '../../services/auth.service';
+    FORGOT_PASSWORD_REQUEST,
+    GET_USER_REQUEST,
+    LOGIN_USER_REQUEST,
+    REGISTER_USER_REQUEST,
+    RESET_PASSWORD_REQUEST,
+    VERIFY_USER_REQUEST
+} from '../types';
 
-function* loginUserAsync(action) {
+function* loginUserRequestSaga(action) {
     try {
-        const { payload, navigate } = action.payload;
-        const res = yield loginUser(payload);
+        const { data, navigate } = action.payload;
+        const res = yield service.loginUser(data);
+
         localStorage.setItem('token', res.token);
+        localStorage.setItem('data', res.data);
+
         toast.success('Login successfully');
-        navigate('/dashboard');
+        yield put(getUserRequest({ navigate }));
     } catch (error) {
         toast.error(`Failed to login: ${error?.message}`);
-        console.error('Failed to login', error);
     }
 }
 
-function* registerUserAsync(action) {
+function* registerUserRequestSaga(action) {
     try {
-        const { payload, navigate } = action.payload;
-        yield registerUser(payload);
+        const { data, navigate } = action.payload;
+        yield service.registerUser(data);
         toast.success('User registered successfully. Please verify your email');
         navigate('/');
     } catch (error) {
         toast.error(`Failed to register user: ${error?.message}`);
-        console.error('Failed to register', error);
     }
 }
 
-function* verifyUserAsync(action) {
+function* verifyUserRequestSaga(action) {
     try {
-        const { payload, navigate } = action.payload;
-        const { token } = yield verifyUser(payload);
-        localStorage.setItem('token', token);
+        const { data, navigate } = action.payload;
+        const res = yield service.verifyUser(data);
+
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('data', res.data);
+
         toast.success('Verified successfully');
-        navigate('/dashboard');
+        yield put(getUserRequest({ navigate }));
     } catch (error) {
         toast.error(`Failed to verify email: ${error?.message}`);
-        console.error('Failed to verify', error);
     }
 }
 
-function* forgotPasswordAsync(action) {
+function* forgotPasswordRequestSaga(action) {
     try {
-        const { payload, navigate } = action.payload;
-        yield forgotPasswordUser(payload);
+        const { data, navigate } = action.payload;
+        yield service.forgotPasswordUser(data);
         toast.success('Reset password email sent successfully');
         navigate('/');
     } catch (error) {
         toast.error(`Failed to send: ${error?.message}`);
-        console.error('Failed to send forget password email', error);
     }
 }
-function* resetPasswordAsync(action) {
+
+function* resetPasswordRequestSaga(action) {
     try {
-        const { payload, navigate } = action.payload;
-        yield resetPasswordUser(payload);
+        const { data, navigate } = action.payload;
+        yield service.resetPasswordUser(data);
         toast.success('Password reset successfully');
         navigate('/');
     } catch (error) {
         toast.error(`Failed to reset password: ${error?.message}`);
-        console.error('Failed to reset password', error);
+    }
+}
+
+function* getUserRequestSaga(action) {
+    try {
+        const navigate = action.payload?.navigate;
+        const res = yield service.getUser();
+        yield put(getUserSuccess(res));
+
+        if (navigate) navigate('/dashboard');
+    } catch (error) {
+        console.error(`Failed to get user: ${error?.message}`);
     }
 }
 
 export default function* authSaga() {
     yield all([
-        takeLatest(login().type, loginUserAsync),
-        takeLatest(register().type, registerUserAsync),
-        takeLatest(verify().type, verifyUserAsync),
-        takeLatest(forgotPassword().type, forgotPasswordAsync),
-        takeLatest(resetPassword().type, resetPasswordAsync)
+        takeLatest(LOGIN_USER_REQUEST, loginUserRequestSaga),
+        takeLatest(REGISTER_USER_REQUEST, registerUserRequestSaga),
+        takeLatest(VERIFY_USER_REQUEST, verifyUserRequestSaga),
+        takeLatest(FORGOT_PASSWORD_REQUEST, forgotPasswordRequestSaga),
+        takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga),
+        takeLatest(GET_USER_REQUEST, getUserRequestSaga)
     ]);
 }

@@ -30,7 +30,7 @@
 /* sidebar options styles */
 .otm-sidebar ul {
     list-style-type: none;
-    padding: 0; /* Remove default padding */
+    padding: 0;
 }
 
 .otm-sidebar ul li {
@@ -110,4 +110,13 @@
 
 .otm-sidebar::-webkit-scrollbar-track {
     background-color: #f1f1f1;
+}
+
+.tooltip-inner {
+    font-weight: 500;
+    background-color: #49ac60;
+}
+
+.tooltip-arrow::before {
+    border-right-color: #49ac60 !important;
 }

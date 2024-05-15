@@ -10,6 +10,11 @@ module.exports = {
         sourceType: 'module'
     },
     plugins: ['react'],
+    settings: {
+        react: {
+            version: 'detect'
+        }
+    },
     rules: {
         indent: ['error', 4, { SwitchCase: 1 }],
         semi: ['error', 'always'],
@@ -28,6 +33,24 @@ module.exports = {
         quotes: ['error', 'single', { allowTemplateLiterals: true }],
         'linebreak-style': ['error', 'unix'],
         'space-before-function-paren': 'off',
-        'generator-star-spacing': 'off'
+        'generator-star-spacing': 'off',
+        'import/order': [
+            'error',
+            {
+                groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+                pathGroups: [
+                    {
+                        pattern: 'react',
+                        group: 'external',
+                        position: 'before'
+                    }
+                ],
+                pathGroupsExcludedImportTypes: ['builtin'],
+                alphabetize: {
+                    order: 'asc',
+                    caseInsensitive: true
+                }
+            }
+        ]
     }
 };

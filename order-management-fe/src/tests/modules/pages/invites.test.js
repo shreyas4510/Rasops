@@ -1,9 +1,9 @@
 import React from 'react';
 import { act, render, screen } from '@testing-library/react';
-import Invites from '../../../pages/Invites';
 import userEvent from '@testing-library/user-event';
-import * as service from '../../../services/invite.service';
 import { toast } from 'react-toastify';
+import Invites from '../../../pages/Invites';
+import * as service from '../../../services/invite.service';
 import {
     defaultList,
     defaultRows,
