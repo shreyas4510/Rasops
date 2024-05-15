@@ -1,7 +1,7 @@
 import hotelController from '../../controllers/hotel.controller.js';
-import { create, list, remove, update } from '../utils/dummy.hotel.js';
 import hotelRepo from '../../repositories/hotel.repository.js';
 import hotelUserRelationRepo from '../../repositories/hotelUserRelation.repository.js';
+import { create, list, remove, update } from '../utils/dummy.hotel.js';
 
 // Initializing an empty response object
 let res = {};

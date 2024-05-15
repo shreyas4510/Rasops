@@ -1,7 +1,7 @@
+import logger from '../../config/logger.js';
+import hotelService from '../services/hotel.service.js';
 import { STATUS_CODE } from '../utils/common.js';
 import { registerationValidation, updateValidation } from '../validations/hotel.validation.js';
-import hotelService from '../services/hotel.service.js';
-import logger from '../../config/logger.js';
 
 const register = async (req, res) => {
     try {

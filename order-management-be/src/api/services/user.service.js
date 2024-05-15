@@ -1,16 +1,16 @@
-import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
 import jwt from 'jsonwebtoken';
-import userRepo from '../repositories/user.repository.js';
-import inviteRepo from '../repositories/invite.repository.js';
-import { USER_ROLES, USER_STATUS } from '../models/user.model.js';
-import { sendEmail } from './email.service.js';
-import env from '../../config/env.js';
 import moment from 'moment';
-import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
-import { INVITE_STATUS } from '../models/invite.model.js';
 import { Op } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
+import env from '../../config/env.js';
 import logger from '../../config/logger.js';
+import { INVITE_STATUS } from '../models/invite.model.js';
+import { USER_ROLES, USER_STATUS } from '../models/user.model.js';
+import inviteRepo from '../repositories/invite.repository.js';
+import userRepo from '../repositories/user.repository.js';
+import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
+import { sendEmail } from './email.service.js';
 
 const create = async (payload) => {
     try {
@@ -75,22 +75,22 @@ const login = async (payload) => {
             throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
         }
 
-        const { id, firstName, lastName, role } = user;
+        const { id, firstName, lastName, phoneNumber, role } = user;
+        const data = CryptoJS.AES.encrypt(JSON.stringify({ role }), env.cryptoSecret).toString();
         const token = jwt.sign(
             {
                 id,
                 firstName,
                 lastName,
                 status: user.status,
+                phoneNumber,
                 role
             },
             env.jwtSecret,
             { expiresIn: '12h' }
         );
-        return {
-            token,
-            data: user
-        };
+
+        return { token, data };
     } catch (error) {
         logger('error', `Error occurred during login: ${error.message}`);
         throw CustomError(error.code, error.message);
@@ -131,23 +131,23 @@ const verify = async (payload) => {
         user.status = USER_STATUS[0];
         await user.save();
 
-        const { id, firstName, lastName } = user;
+        const { id, firstName, lastName, phoneNumber, role } = user;
+        const data = CryptoJS.AES.encrypt(JSON.stringify({ role }), env.cryptoSecret).toString();
+
         const token = jwt.sign(
             {
                 id,
                 firstName,
                 lastName,
                 status: user.status,
+                phoneNumber,
                 role: user.role
             },
             env.jwtSecret,
             { expiresIn: '12h' }
         );
 
-        return {
-            token,
-            data: user
-        };
+        return { token, data };
     } catch (error) {
         logger('error', `Error occurred during user verification: ${error.message}`);
         throw CustomError(error.code, error.message);
@@ -330,6 +330,23 @@ const removeInvite = async (id) => {
     }
 };
 
+const getUser = async (user) => {
+    try {
+        const { id, firstName, lastName, status, role, phoneNumber } = user;
+        return {
+            id,
+            firstName,
+            lastName,
+            status,
+            phoneNumber,
+            role
+        };
+    } catch (error) {
+        logger('error', 'Error while getting user details', { id: user.id, error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     create,
     login,
@@ -338,5 +355,6 @@ export default {
     reset,
     invite,
     listInvites,
-    removeInvite
+    removeInvite,
+    getUser
 };

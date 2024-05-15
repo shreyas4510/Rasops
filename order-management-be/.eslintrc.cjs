@@ -36,6 +36,24 @@ module.exports = {
         quotes: ['error', 'single', { allowTemplateLiterals: true }],
         'linebreak-style': ['error', 'unix'],
         'space-before-function-paren': 'off',
-        'no-console': 'error'
+        'no-console': 'error',
+        'import/order': [
+            'error',
+            {
+                groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+                pathGroups: [
+                    {
+                        pattern: 'react',
+                        group: 'external',
+                        position: 'before'
+                    }
+                ],
+                pathGroupsExcludedImportTypes: ['builtin'],
+                alphabetize: {
+                    order: 'asc',
+                    caseInsensitive: true
+                }
+            }
+        ]
     }
 };

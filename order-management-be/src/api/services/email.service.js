@@ -2,8 +2,8 @@ import { readFileSync } from 'fs';
 import Mustache from 'mustache';
 import { transporter } from '../../config/email.js';
 import env from '../../config/env.js';
-import { EMAIL_ACTIONS, CustomError } from '../utils/common.js';
 import logger from '../../config/logger.js';
+import { EMAIL_ACTIONS, CustomError } from '../utils/common.js';
 
 const getEmailData = (action, payload) => {
     let path = '';

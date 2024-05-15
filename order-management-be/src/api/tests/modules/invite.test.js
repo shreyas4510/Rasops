@@ -1,5 +1,5 @@
-import userController from '../../controllers/user.controllers';
 import { db } from '../../../config/database';
+import userController from '../../controllers/user.controllers';
 import { create, list, remove } from '../utils/dummy.invite';
 
 // mock the database operations

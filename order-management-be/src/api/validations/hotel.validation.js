@@ -1,6 +1,6 @@
 import Joi from 'joi';
-import { CustomError } from '../utils/common.js';
 import logger from '../../config/logger.js';
+import { CustomError } from '../utils/common.js';
 
 export const registerationValidation = (payload) => {
     try {

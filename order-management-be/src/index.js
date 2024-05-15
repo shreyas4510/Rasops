@@ -1,6 +1,6 @@
 import initDb from './config/database.js';
-import app from './config/express.js';
 import env from './config/env.js';
+import app from './config/express.js';
 import logger from './config/logger.js';
 
 const startServer = async () => {

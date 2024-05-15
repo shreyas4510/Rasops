@@ -1,5 +1,5 @@
-import userController from '../../controllers/user.controllers';
 import { db } from '../../../config/database';
+import userController from '../../controllers/user.controllers';
 import { register, login, verify, forget, reset } from '../utils/dummy.auth';
 // mock the database operations
 jest.mock('../../../config/database.js', () => ({
@@ -172,7 +172,6 @@ describe('testing user cases', () => {
         const data = res.send.mock.calls[0][0];
         expect(data).toHaveProperty('token');
         expect(data).toHaveProperty('data');
-        expect(data.data).toEqual(successLoginData.db);
     });
 
     // verify test cases
@@ -227,7 +226,6 @@ describe('testing user cases', () => {
         const data = res.send.mock.calls[0][0];
         expect(data).toHaveProperty('token');
         expect(data).toHaveProperty('data');
-        expect(data.data.status).toEqual(verifyEmailData.res.data.status);
     });
 
     // forgot password test cases

@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
+import logger from '../../config/logger.js';
 import hotelRepo from '../repositories/hotel.repository.js';
 import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
 import { CustomError, STATUS_CODE, TABLES } from '../utils/common.js';
-import logger from '../../config/logger.js';
 
 const create = async (payload, ownerId) => {
     try {

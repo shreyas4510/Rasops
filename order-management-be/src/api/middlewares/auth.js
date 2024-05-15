@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import env from '../../config/env.js';
-import { STATUS_CODE } from '../utils/common.js';
 import logger from '../../config/logger.js';
+import { STATUS_CODE } from '../utils/common.js';
 
 const authenticate = (req, res, next) => {
     const authHeader = req.headers.authorization;

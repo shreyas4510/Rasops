@@ -1,4 +1,7 @@
 import CryptoJS from 'crypto-js';
+import env from '../../config/env.js';
+import logger from '../../config/logger.js';
+import userService from '../services/user.service.js';
 import { STATUS_CODE } from '../utils/common.js';
 import {
     emailValidation,
@@ -6,9 +9,6 @@ import {
     passValidation,
     registrationValidation
 } from '../validations/user.validations.js';
-import userService from '../services/user.service.js';
-import env from '../../config/env.js';
-import logger from '../../config/logger.js';
 
 const create = async (req, res) => {
     try {
@@ -176,6 +176,21 @@ const removeInvite = async (req, res) => {
     }
 };
 
+const getUser = async (req, res) => {
+    try {
+        const user = req.user;
+        logger('debug', 'Received request to get user');
+
+        const result = await userService.getUser(user);
+        logger('info', 'User details fetched successfully', { result });
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', 'Error while fetching user', { error });
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     create,
     login,
@@ -184,5 +199,6 @@ export default {
     reset,
     invite,
     listInvites,
-    removeInvite
+    removeInvite,
+    getUser
 };
