@@ -1,7 +1,7 @@
 import axios from 'axios';
 import env from '../config/env';
-import { setIsLoading } from '../store/reducers/loader.slice';
 import store from '../store';
+import { setIsLoading } from '../store/slice/loader.slice';
 
 const instance = axios.create({
     baseURL: env.baseUrl,
