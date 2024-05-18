@@ -15,8 +15,7 @@ import {
     removeHotelRequest,
     setDeleteHotelConfirm,
     setFormData,
-    updateHotelRequest,
-    getHotelManagersRequest
+    updateHotelRequest
 } from '../../store/slice/hotel.slice';
 import { createColumnHelper } from '@tanstack/react-table';
 import Table from '../../components/Table';
@@ -26,8 +25,15 @@ import { getHotelUpdateDifference } from '../../utils';
 function Hotels() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
-    const managers = useSelector((state) => state.managers);
-    const { hotelOptions, data, deleteHotelConfirm, formData } = useSelector((state) => state.hotels);
+    const managers = useSelector((state) => state.manager);
+    const { hotelOptions, data, deleteHotelConfirm, formData } = useSelector((state) => state.hotel);
+    const hotels = useSelector((state) => state.hotel);
+
+    useEffect(() => {
+        console.log(hotels);
+        console.log(managers);
+        console.log(user);
+    }, [hotels]);
 
     const navigate = useNavigate();
 

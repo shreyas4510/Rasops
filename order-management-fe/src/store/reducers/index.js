@@ -2,7 +2,7 @@ import { authReducer, hotelReducer, inviteReducer, loaderReducer, managerReducer
 
 const rootReducers = {
     loader: loaderReducer,
-    users: authReducer,
+    user: authReducer,
     invite: inviteReducer,
     manager: managerReducer,
     hotel: hotelReducer
