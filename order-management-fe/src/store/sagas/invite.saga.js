@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { put, all, takeLatest, call } from 'redux-saga/effects';
 import * as service from '../../services/invite.service';
-import { inviteUserSuccess, listInviteRequest, listUserSuccess, removeUserSuccess } from '../reducers/invite.slice';
+import { inviteUserSuccess, listInviteRequest, listUserSuccess, removeUserSuccess } from '../slice/invite.slice';
 import { INVITE_USER_REQUEST, LIST_USER_REQUEST, REMOVE_USER_REQUEST } from '../types';
 
 function* inviteUserRequestSaga(action) {

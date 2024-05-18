@@ -47,3 +47,5 @@ export const {
     setRemoveInvite,
     setSelectedInvite
 } = inviteSlice.actions;
+
+export const inviteReducer = inviteSlice.reducer;

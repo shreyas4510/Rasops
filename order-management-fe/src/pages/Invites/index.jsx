@@ -13,13 +13,13 @@ import {
     setEmail,
     setRemoveInvite,
     setSelectedInvite
-} from '../../store/reducers/invite.slice';
+} from '../../store/slice';
 import { useSelector } from 'react-redux';
 import ActionDropdown from '../../components/ActionDropdown';
 
 function Invites() {
     const dispatch = useDispatch();
-    const { change, email, inviteData, isRemoveInvite, selectedInvite } = useSelector((state) => state.invite);
+    const { change, email, inviteData, isRemoveInvite, selectedInvite } = useSelector((state) => state.invite || {});
 
     /**** sorting state ****/
     const [sorting, setSorting] = useState([]);
@@ -169,8 +169,8 @@ function Invites() {
             <div className="m-5 d-flex flex-column">
                 <Table
                     columns={columns}
-                    data={inviteData.rows}
-                    count={inviteData.count}
+                    data={inviteData?.rows}
+                    count={inviteData?.count}
                     // pagination props
                     onPaginationChange={onPaginationChange}
                     pagination={pagination}
