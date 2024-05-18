@@ -1,7 +1,9 @@
-import { authReducer } from '../slice';
+import { authReducer, hotelReducer, managerReducer } from '../slice';
 
 const rootReducers = {
-    user: authReducer
+    user: authReducer,
+    managers: managerReducer,
+    hotels: hotelReducer
 };
 
 export default rootReducers;

@@ -43,6 +43,13 @@ function Sidebar() {
 
     const managerTabs = [
         {
+            order: 1,
+            id: 'dashboard',
+            Icon: MdOutlineDashboardCustomize,
+            title: 'Dashboard',
+            path: '/dashboard'
+        },
+        {
             order: 5,
             id: 'menu',
             Icon: MdOutlineRestaurantMenu,
@@ -66,13 +73,6 @@ function Sidebar() {
     ];
 
     const commonTabs = [
-        {
-            order: 1,
-            id: 'dashboard',
-            Icon: MdOutlineDashboardCustomize,
-            title: 'Dashboard',
-            path: '/dashboard'
-        },
         {
             order: 8,
             id: 'settings',

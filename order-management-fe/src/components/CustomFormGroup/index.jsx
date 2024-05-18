@@ -1,7 +1,17 @@
 import { ErrorMessage, Field } from 'formik';
 import { FormGroup, FormLabel } from 'react-bootstrap';
+import Select from 'react-select';
 
-function CustomFormGroup({ name = '', type = 'text', label = '', className = 'mt-2', disabled = false, formKey = '' }) {
+function CustomFormGroup({
+    name = '',
+    type = 'text',
+    label = '',
+    className = 'mt-2',
+    disabled = false,
+    formKey = '',
+    options = [],
+    setFieldValue = () => {}
+}) {
     return (
         <FormGroup className={className} key={formKey}>
             {label && (
@@ -9,13 +19,28 @@ function CustomFormGroup({ name = '', type = 'text', label = '', className = 'mt
                     {label}
                 </FormLabel>
             )}
-            <Field
-                data-testid={`${name}-input-${new Date().getTime()}`}
-                type={type}
-                name={name}
-                className="form-control"
-                disabled={disabled}
-            />
+            {type === 'select' ? (
+                <Field name={name}>
+                    {({ field }) => (
+                        <Select
+                            {...field}
+                            options={options}
+                            isMulti
+                            onChange={(selectedOptions) => {
+                                setFieldValue(name, selectedOptions);
+                            }}
+                        />
+                    )}
+                </Field>
+            ) : (
+                <Field
+                    data-testid={`${name}-input-${new Date().getTime()}`}
+                    type={type}
+                    name={name}
+                    className="form-control"
+                    disabled={disabled}
+                />
+            )}
             <ErrorMessage
                 data-testid={`${name}-error-${new Date().getTime()}`}
                 name={name}

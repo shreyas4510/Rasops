@@ -80,7 +80,13 @@ function* getUserRequestSaga(action) {
         const res = yield service.getUser();
         yield put(getUserSuccess(res));
 
-        if (navigate) navigate('/dashboard');
+        if (navigate) {
+            if (res.role.toLowerCase() === 'owner') {
+                navigate('/hotels');
+            } else {
+                navigate('/dashboard');
+            }
+        }
     } catch (error) {
         console.error(`Failed to get user: ${error?.message}`);
     }

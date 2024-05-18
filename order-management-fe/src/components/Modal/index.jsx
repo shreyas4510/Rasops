@@ -5,6 +5,7 @@ import CustomButton from '../CustomButton';
 
 function OTMModal({
     title,
+    type = 'string',
     description,
     show = false,
     handleClose,
@@ -23,17 +24,19 @@ function OTMModal({
             onSubmit={handleSubmit}
             enableReinitialize={true}
         >
-            {({ isSubmitting, isValid, dirty }) => (
+            {({ isSubmitting, isValid, dirty, setFieldValue }) => (
                 <Form className="d-flex flex-column">
                     <div className="row mb-4">
                         {Object.entries(description).map(([key, property]) => {
                             return (
                                 <CustomFormGroup
-                                    formKey={key}
+                                    key={key}
                                     className={property.className}
                                     name={property.name}
                                     type={property.type}
                                     label={property.label}
+                                    options={property.options}
+                                    setFieldValue={setFieldValue}
                                 />
                             );
                         })}
@@ -56,15 +59,19 @@ function OTMModal({
                     disabled={false}
                 />
             )}
-            {submitText && (
-                <CustomButton
-                    type="submit"
-                    className="custom-button"
-                    onClick={handleSubmit}
-                    disabled={disabled}
-                    label={submitText}
-                />
+            {submitText && type === 'form' && (
+                <CustomButton type="submit" className="custom-button" disabled={disabled} label={submitText} />
             )}
+            {submitText &&
+                type === 'string' && ( // Add this condition
+                    <CustomButton
+                        type="submit"
+                        onClick={handleSubmit}
+                        className="custom-button"
+                        disabled={disabled}
+                        label={submitText}
+                    />
+                )}
         </Modal.Footer>
     );
 
@@ -80,7 +87,8 @@ function OTMModal({
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {typeof description === 'string' ? description : <FormComponent description={description} />}
+                {type === 'string' && description}
+                {type === 'form' && <FormComponent description={description} />}
             </Modal.Body>
             {isFooter && <ModalFooter />}
         </Modal>

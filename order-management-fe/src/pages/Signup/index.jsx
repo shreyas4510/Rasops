@@ -92,13 +92,7 @@ function Signup() {
                         </Row>
                         <Row className="mt-2">
                             <Col>
-                                <CustomFormGroup
-                                    name="email"
-                                    type="email"
-                                    label="Email"
-                                    disabled={invite.status}
-                                    value={invite.email}
-                                />
+                                <CustomFormGroup name="email" type="email" label="Email" disabled={invite.status} />
                             </Col>
                             <Col>
                                 <CustomFormGroup name="phoneNumber" type="number" label="Phone Number" />

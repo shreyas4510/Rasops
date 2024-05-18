@@ -34,3 +34,7 @@
 .table-row {
     height: 50px;
 }
+
+#dropdown-basic::after {
+    display: none !important;
+}

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { emailRegex } from '../../validations/auth';
-import { Button } from 'react-bootstrap';
 import '../../assets/styles/invite.css';
 import Table from '../../components/Table';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -16,6 +15,7 @@ import {
     setSelectedInvite
 } from '../../store/reducers/invite.slice';
 import { useSelector } from 'react-redux';
+import ActionDropdown from '../../components/ActionDropdown';
 
 function Invites() {
     const dispatch = useDispatch();
@@ -95,16 +95,6 @@ function Invites() {
     const columnHelper = createColumnHelper();
     const columns = [
         columnHelper.display({
-            id: 'id',
-            header: 'Id',
-            cell: ({ row }) => <div>{row.original.id}</div>
-        }),
-        columnHelper.display({
-            id: 'ownerId',
-            header: 'Owner Id',
-            cell: ({ row }) => <div>{row.original.ownerId}</div>
-        }),
-        columnHelper.display({
             id: 'email',
             header: 'Email',
             cell: (props) => <div>{props.row.original.email}</div>
@@ -128,16 +118,20 @@ function Invites() {
             enableFiltering: 'FALSE',
             cell: ({ row }) => {
                 return row.original.status ? (
-                    <Button
-                        style={{ background: '#49AC60', border: 'none' }}
-                        disabled={row.original.status === 'ACCEPTED'}
-                        onClick={() => {
-                            dispatch(setSelectedInvite(row.original.id));
-                            handleClose();
-                        }}
-                    >
-                        Delete
-                    </Button>
+                    <ActionDropdown
+                        disabled={row.original.status.toUpperCase() === 'ACCEPTED'}
+                        options={[
+                            {
+                                label: 'Delete',
+                                onClick: setRemoveInvite,
+                                meta: { id: row.original.id },
+                                onClick: () => {
+                                    dispatch(setSelectedInvite(row.original.id));
+                                    handleClose();
+                                }
+                            }
+                        ]}
+                    />
                 ) : (
                     <></>
                 );
@@ -172,7 +166,7 @@ function Invites() {
                     </button>
                 </div>
             </div>
-            <div className="m-5 p-5 d-flex flex-column">
+            <div className="m-5 d-flex flex-column">
                 <Table
                     columns={columns}
                     data={inviteData.rows}

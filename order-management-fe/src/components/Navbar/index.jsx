@@ -42,11 +42,11 @@ function Navbars() {
                         className="switch-button mx-4 d-flex align-items-center fw-bold"
                         onClick={() => {
                             const details = CryptoJS.AES.encrypt(
-                                JSON.stringify({ role: user.data.role }),
+                                JSON.stringify({ role: user?.data?.role }),
                                 env.cryptoSecret
                             ).toString();
                             localStorage.setItem('data', details);
-                            navigate('/dashboard');
+                            navigate('/hotels');
                         }}
                         label={
                             <>

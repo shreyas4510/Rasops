@@ -1,0 +1,58 @@
+import { toast } from 'react-toastify';
+import { all, put, takeLatest } from 'redux-saga/effects';
+import * as service from '../../services/hotel.service';
+import { createHotelSuccess, getHotelRequest, getHotelSuccess, removeHotelSuccess, setFormData } from '../slice';
+import { CREATE_HOTEL_REQUEST, GET_HOTEL_REQUEST, REMOVE_HOTEL_REQUEST, UPDATE_HOTEL_REQUEST } from '../types';
+
+function* createHotelRequestSaga(action) {
+    try {
+        const data = action.payload;
+        const res = yield service.create(data);
+        yield put(createHotelSuccess(res));
+        toast.success('Hotel Created successfully');
+        yield put(setFormData(false));
+    } catch (error) {
+        toast.error(`Failed to create hotel$ {error?.message}`);
+    }
+}
+
+function* getHotelsRequestSaga() {
+    try {
+        const res = yield service.fetch();
+        yield put(getHotelSuccess(res));
+    } catch (error) {
+        toast.error('Failed to fetch hotels', error.message);
+    }
+}
+
+function* removeHotelsRequestSaga(action) {
+    try {
+        const id = action.payload;
+        const res = yield service.remove(id);
+        toast.success(res.message);
+        yield put(removeHotelSuccess(id));
+    } catch (error) {
+        toast.error('Failed to remove hotels', error.message);
+    }
+}
+
+function* updateHotelsRequestSaga(action) {
+    try {
+        const res = yield service.update(action.payload);
+        toast.success(res.message);
+        yield put(getHotelRequest());
+        yield put(setFormData(false));
+    } catch (error) {
+        toast.error('Failed to update hotels', error.message);
+        yield put(setFormData(false));
+    }
+}
+
+export default function* managerSaga() {
+    yield all([
+        takeLatest(CREATE_HOTEL_REQUEST, createHotelRequestSaga),
+        takeLatest(GET_HOTEL_REQUEST, getHotelsRequestSaga),
+        takeLatest(REMOVE_HOTEL_REQUEST, removeHotelsRequestSaga),
+        takeLatest(UPDATE_HOTEL_REQUEST, updateHotelsRequestSaga)
+    ]);
+}
