@@ -31,8 +31,12 @@ export const updateValidation = (payload) => {
             careNumber: Joi.number()
                 .min(10 ** 9)
                 .max(10 ** 10 - 1),
-            address: Joi.string().min(10)
-        }).or('openTime', 'closeTime', 'name', 'careNumber', 'address');
+            address: Joi.string().min(10),
+            manager: Joi.object({
+                added: Joi.array().items(Joi.string()),
+                removed: Joi.array().items(Joi.string())
+            }).optional()
+        }).or('openTime', 'closeTime', 'name', 'careNumber', 'address', 'manager');
         return schema.validate(payload);
     } catch (error) {
         logger('error', 'Error in update validation', { error });

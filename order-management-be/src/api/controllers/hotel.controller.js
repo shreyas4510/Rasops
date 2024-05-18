@@ -70,6 +70,7 @@ const remove = async (req, res) => {
         const result = await hotelService.remove(params.id);
         logger('info', 'Hotel removed successfully', { result });
 
+        // TODO: DELETE tables, menu and orders related to hotel
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         logger('error', 'Error occurred during hotel removal', { error });

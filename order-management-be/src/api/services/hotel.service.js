@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import logger from '../../config/logger.js';
 import hotelRepo from '../repositories/hotel.repository.js';
@@ -42,7 +43,7 @@ const create = async (payload, ownerId) => {
         };
 
         logger('debug', 'Create Owner and hotel relation', { ownerRelation });
-        await hotelUserRelationRepo.save(ownerRelation);
+        await hotelUserRelationRepo.save([ownerRelation]);
 
         let manager;
         // Creating a relation between the manager and the hotel
@@ -70,9 +71,32 @@ const create = async (payload, ownerId) => {
 
 const update = async (payload, id) => {
     try {
+        const { manager, ...rest } = payload;
         logger('debug', 'Updating hotel with ID:', { id, payload });
-        const data = await hotelRepo.update({ id }, payload);
-        return { message: data ? 'Success' : ' Failed' };
+        const data = await hotelRepo.update({ id }, rest);
+
+        if (manager.removed?.length) {
+            const options = {
+                where: {
+                    hotelId: id,
+                    userId: {
+                        [Op.in]: manager.removed
+                    }
+                }
+            };
+            await hotelUserRelationRepo.remove(options);
+        }
+
+        if (manager.added?.length) {
+            const managerRelation = manager.added.map((item) => ({
+                id: uuidv4(),
+                hotelId: id,
+                userId: item
+            }));
+            await hotelUserRelationRepo.save(managerRelation);
+        }
+
+        return { message: data ? 'Hotel details updated successfully' : ' Failed to update hotel details' };
     } catch (error) {
         logger('error', 'Error while updating hotel', { error });
         throw CustomError(error.code, error.message);
