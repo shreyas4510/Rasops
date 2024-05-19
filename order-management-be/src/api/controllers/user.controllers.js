@@ -7,7 +7,8 @@ import {
     emailValidation,
     loginValidation,
     passValidation,
-    registrationValidation
+    registrationValidation,
+    updateValidation
 } from '../validations/user.validations.js';
 
 const create = async (req, res) => {
@@ -191,6 +192,33 @@ const getUser = async (req, res) => {
     }
 };
 
+const update = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const payload = req.body;
+
+        // dconst depassecrypt and verify the password
+        const options = { ...payload };
+        if (payload.password) {
+            logger('debug', `${userId} requested for password update`);
+            const depass = CryptoJS.AES.decrypt(payload.password, env.cryptoSecret).toString(CryptoJS.enc.Utf8);
+            options.password = depass;
+        }
+
+        const valid = updateValidation(options);
+        if (valid.error) {
+            logger('error', `Update user validation failed: ${valid.error.message}`);
+            return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
+        }
+
+        const result = await userService.update(userId, payload);
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error while updating user ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     create,
     login,
@@ -200,5 +228,6 @@ export default {
     invite,
     listInvites,
     removeInvite,
-    getUser
+    getUser,
+    update
 };

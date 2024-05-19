@@ -75,3 +75,21 @@ export const passValidation = (payload) => {
         throw CustomError(error.code, error.message);
     }
 };
+
+export const updateValidation = (payload) => {
+    try {
+        logger('debug', `Validating update user payload`);
+        const schema = Joi.object({
+            firstName: Joi.string().min(3).max(30).optional(),
+            lastName: Joi.string().min(3).max(30).optional(),
+            password: Joi.string()
+                .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+                .optional()
+        }).or('firstName', 'lastName', 'password');
+
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', `Error occurred during update user validation: ${error}`);
+        throw CustomError(error.code, error.message);
+    }
+};

@@ -11,7 +11,8 @@ router.post('/login', userController.login);
 router.post('/verify', userController.verify);
 router.post('/forget', userController.forget);
 router.post('/reset', userController.reset);
-router.get('/', authenticate, userController.getUser);
+
+router.route('/').all(authenticate).get(userController.getUser).put(userController.update);
 
 // invite apis
 router
