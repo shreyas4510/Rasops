@@ -2,6 +2,9 @@ import { CustomError } from "../utils/common.js";
 import inviteRepo from "../repositories/invite.repository.js";
 import logger from "../../config/logger.js";
 import { db } from "../../config/database.js";
+import { Op } from "sequelize";
+import { v4 as uuidv4 } from 'uuid';
+import hotelUserRelationRepo from "../repositories/hotelUserRelation.repository.js";
 
 const fetch = async (payload) => {
     try {
@@ -87,11 +90,44 @@ const fetch = async (payload) => {
 
         return { count: data.count, rows: managers};
     } catch (error) {
-        logger('error', 'Error while fetching invites', { error });
+        logger('error', 'Error while fetching managers', { error });
         throw CustomError(error.code, error.message);
     }
 };
 
+const update = async ( prevHotel, currentHotel, manager ) => {
+    try {
+        if (prevHotel) {
+            const hotelOptions = {
+                where: {
+                    hotelId: prevHotel,
+                    userId: manager
+                }
+            }
+            await hotelUserRelationRepo.remove(hotelOptions);       
+            logger('debug', `${prevHotel} hotel manager unassigned`);
+        }
+
+        if (currentHotel) {
+            const options = {
+                id: uuidv4(),
+                hotelId: currentHotel,
+                userId: manager
+            }
+
+            logger('debug', `${currentHotel} hotel manager assigned`);
+            const relation = await hotelUserRelationRepo.save([ options ]);
+            return { data: relation[0] };
+        }
+
+        return { message: "Manager updated successfully" };
+    } catch (error) {
+        logger('error', 'Error while updating manager', { error });
+        throw CustomError(error.code, error.message);
+    }
+}
+
 export default {
-    fetch
+    fetch,
+    update
 };

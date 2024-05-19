@@ -28,6 +28,24 @@ const fetch = async (req, res) => {
     }
 };
 
+const update = async (req, res) => {
+    try {
+        logger('debug', 'Received request to update assigned manager');
+
+        const managerId = req.params.id;
+        const ownerId = req.user.id;
+        const { prev, current } = req.body;
+
+        logger('debug', `update assigned manager prev hotel : ${ prev }, current hotel : ${ current }, manager : ${managerId}`)
+        const result = await managerService.update( prev, current, managerId, ownerId );
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', 'Error while updating managers', { error });
+        return res.status(error.code).send({ message: error.message });
+    }
+}
+
 export default {
-    fetch
+    fetch,
+    update
 };
