@@ -45,7 +45,21 @@ const update = async (req, res) => {
     }
 }
 
+const remove = async (req, res) => {
+    try {
+        const managerId = req.params.id;
+        logger('debug', `Received request to remove manager ${managerId}`);
+
+        const result = await managerService.remove( managerId );
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', 'Error while updating managers', { error });
+        return res.status(error.code).send({ message: error.message });
+    }
+}
+
 export default {
     fetch,
-    update
+    update,
+    remove  
 };

@@ -24,4 +24,15 @@ const findOne = async (payload) => {
     }
 };
 
-export default { save, findOne };
+const remove = async (options) => {
+    try {
+        logger('debug', 'Removing user data in the database');
+        return await db.users.destroy(options);
+    } catch (error) {
+        const err = error?.errors[0]?.message;
+        logger('error', `Error occurred while removing user data: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, findOne, remove };

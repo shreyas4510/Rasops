@@ -5,6 +5,7 @@ import { db } from "../../config/database.js";
 import { Op } from "sequelize";
 import { v4 as uuidv4 } from 'uuid';
 import hotelUserRelationRepo from "../repositories/hotelUserRelation.repository.js";
+import userRepo from '../repositories/user.repository.js';
 
 const fetch = async (payload) => {
     try {
@@ -127,7 +128,32 @@ const update = async ( prevHotel, currentHotel, manager ) => {
     }
 }
 
+const remove = async ( managerId ) => {
+    try {
+        const options = {
+            where: { userId: managerId }
+        }
+        await inviteRepo.remove(options);
+        logger('debug', `Invite record removed for ${ managerId }`);
+
+        await hotelUserRelationRepo.remove(options);
+        logger('debug', `Hotel and user relation removed for ${ managerId }`);
+
+        const userOptions = {
+            where: { id: managerId }
+        }
+        await userRepo.remove(userOptions);
+        logger('debug', `User removed for ${ managerId }`);
+
+        return { message: 'User removed successfully' };
+    } catch (error) {
+        logger('error', 'Error while removing manager', { error });
+        throw CustomError(error.code, error.message);
+    }
+}
+
 export default {
     fetch,
-    update
+    update,
+    remove
 };
