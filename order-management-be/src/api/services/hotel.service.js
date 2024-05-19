@@ -110,15 +110,52 @@ const list = async (userId) => {
             where: { userId },
             include: [
                 {
-                    model: db.hotel
+                    model: db.hotel,
+                    include: [
+                        {
+                            model: db.hotelUserRelation,
+                            where: { userId: { [Op.ne]: userId } },
+                            include: [
+                                {
+                                    model: db.users
+                                }
+                            ],
+                            separate: true
+                        }
+                    ]
                 }
             ]
         };
         logger('debug', 'Fetching hotels for user', { options });
         const hotels = await hotelUserRelationRepo.find(options);
 
-        const rows = hotels.rows.map((item) => item.hotel);
-        return { count: hotels.count, rows };
+        const rows = hotels.rows.reduce((cur, next) => {
+            const { hotel } = next;
+            const obj = {
+                id: hotel.id,
+                name: hotel.name,
+                openTime: hotel.openTime,
+                closeTime: hotel.closeTime,
+                address: hotel.address,
+                careNumber: hotel.careNumber,
+                rating: hotel.rating,
+                createdAt: hotel.createdAt,
+                managers: {}
+            };
+
+            if (hotel.hotelUserRelations && hotel.hotelUserRelations.length) {
+                const managers = hotel.hotelUserRelations.map((item) => ({
+                    id: item.user.id,
+                    name: `${item.user.firstName} ${item.user.lastName}`
+                }));
+                obj.managers = managers;
+            }
+            cur.push(obj);
+            return cur;
+        }, []);
+
+        const data = { count: hotels.count, rows };
+        return data;
     } catch (error) {
         logger('error', 'Error while listing hotels', { error });
         throw CustomError(error.code, error.message);
