@@ -36,30 +36,33 @@ const update = async (req, res) => {
         const ownerId = req.user.id;
         const { prev, current } = req.body;
 
-        logger('debug', `update assigned manager prev hotel : ${ prev }, current hotel : ${ current }, manager : ${managerId}`)
-        const result = await managerService.update( prev, current, managerId, ownerId );
+        logger(
+            'debug',
+            `update assigned manager prev hotel : ${prev}, current hotel : ${current}, manager : ${managerId}`
+        );
+        const result = await managerService.update(prev, current, managerId, ownerId);
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         logger('error', 'Error while updating managers', { error });
         return res.status(error.code).send({ message: error.message });
     }
-}
+};
 
 const remove = async (req, res) => {
     try {
         const managerId = req.params.id;
         logger('debug', `Received request to remove manager ${managerId}`);
 
-        const result = await managerService.remove( managerId );
+        const result = await managerService.remove(managerId);
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         logger('error', 'Error while updating managers', { error });
         return res.status(error.code).send({ message: error.message });
     }
-}
+};
 
 export default {
     fetch,
     update,
-    remove  
+    remove
 };

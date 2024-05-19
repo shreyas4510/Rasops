@@ -23,7 +23,7 @@ const inviteModel = (sequelize) =>
             },
             ownerId: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: false
             },
             userId: {
                 type: DataTypes.STRING,
