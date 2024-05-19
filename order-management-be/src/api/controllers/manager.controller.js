@@ -1,6 +1,7 @@
 import logger from '../../config/logger.js';
 import managerService from '../services/manager.service.js';
 import { STATUS_CODE } from '../utils/common.js';
+import { updateManagerValidation } from '../validations/manager.validation.js';
 
 const fetch = async (req, res) => {
     try {
@@ -34,6 +35,13 @@ const update = async (req, res) => {
 
         const managerId = req.params.id;
         const ownerId = req.user.id;
+
+        const validation = updateManagerValidation(req.body);
+        if (validation.error) {
+            logger('error', `Update validation error ${JSON.stringify({ error: validation.error })}`);
+            return res.status(STATUS_CODE.BAD_REQUEST).send({ message: validation.error.message });
+        }
+
         const { prev, current } = req.body;
 
         logger(
@@ -61,8 +69,25 @@ const remove = async (req, res) => {
     }
 };
 
+const getAssignable = async (req, res) => {
+    try {
+        const ownerId = req.user.id;
+        logger('debug', `Fetch assignable managers for owner ${ownerId}`);
+
+        const { filter } = req.query;
+        const managers = await managerService.getAssignable(ownerId, filter);
+        logger('debug', `Assignable managers data ${managers}`);
+
+        return res.status(STATUS_CODE.OK).send(managers);
+    } catch (error) {
+        logger('error', 'Error while fetching assognable managers', { error });
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     fetch,
     update,
-    remove
+    remove,
+    getAssignable
 };

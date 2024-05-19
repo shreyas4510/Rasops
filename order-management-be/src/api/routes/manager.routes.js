@@ -8,5 +8,6 @@ const router = Router();
 router.get('/', authenticate, ownerAuthentication, managerController.fetch);
 router.put('/:id', authenticate, ownerAuthentication, managerController.update);
 router.delete('/:id', authenticate, ownerAuthentication, managerController.remove);
+router.get('/assignable', authenticate, ownerAuthentication, managerController.getAssignable);
 
 export default router;

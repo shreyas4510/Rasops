@@ -129,6 +129,7 @@ const list = async (userId) => {
         logger('debug', 'Fetching hotels for user', { options });
         const hotels = await hotelUserRelationRepo.find(options);
 
+        logger('info', `Hotels of owner ${JSON.stringify(hotels)}`);
         const rows = hotels.rows.reduce((cur, next) => {
             const { hotel } = next;
             const obj = {
