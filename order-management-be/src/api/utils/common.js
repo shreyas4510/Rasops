@@ -23,7 +23,8 @@ export const TABLES = {
     USERS: 'users',
     INVITE: 'invites',
     HOTEL: 'hotels',
-    HOTEL_USER_RELATION: 'hotelUserRelations'
+    HOTEL_USER_RELATION: 'hotelUserRelations',
+    TABLE: 'tables'
 };
 
 export const CustomError = (code = STATUS_CODE.INTERNAL_SERVER_ERROR, message = 'Something went wrong.') => {

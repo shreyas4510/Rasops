@@ -3,6 +3,7 @@ import defineAssociations from '../api/models/associations.js';
 import hotelModel from '../api/models/hotel.model.js';
 import hotelUserRelationModel from '../api/models/hotelUserRelation.model.js';
 import inviteModel from '../api/models/invite.model.js';
+import tableModel from '../api/models/table.model.js';
 import userModel from '../api/models/user.model.js';
 import { CustomError } from '../api/utils/common.js';
 import env from './env.js';
@@ -42,6 +43,7 @@ const defineModels = (sequelize) => {
     db.invites = inviteModel(sequelize);
     db.hotel = hotelModel(sequelize);
     db.hotelUserRelation = hotelUserRelationModel(sequelize);
+    db.tables = tableModel(sequelize);
 };
 
 const initDb = async () => {
