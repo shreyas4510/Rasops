@@ -24,6 +24,10 @@ const inviteModel = (sequelize) =>
             ownerId: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            userId: {
+                type: DataTypes.STRING,
+                allowNull: true,
                 references: {
                     model: TABLES.USERS,
                     key: 'id'

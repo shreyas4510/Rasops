@@ -4,6 +4,7 @@ import logger from '../../config/logger.js';
 import hotelRepo from '../repositories/hotel.repository.js';
 import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
 import { CustomError, STATUS_CODE, TABLES } from '../utils/common.js';
+import { db } from '../../config/database.js';
 
 const create = async (payload, ownerId) => {
     try {
@@ -107,7 +108,9 @@ const list = async (userId) => {
     try {
         const options = {
             where: { userId },
-            include: [TABLES.HOTEL]
+            include: [{
+                model: db.hotel
+            }]
         };
         logger('debug', 'Fetching hotels for user', { options });
         const hotels = await hotelUserRelationRepo.find(options);

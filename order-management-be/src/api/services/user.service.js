@@ -14,12 +14,6 @@ import { sendEmail } from './email.service.js';
 
 const create = async (payload) => {
     try {
-        // check if invited user
-        if (payload.invite) {
-            logger('debug', `Updating invite status for invite ID: ${payload.invite}`);
-            await inviteRepo.update({ id: payload.invite }, { status: INVITE_STATUS[1] });
-        }
-
         // create payload of user data
         const user = {
             id: uuidv4(),
@@ -29,11 +23,18 @@ const create = async (payload) => {
             email: payload.email,
             password: payload.password,
             status: USER_STATUS[1],
-            role: payload.invite ? USER_ROLES[1] : USER_ROLES[0]
+            role: payload.invite ? USER_ROLES[1] : USER_ROLES[0],
         };
+
         // save the user details to the database
         const data = await userRepo.save(user);
         logger('info', 'User details saved successfully:', data);
+
+        // check if invited user
+        if (payload.invite) {
+            logger('debug', `Updating invite status for invite ID: ${payload.invite}`);
+            await inviteRepo.update({ id: payload.invite }, { status: INVITE_STATUS[1], userId: user.id });
+        }        
 
         // send verification email to the user
         logger('debug', 'Sending verification email to the user');
@@ -42,7 +43,7 @@ const create = async (payload) => {
             name: `${user.firstName} ${user.lastName}`,
             expires: moment().add(1, 'hour').valueOf()
         };
-
+        
         const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
         await sendEmail({ token }, user.email, EMAIL_ACTIONS.VERIFY_USER);
         return data;

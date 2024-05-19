@@ -2,20 +2,6 @@ import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
 import { CustomError, TABLES } from '../utils/common.js';
 
-const includeOptions = (tables) => {
-    const options = [];
-    tables.forEach((table) => {
-        if (table === TABLES.HOTEL) {
-            options.push({ model: db.hotel });
-        }
-
-        if (table === TABLES.USERS) {
-            options.push({ model: db.users });
-        }
-    });
-    return options;
-};
-
 const save = async (payload) => {
     try {
         logger('debug', 'Saving hotel user relation data:', { payload });
@@ -29,10 +15,6 @@ const save = async (payload) => {
 
 const find = async (options = {}) => {
     try {
-        if (options.include) {
-            const include = includeOptions(options.include);
-            options = { ...options, include };
-        }
         logger('debug', 'Finding hotel user relation data with options:', { options });
         return await db.hotelUserRelation.findAndCountAll(options);
     } catch (error) {

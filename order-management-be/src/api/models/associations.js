@@ -3,8 +3,8 @@ function defineAssociations(db) {
     const { users, invites, hotel, hotelUserRelation } = db;
 
     // user and invite associations
-    users.hasMany(invites, { foreignKey: 'ownerId' });
-    invites.belongsTo(users, { foreignKey: 'ownerId' });
+    users.hasOne(invites, { foreignKey: 'userId' });
+    invites.belongsTo(users, { foreignKey: 'userId' });
 
     // hotel user relations
     users.hasMany(hotelUserRelation, { foreignKey: 'userId' });
