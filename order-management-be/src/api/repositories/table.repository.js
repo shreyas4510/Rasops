@@ -24,4 +24,15 @@ const find = async (options) => {
     }
 };
 
-export default { save, find };
+const remove = async (options) => {
+    try {
+        logger('debug', 'Removing table for hotel in the database');
+        return await db.tables.destroy(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while deleting table: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, find, remove };

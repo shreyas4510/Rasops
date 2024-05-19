@@ -4,6 +4,7 @@ import authenticate from '../middlewares/auth.js';
 
 const router = Router();
 
-router.post('/', authenticate, tableController.create);
+router.route('/').all(authenticate).post(tableController.create).get(tableController.fetch);
+router.delete('/:id', authenticate, tableController.remove);
 
 export default router;

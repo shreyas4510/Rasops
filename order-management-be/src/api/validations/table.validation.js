@@ -10,7 +10,19 @@ export const registerValidation = (payload) => {
         });
         return schema.validate(payload);
     } catch (error) {
-        logger('error', 'Error in register table validation', { error });
+        logger('error', `Error in register table validation ${error}`);
+        throw CustomError(error.code, error.message);
+    }
+};
+
+export const fetchTableValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            hotelId: Joi.string().required()
+        });
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', `Error in vaidating hotel id ${error}`);
         throw CustomError(error.code, error.message);
     }
 };

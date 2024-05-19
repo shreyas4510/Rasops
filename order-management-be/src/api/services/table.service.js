@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import logger from '../../config/logger.js';
 import tableRepo from '../repositories/table.repository.js';
@@ -33,6 +34,48 @@ const create = async (payload) => {
     }
 };
 
+const fetch = async (payload) => {
+    try {
+        const { filter, hotelId } = payload;
+        const limit = 50;
+
+        const options = {
+            where: {
+                hotelId
+            },
+            attribute: ['id', 'tableNumber'],
+            limit
+        };
+
+        if (filter) {
+            const condition = { tableNumber: { [Op.like]: `%${filter}%` } };
+            options.where = { ...options.where, ...condition };
+        }
+
+        logger('debug', `Fetching table with payload ${JSON.stringify(options)}`);
+        const data = await tableRepo.find(options);
+        return data;
+    } catch (error) {
+        logger('error', `Error while fetching tables ${error}`);
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const remove = async (id) => {
+    try {
+        const options = { where: { id } };
+        logger('debug', `Removing table with payload ${JSON.stringify(options)}`);
+
+        await tableRepo.remove(options);
+        return { message: 'Table removed successfully' };
+    } catch (error) {
+        logger('error', `Error while removing table ${id}`);
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
-    create
+    create,
+    fetch,
+    remove
 };
