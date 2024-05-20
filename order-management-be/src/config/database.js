@@ -1,8 +1,10 @@
 import { Sequelize } from 'sequelize';
 import defineAssociations from '../api/models/associations.js';
+import categoryModel from '../api/models/category.model.js';
 import hotelModel from '../api/models/hotel.model.js';
 import hotelUserRelationModel from '../api/models/hotelUserRelation.model.js';
 import inviteModel from '../api/models/invite.model.js';
+import menuModel from '../api/models/menu.model.js';
 import tableModel from '../api/models/table.model.js';
 import userModel from '../api/models/user.model.js';
 import { CustomError } from '../api/utils/common.js';
@@ -44,6 +46,8 @@ const defineModels = (sequelize) => {
     db.hotel = hotelModel(sequelize);
     db.hotelUserRelation = hotelUserRelationModel(sequelize);
     db.tables = tableModel(sequelize);
+    db.categories = categoryModel(sequelize);
+    db.menu = menuModel(sequelize);
 };
 
 const initDb = async () => {
