@@ -15,7 +15,7 @@ const create = async (req, res) => {
         }
 
         const result = await tableService.create(payload);
-        return res.status(STATUS_CODE.OK).send(result);
+        return res.status(STATUS_CODE.CREATED).send(result);
     } catch (error) {
         logger('error', `Error while table registration ${error}`);
         return res.status(error.code).send({ message: error.message });

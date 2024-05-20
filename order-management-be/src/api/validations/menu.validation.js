@@ -15,3 +15,16 @@ export const createCategoryValidation = (payload) => {
         throw CustomError(error.code, error.message);
     }
 };
+
+export const updateCategoryValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            name: Joi.string().optional(),
+            order: Joi.number().optional()
+        }).or('name', 'order');
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', `Error in updating menu category ${error}`);
+        throw CustomError(error.code, error.message);
+    }
+};
