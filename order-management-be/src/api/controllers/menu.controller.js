@@ -33,7 +33,7 @@ const update = async (req, res) => {
     try {
         const { id } = req.params;
         const payload = req.body;
-        logger('debug', 'create a menu ', { payload });
+        logger('debug', 'update a menu ', { payload });
 
         const validation = updateValidation(payload);
         if (validation.error) {
@@ -47,6 +47,21 @@ const update = async (req, res) => {
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         logger('error', `Error occurred during updating menu items ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
+const remove = async (req, res) => {
+    try {
+        const { id } = req.params;
+        logger('debug', 'remove a menu item', { id });
+
+        const result = await menuService.remove(id);
+        logger('info', 'Menu item removed successfully', { result });
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during removing menu items ${error}`);
         return res.status(error.code).send({ message: error.message });
     }
 };
@@ -127,6 +142,7 @@ const removeCategory = async (req, res) => {
 export default {
     create,
     update,
+    remove,
     createCategory,
     fetchCategory,
     updateCategory,
