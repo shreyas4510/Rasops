@@ -17,6 +17,17 @@ const create = async (payload) => {
     }
 };
 
+const update = async (id, payload) => {
+    try {
+        const options = { where: { id } };
+        await menuRepo.update(options, payload);
+        return { message: 'Menu Item updated successfully' };
+    } catch (error) {
+        logger('error', 'Error while updating menu item', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 const createCategory = async (payload) => {
     try {
         const { name, hotelId, order } = payload;
@@ -117,6 +128,7 @@ const removeCategory = async (id) => {
 
 export default {
     create,
+    update,
     createCategory,
     fetchCategory,
     updateCategory,

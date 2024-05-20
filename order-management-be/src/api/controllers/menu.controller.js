@@ -4,7 +4,8 @@ import { STATUS_CODE } from '../utils/common.js';
 import {
     createCategoryValidation,
     createValidation,
-    updateCategoryValidation
+    updateCategoryValidation,
+    updateValidation
 } from '../validations/menu.validation.js';
 
 const create = async (req, res) => {
@@ -24,6 +25,28 @@ const create = async (req, res) => {
         return res.status(STATUS_CODE.CREATED).send(result);
     } catch (error) {
         logger('error', `Error occurred during creating menu items ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
+const update = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const payload = req.body;
+        logger('debug', 'create a menu ', { payload });
+
+        const validation = updateValidation(payload);
+        if (validation.error) {
+            logger('error', 'Menu updation validation error', { error: validation.error });
+            return res.status(STATUS_CODE.BAD_REQUEST).send({ message: validation.error.message });
+        }
+
+        const result = await menuService.update(id, payload);
+        logger('info', 'Menu updated successfully', { result });
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during updating menu items ${error}`);
         return res.status(error.code).send({ message: error.message });
     }
 };
@@ -103,6 +126,7 @@ const removeCategory = async (req, res) => {
 
 export default {
     create,
+    update,
     createCategory,
     fetchCategory,
     updateCategory,

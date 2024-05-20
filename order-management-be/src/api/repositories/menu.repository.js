@@ -13,6 +13,17 @@ const save = async (payload) => {
     }
 };
 
+const update = async (options, data) => {
+    try {
+        logger('debug', 'Updating hotel menu with options:', { options }, 'and data:', { data });
+        return await db.menu.update(data, options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', 'Error while updating menu', { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
 const remove = async (options) => {
     try {
         logger('debug', 'Removing hotel menu with options:', { options });
@@ -24,4 +35,4 @@ const remove = async (options) => {
     }
 };
 
-export default { save, remove };
+export default { save, update, remove };

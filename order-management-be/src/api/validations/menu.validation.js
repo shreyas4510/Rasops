@@ -45,3 +45,16 @@ export const createValidation = (payload) => {
         throw CustomError(error.code, error.message);
     }
 };
+
+export const updateValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            name: Joi.string().optional(),
+            price: Joi.number().optional()
+        }).or('name', 'price');
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', `Error in updating menu ${error}`);
+        throw CustomError(error.code, error.message);
+    }
+};
