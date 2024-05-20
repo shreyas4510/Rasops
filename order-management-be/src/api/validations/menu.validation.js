@@ -28,3 +28,20 @@ export const updateCategoryValidation = (payload) => {
         throw CustomError(error.code, error.message);
     }
 };
+
+export const createValidation = (payload) => {
+    try {
+        const schema = Joi.array().items(
+            Joi.object({
+                name: Joi.string().required(),
+                price: Joi.number().required(),
+                categoryId: Joi.string().required(),
+                hotelId: Joi.string().required()
+            })
+        );
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', `Error in creating menu ${error}`);
+        throw CustomError(error.code, error.message);
+    }
+};

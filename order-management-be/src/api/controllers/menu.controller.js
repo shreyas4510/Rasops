@@ -1,7 +1,32 @@
 import logger from '../../config/logger.js';
 import menuService from '../services/menu.service.js';
 import { STATUS_CODE } from '../utils/common.js';
-import { createCategoryValidation, updateCategoryValidation } from '../validations/menu.validation.js';
+import {
+    createCategoryValidation,
+    createValidation,
+    updateCategoryValidation
+} from '../validations/menu.validation.js';
+
+const create = async (req, res) => {
+    try {
+        const { body } = req;
+        logger('debug', 'create a menu ', { body });
+
+        const validation = createValidation(body);
+        if (validation.error) {
+            logger('error', 'Menu creation validation error', { error: validation.error });
+            return res.status(STATUS_CODE.BAD_REQUEST).send({ message: validation.error.message });
+        }
+
+        const result = await menuService.create(body);
+        logger('info', 'Menu created successfully', { result });
+
+        return res.status(STATUS_CODE.CREATED).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during creating menu items ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
 
 const createCategory = async (req, res) => {
     try {
@@ -77,6 +102,7 @@ const removeCategory = async (req, res) => {
 };
 
 export default {
+    create,
     createCategory,
     fetchCategory,
     updateCategory,

@@ -4,6 +4,8 @@ import authenticate from '../middlewares/auth.js';
 
 const router = Router();
 
+router.post('/', authenticate, menuController.create);
+
 router.post('/category', authenticate, menuController.createCategory);
 router.get('/category/:hotelId', authenticate, menuController.fetchCategory);
 router

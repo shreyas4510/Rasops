@@ -6,6 +6,17 @@ import categoryRepo from '../repositories/category.repository.js';
 import menuRepo from '../repositories/menu.repository.js';
 import { CustomError, STATUS_CODE } from '../utils/common.js';
 
+const create = async (payload) => {
+    try {
+        const options = payload.map((item) => ({ id: uuidv4(), ...item }));
+        logger('debug', 'Request to add menu items');
+        return await menuRepo.save(options);
+    } catch (error) {
+        logger('error', 'Error while creating category', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 const createCategory = async (payload) => {
     try {
         const { name, hotelId, order } = payload;
@@ -105,6 +116,7 @@ const removeCategory = async (id) => {
 };
 
 export default {
+    create,
     createCategory,
     fetchCategory,
     updateCategory,
