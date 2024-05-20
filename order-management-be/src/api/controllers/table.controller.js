@@ -59,8 +59,22 @@ const remove = async (req, res) => {
     }
 };
 
+const get = async (req, res) => {
+    try {
+        const { id } = req.params;
+        logger('debug', `Get table for hotel request ${id}`);
+
+        const result = await tableService.get(id);
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error while fetching tables ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     create,
     fetch,
-    remove
+    remove,
+    get
 };

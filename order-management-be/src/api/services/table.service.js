@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
+import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
 import tableRepo from '../repositories/table.repository.js';
 import { CustomError, STATUS_CODE } from '../utils/common.js';
@@ -43,7 +44,7 @@ const fetch = async (payload) => {
             where: {
                 hotelId
             },
-            attribute: ['id', 'tableNumber'],
+            attributes: ['id', 'tableNumber'],
             limit
         };
 
@@ -74,8 +75,29 @@ const remove = async (id) => {
     }
 };
 
+const get = async (id) => {
+    try {
+        const options = {
+            where: { id },
+            include: [
+                {
+                    model: db.hotel,
+                    attributes: ['name']
+                }
+            ]
+        };
+        logger('debug', `Fetch table with payload ${JSON.stringify(options)}`);
+
+        return await tableRepo.find(options);
+    } catch (error) {
+        logger('error', `Error while fetching table ${id}`);
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     create,
     fetch,
-    remove
+    remove,
+    get
 };
