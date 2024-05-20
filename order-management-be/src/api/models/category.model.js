@@ -21,7 +21,7 @@ const categoryModel = (sequelize) =>
                     key: 'id'
                 }
             },
-            arrangement: {
+            order: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
