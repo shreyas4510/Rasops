@@ -1,3 +1,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 cd order-management-be
+npm run test
