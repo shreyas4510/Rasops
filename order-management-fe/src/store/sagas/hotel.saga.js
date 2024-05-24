@@ -1,8 +1,21 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import * as service from '../../services/hotel.service';
-import { createHotelSuccess, getHotelRequest, getHotelSuccess, removeHotelSuccess, setFormData } from '../slice';
-import { CREATE_HOTEL_REQUEST, GET_HOTEL_REQUEST, REMOVE_HOTEL_REQUEST, UPDATE_HOTEL_REQUEST } from '../types';
+import {
+    createHotelSuccess,
+    getHotelRequest,
+    getHotelSuccess,
+    removeHotelSuccess,
+    setAssignableManagers,
+    setFormData
+} from '../slice';
+import {
+    CREATE_HOTEL_REQUEST,
+    GET_ASSIGNABLE_MANAGER,
+    GET_HOTEL_REQUEST,
+    REMOVE_HOTEL_REQUEST,
+    UPDATE_HOTEL_REQUEST
+} from '../types';
 
 function* createHotelRequestSaga(action) {
     try {
@@ -12,7 +25,7 @@ function* createHotelRequestSaga(action) {
         toast.success('Hotel Created successfully');
         yield put(setFormData(false));
     } catch (error) {
-        toast.error(`Failed to create hotel$ {error?.message}`);
+        toast.error(`Failed to create hotel ${error?.message}`);
     }
 }
 
@@ -48,11 +61,27 @@ function* updateHotelsRequestSaga(action) {
     }
 }
 
+function* getAssignableManagerSaga() {
+    try {
+        const res = yield service.fetchAssignableManager();
+        yield put(
+            setAssignableManagers(
+                res?.rows?.map((row) => {
+                    return { label: row?.name, value: row?.id };
+                })
+            )
+        );
+    } catch (error) {
+        toast.error('Failed to fetch hotels', error.message);
+    }
+}
+
 export default function* managerSaga() {
     yield all([
         takeLatest(CREATE_HOTEL_REQUEST, createHotelRequestSaga),
         takeLatest(GET_HOTEL_REQUEST, getHotelsRequestSaga),
         takeLatest(REMOVE_HOTEL_REQUEST, removeHotelsRequestSaga),
-        takeLatest(UPDATE_HOTEL_REQUEST, updateHotelsRequestSaga)
+        takeLatest(UPDATE_HOTEL_REQUEST, updateHotelsRequestSaga),
+        takeLatest(GET_ASSIGNABLE_MANAGER, getAssignableManagerSaga)
     ]);
 }

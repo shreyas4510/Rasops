@@ -41,6 +41,10 @@ const hotelSlice = createSlice({
         },
         setFormData(state, action) {
             state.formData = action.payload;
+        },
+        getAssignableManagerRequest() {},
+        setAssignableManagers(state, action) {
+            state.hotelOptions.manager.options = action.payload;
         }
     }
 });
@@ -58,7 +62,9 @@ export const {
     setDeleteHotelConfirm,
     setFormData,
     getHotelManagersRequest,
-    getHotelManagersSuccess
+    getHotelManagersSuccess,
+    getAssignableManagerRequest,
+    setAssignableManagers
 } = hotelSlice.actions;
 
 export const hotelReducer = hotelSlice.reducer;

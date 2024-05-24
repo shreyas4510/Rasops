@@ -7,7 +7,7 @@ import CryptoJS from 'crypto-js';
 import env from '../../config/env';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getManagers } from '../../store/slice/manager.slice';
+import { getManagersRequest } from '../../store/slice/manager.slice';
 import {
     setHotelOptions,
     createHotelRequest,
@@ -15,7 +15,8 @@ import {
     removeHotelRequest,
     setDeleteHotelConfirm,
     setFormData,
-    updateHotelRequest
+    updateHotelRequest,
+    getAssignableManagerRequest
 } from '../../store/slice/hotel.slice';
 import { createColumnHelper } from '@tanstack/react-table';
 import Table from '../../components/Table';
@@ -27,13 +28,6 @@ function Hotels() {
     const user = useSelector((state) => state.user);
     const managers = useSelector((state) => state.manager);
     const { hotelOptions, data, deleteHotelConfirm, formData } = useSelector((state) => state.hotel);
-    const hotels = useSelector((state) => state.hotel);
-
-    useEffect(() => {
-        console.log(hotels);
-        console.log(managers);
-        console.log(user);
-    }, [hotels]);
 
     const navigate = useNavigate();
 
@@ -78,7 +72,7 @@ function Hotels() {
 
     useEffect(() => {
         if (!managers.data.rows && user.data?.id) {
-            dispatch(getManagers(user.data.id));
+            dispatch(getManagersRequest(user.data.id));
         }
     }, [managers.data.rows, user.data]);
 
@@ -151,8 +145,16 @@ function Hotels() {
                                             }
                                             return cur;
                                         }, []);
-
-                                        dispatch(setFormData(updateOptions({ ...row.original, manager })));
+                                        dispatch(
+                                            setFormData(
+                                                updateOptions({
+                                                    ...row.original,
+                                                    manager: row?.original?.managers.map((row) => {
+                                                        return { label: row?.name, value: row?.id };
+                                                    })
+                                                })
+                                            )
+                                        );
                                         dispatch(
                                             setHotelOptions({
                                                 ...hotelOptions,
@@ -162,6 +164,7 @@ function Hotels() {
                                                 }
                                             })
                                         );
+                                        dispatch(getAssignableManagerRequest());
                                     }
                                 },
                                 {
@@ -232,6 +235,7 @@ function Hotels() {
                     className="d-flex border-none gap-2 ms-auto"
                     onClick={() => {
                         dispatch(setFormData(createOptions));
+                        dispatch(getAssignableManagerRequest());
                     }}
                 >
                     <FcPlus data-testid="plus-icon" size={20} color="white" className="m-auto" />

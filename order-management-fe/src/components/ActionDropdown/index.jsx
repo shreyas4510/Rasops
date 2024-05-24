@@ -15,8 +15,10 @@ function ActionDropdown({ options, disabled = false }) {
                             if (!item.onClick) return;
                             item.onClick(item.meta);
                         }}
+                        className={item?.className}
                     >
-                        {item.label}
+                        {item?.preInfo}
+                        {item?.label}
                     </Dropdown.Item>
                 ))}
             </Dropdown.Menu>

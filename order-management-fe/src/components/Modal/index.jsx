@@ -37,6 +37,7 @@ function OTMModal({
                                     label={property.label}
                                     options={property.options}
                                     setFieldValue={setFieldValue}
+                                    disabled={property.disabled}
                                 />
                             );
                         })}

@@ -2,6 +2,26 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const managerSlice = createSlice({
     name: 'MANAGER',
+    initialState: {
+        updateManagerModal: false,
+        selectedRow: {},
+        isRemoveManager: false,
+        data: {},
+        formInfo: false,
+        managerOptions: {
+            name: { name: 'name', type: 'text', label: 'Manager Name', className: 'col-6', disabled: true },
+            phoneNumber: {
+                name: 'phoneNumber',
+                type: 'number',
+                label: 'Phone Number',
+                className: 'col-6',
+                disabled: true
+            },
+            email: { name: 'email', type: 'text', label: 'Email', className: 'col-6', disabled: true },
+            hotelName: { name: 'hotelName', type: 'select', label: 'Hotel Name', className: 'col-6', options: [] },
+            address: { name: 'address', type: 'text', label: 'Address', className: 'col-6', disabled: false }
+        }
+    },
     reducers: {
         setUpdateManagerModal: (state) => {
             state.updateManagerModal = !state.updateManagerModal;
@@ -12,20 +32,31 @@ const managerSlice = createSlice({
         setIsRemoveManager: (state) => {
             state.isRemoveManager = !state.isRemoveManager;
         },
-        getManagers() {},
+        getManagersRequest() {},
         getManagerSuccess(state, action) {
             state.data = action.payload;
+        },
+        setFormInfo(state, action) {
+            state.formInfo = action.payload;
+        },
+        updateManagerRequest() {},
+        removeManagerRequest() {},
+        setHotelOption(state, action) {
+            state.managerOptions.hotelName.options = action.payload;
         }
-    },
-    initialState: {
-        updateManagerModal: false,
-        selectedRow: {},
-        isRemoveManager: false,
-        data: {}
     }
 });
 
-export const { setUpdateManagerModal, setSelectedRow, setIsRemoveManager, getManagers, getManagerSuccess } =
-    managerSlice.actions;
+export const {
+    setUpdateManagerModal,
+    setSelectedRow,
+    setIsRemoveManager,
+    getManagersRequest,
+    getManagerSuccess,
+    setFormInfo,
+    updateManagerRequest,
+    removeManagerRequest,
+    setHotelOption
+} = managerSlice.actions;
 
 export const managerReducer = managerSlice.reducer;
