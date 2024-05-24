@@ -8,7 +8,6 @@ function* inviteUserRequestSaga(action) {
     try {
         const { email } = action.payload;
         const res = yield service.inviteUser({ email });
-        yield put(listInviteRequest({}));
         yield put(inviteUserSuccess({ data: res }));
         toast.success('User invited successfully');
     } catch (error) {
