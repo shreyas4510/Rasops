@@ -84,8 +84,12 @@ export const updateValidation = (payload) => {
             lastName: Joi.string().min(3).max(30).optional(),
             password: Joi.string()
                 .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-                .optional()
-        }).or('firstName', 'lastName', 'password');
+                .optional(),
+            preferences: Joi.object({
+                notification: Joi.boolean().optional(),
+                payment: Joi.boolean().optional()
+            })
+        }).or('firstName', 'lastName', 'password', 'preferences');
 
         return schema.validate(payload);
     } catch (error) {

@@ -5,6 +5,7 @@ import hotelModel from '../api/models/hotel.model.js';
 import hotelUserRelationModel from '../api/models/hotelUserRelation.model.js';
 import inviteModel from '../api/models/invite.model.js';
 import menuModel from '../api/models/menu.model.js';
+import preferencesModel from '../api/models/preferences.model.js';
 import tableModel from '../api/models/table.model.js';
 import userModel from '../api/models/user.model.js';
 import { CustomError } from '../api/utils/common.js';
@@ -48,6 +49,7 @@ const defineModels = (sequelize) => {
     db.tables = tableModel(sequelize);
     db.categories = categoryModel(sequelize);
     db.menu = menuModel(sequelize);
+    db.preferences = preferencesModel(sequelize);
 };
 
 const initDb = async () => {
