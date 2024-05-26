@@ -1,13 +1,14 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import * as service from '../../services/auth.service';
-import { getUserRequest, getUserSuccess } from '../slice';
+import { getUserRequest, getUserSuccess, setSettingsFormData } from '../slice';
 import {
     FORGOT_PASSWORD_REQUEST,
     GET_USER_REQUEST,
     LOGIN_USER_REQUEST,
     REGISTER_USER_REQUEST,
     RESET_PASSWORD_REQUEST,
+    UPDATE_USER_REQUEST,
     VERIFY_USER_REQUEST
 } from '../types';
 
@@ -79,7 +80,6 @@ function* getUserRequestSaga(action) {
         const navigate = action.payload?.navigate;
         const res = yield service.getUser();
         yield put(getUserSuccess(res));
-
         if (navigate) {
             if (res.role.toLowerCase() === 'owner') {
                 navigate('/hotels');
@@ -92,6 +92,19 @@ function* getUserRequestSaga(action) {
     }
 }
 
+function* updateUserRequestSaga(action) {
+    try {
+        const res = yield service.updateUser(action.payload);
+        yield put(getUserSuccess(res));
+        toast.success('User details updated successfully');
+        yield put(setSettingsFormData(false));
+    } catch (error) {
+        console.error(`Failed to update user: ${error?.message}`);
+        yield put(setSettingsFormData(false));
+        toast.error('Failed to update user details');
+    }
+}
+
 export default function* authSaga() {
     yield all([
         takeLatest(LOGIN_USER_REQUEST, loginUserRequestSaga),
@@ -99,6 +112,7 @@ export default function* authSaga() {
         takeLatest(VERIFY_USER_REQUEST, verifyUserRequestSaga),
         takeLatest(FORGOT_PASSWORD_REQUEST, forgotPasswordRequestSaga),
         takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga),
-        takeLatest(GET_USER_REQUEST, getUserRequestSaga)
+        takeLatest(GET_USER_REQUEST, getUserRequestSaga),
+        takeLatest(UPDATE_USER_REQUEST, updateUserRequestSaga)
     ]);
 }

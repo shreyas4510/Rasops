@@ -36,7 +36,7 @@ const hotelSlice = createSlice({
         setDeleteHotelConfirm(state, action) {
             state.deleteHotelConfirm = action.payload;
         },
-        setFormData(state, action) {
+        setHotelFormData(state, action) {
             state.formData = action.payload;
         },
         getAssignableManagerRequest() {},
@@ -57,7 +57,7 @@ export const {
     updateHotelRequest,
     updateHotelSuccess,
     setDeleteHotelConfirm,
-    setFormData,
+    setHotelFormData,
     getHotelManagersRequest,
     getHotelManagersSuccess,
     getAssignableManagerRequest,

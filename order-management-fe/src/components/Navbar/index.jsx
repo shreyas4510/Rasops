@@ -14,21 +14,22 @@ import env from '../../config/env';
 import { IoCaretBack } from 'react-icons/io5';
 
 function Navbars() {
-    const user = useSelector((state) => state.user);
+    const user = useSelector((state) => state.user.data);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        if (!user?.data) {
-            dispatch(getUserRequest());
-        }
-    }, []);
 
     const notifications = 5;
     const navigate = useNavigate();
+
     const handleLogout = () => {
         localStorage.clear();
         navigate('/');
     };
+
+    useEffect(() => {
+        if (!user.id) {
+            dispatch(getUserRequest({ navigate }));
+        }
+    }, []);
 
     const viewData = JSON.parse(
         CryptoJS.AES.decrypt(localStorage.getItem('data'), env.cryptoSecret).toString(CryptoJS.enc.Utf8)
@@ -42,7 +43,7 @@ function Navbars() {
                         className="switch-button mx-4 d-flex align-items-center fw-bold"
                         onClick={() => {
                             const details = CryptoJS.AES.encrypt(
-                                JSON.stringify({ role: user?.data?.role }),
+                                JSON.stringify({ role: user.role }),
                                 env.cryptoSecret
                             ).toString();
                             localStorage.setItem('data', details);
