@@ -10,7 +10,8 @@ function CustomFormGroup({
     disabled = false,
     formKey = '',
     options = [],
-    setFieldValue = () => {}
+    setFieldValue = () => {},
+    isMulti = true
 }) {
     return (
         <FormGroup className={className} key={formKey}>
@@ -25,7 +26,7 @@ function CustomFormGroup({
                         <Select
                             {...field}
                             options={options}
-                            isMulti
+                            isMulti={isMulti}
                             onChange={(selectedOptions) => {
                                 setFieldValue(name, selectedOptions);
                             }}

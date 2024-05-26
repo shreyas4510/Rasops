@@ -1,33 +1,35 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
-import { FaEdit } from 'react-icons/fa';
+import { TbUserEdit } from 'react-icons/tb';
 import { MdDeleteForever } from 'react-icons/md';
 import OTMModal from '../../components/Modal';
-import { managerSchema } from '../../validations/manager';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     getManagersRequest,
     removeManagerRequest,
     setFormInfo,
     setHotelOption,
-    setIsRemoveManager,
     setSelectedRow,
-    setUpdateManagerModal,
     updateManagerRequest
 } from '../../store/slice/manager.slice';
 import ActionDropdown from '../../components/ActionDropdown';
 import { getHotelRequest } from '../../store/slice';
+import moment from 'moment';
 
-const columnHelper = createColumnHelper();
 function Managers() {
-    const { isRemoveManager, managerOptions, formInfo, data, selectedRow } = useSelector((state) => state.manager);
-    const user = useSelector((state) => state.user);
-    const hotels = useSelector((state) => state.hotel);
+    const { managerOptions, formInfo, data, selectedRow } = useSelector((state) => state.manager);
+    const { data: hotels } = useSelector((state) => state.hotel);
     const dispatch = useDispatch();
 
     const updateOptions = (data) => {
-        const { firstName, lastName, phoneNumber, email, id, hotelId, address } = data;
+        const { firstName, lastName, phoneNumber, email, id, hotel, createdAt } = data;
+
+        const hotels = [];
+        if (Object.keys(hotel).length) {
+            hotels.push({ label: hotel.name, value: hotel.id });
+        }
+
         return {
             action: 'update',
             title: 'Update Manager',
@@ -36,8 +38,8 @@ function Managers() {
                 name: firstName + ' ' + lastName,
                 phoneNumber,
                 email,
-                hotelName: hotelId?.name,
-                address
+                hotel: hotels,
+                onboarded: moment(createdAt).format('DD-MMM-YYYY')
             },
             submitText: 'Update',
             closeText: 'Close'
@@ -86,40 +88,50 @@ function Managers() {
     };
 
     useEffect(() => {
-        dispatch(getHotelRequest());
-    }, []);
-
-    useEffect(() => {
+        if (!hotels?.rows?.length) {
+            dispatch(getHotelRequest());
+        }
         dispatch(
             setHotelOption(
-                hotels?.data?.rows?.map((row) => {
+                hotels?.rows?.map((row) => {
                     return { label: row?.name, value: row?.id };
                 })
             )
         );
-    }, [hotels]);
+    }, [Object.keys(hotels).length]);
 
     useEffect(() => {
-        if (user?.data?.id) {
-            dispatch(getManagersRequest(user.data.id));
-        }
-    }, [user?.data]);
+        dispatch(getManagersRequest());
+    }, []);
 
     const handleDelete = async () => {
         const id = selectedRow?.id;
-        dispatch(removeManagerRequest({ ownerId: user.data.id, id }));
+        dispatch(removeManagerRequest({ id }));
     };
+
     const handleSubmit = async (values, { setSubmitting }) => {
         setSubmitting(true);
-        dispatch(updateManagerRequest({ ownerId: user.data.id, id: formInfo.id, data: values }));
+        const { initialValues, managerId } = formInfo;
+        const payload = {
+            prev: initialValues?.hotel[0]?.value,
+            current: values?.hotel?.value
+        };
+        dispatch(updateManagerRequest({ id: managerId, data: payload }));
         setSubmitting(false);
     };
 
+    const columnHelper = createColumnHelper();
     const columns = [
         columnHelper.display({
             id: 'name',
             header: 'Name',
-            cell: ({ row }) => <div>{row?.original?.firstName + ' ' + row?.original?.lastName}</div>
+            cell: ({ row }) => {
+                return row?.original?.firstName ? (
+                    <div>{row?.original?.firstName + ' ' + row?.original?.lastName}</div>
+                ) : (
+                    <></>
+                );
+            }
         }),
         columnHelper.display({
             id: 'phoneNumber',
@@ -132,6 +144,12 @@ function Managers() {
             cell: ({ row }) => <div>{row?.original?.hotel?.name}</div>
         }),
         columnHelper.display({
+            id: 'createdAt',
+            header: 'Onboarded',
+            cell: ({ row }) =>
+                row?.original?.createdAt && <div>{moment(row?.original?.createdAt).format('DD-MMM-YYYY')}</div>
+        }),
+        columnHelper.display({
             id: 'actions',
             header: 'Actions',
             cell: ({ row }) => {
@@ -140,29 +158,17 @@ function Managers() {
                         options={[
                             {
                                 label: 'Edit',
-                                preInfo: <FaEdit data-testid="plus-icon" size={20} color="#49ac60" className="mx-2" />,
+                                icon: TbUserEdit,
                                 onClick: () => {
-                                    dispatch(setUpdateManagerModal());
                                     dispatch(setFormInfo(updateOptions(row.original)));
-                                },
-                                className: 'd-flex align-items-center gap-2'
+                                }
                             },
-
                             {
                                 label: 'Delete',
-                                preInfo: (
-                                    <MdDeleteForever
-                                        data-testid="plus-icon"
-                                        size={25}
-                                        color="#49ac60"
-                                        className="mx-1"
-                                    />
-                                ),
+                                icon: MdDeleteForever,
                                 onClick: () => {
-                                    dispatch(setIsRemoveManager());
-                                    dispatch(setSelectedRow(row));
-                                },
-                                className: 'd-flex align-items-center gap-2'
+                                    dispatch(setSelectedRow(row.original));
+                                }
                             }
                         ]}
                     />
@@ -170,15 +176,17 @@ function Managers() {
             }
         })
     ];
+
     return (
         <>
             <div className="heading-container">
                 <h4 className="text-center text-white pt-5">Managers</h4>
             </div>
-            <div className="mx-4 my-4 pt-4 d-flex flex-column">
+            <div className="mx-5 my-4 d-flex flex-column">
                 <Table
                     columns={columns}
                     data={data?.rows}
+                    count={data?.rows?.count}
                     onPaginationChange={onPaginationChange}
                     pagination={pagination}
                     onFilterChange={onFilterChange}
@@ -191,7 +199,6 @@ function Managers() {
                 type="form"
                 title={formInfo?.title}
                 initialValues={formInfo.initialValues}
-                validationSchema={managerSchema}
                 handleSubmit={handleSubmit}
                 description={managerOptions}
                 handleClose={() => {
@@ -203,13 +210,26 @@ function Managers() {
                 closeText={formInfo.closeText}
             />
             <OTMModal
-                show={isRemoveManager}
+                show={selectedRow}
                 size="md"
                 closeText={'Cancel'}
                 submitText={'Delete'}
                 title={'Delete Manager'}
-                description={'Are you sure you want to delete the Manager? This action cannot be undone.'}
-                handleClose={() => dispatch(setIsRemoveManager())}
+                description={
+                    <>
+                        <div>
+                            Are you sure you want to remove{' '}
+                            <span className="fw-bold">{`${selectedRow.firstName} ${selectedRow.lastName}`}</span> from
+                            our app ?
+                        </div>
+                        <br />
+                        <div className="fw-bold">
+                            Note: This action is irreversible and will delete all associated data and listings for this
+                            hotel.
+                        </div>
+                    </>
+                }
+                handleClose={() => dispatch(setSelectedRow(false))}
                 handleSubmit={handleDelete}
             />
         </>

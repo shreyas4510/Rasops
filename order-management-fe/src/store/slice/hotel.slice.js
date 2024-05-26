@@ -22,9 +22,6 @@ const hotelSlice = createSlice({
             state.hotelOptions = action.payload;
         },
         createHotelRequest() {},
-        createHotelSuccess(state, action) {
-            state.data.push(action.payload);
-        },
         getHotelRequest() {},
         getHotelSuccess(state, action) {
             state.data = action.payload;
@@ -44,7 +41,8 @@ const hotelSlice = createSlice({
         },
         getAssignableManagerRequest() {},
         setAssignableManagers(state, action) {
-            state.hotelOptions.manager.options = action.payload;
+            const selectedMangers = state?.formData?.initialValues?.manager || [];
+            state.hotelOptions.manager.options = [...selectedMangers, ...action.payload];
         }
     }
 });
@@ -52,7 +50,6 @@ const hotelSlice = createSlice({
 export const {
     setHotelOptions,
     createHotelRequest,
-    createHotelSuccess,
     getHotelRequest,
     getHotelSuccess,
     removeHotelRequest,

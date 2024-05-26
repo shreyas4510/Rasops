@@ -1,36 +1,56 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { MANAGER } from '../types';
 
+const fieldClass = 'col-6 my-2';
 const managerSlice = createSlice({
-    name: 'MANAGER',
+    name: MANAGER,
     initialState: {
-        updateManagerModal: false,
-        selectedRow: {},
+        selectedRow: false,
         isRemoveManager: false,
         data: {},
         formInfo: false,
         managerOptions: {
-            name: { name: 'name', type: 'text', label: 'Manager Name', className: 'col-6', disabled: true },
+            name: {
+                name: 'name',
+                type: 'text',
+                label: 'Manager Name',
+                className: fieldClass,
+                disabled: true
+            },
             phoneNumber: {
                 name: 'phoneNumber',
                 type: 'number',
                 label: 'Phone Number',
-                className: 'col-6',
+                className: fieldClass,
                 disabled: true
             },
-            email: { name: 'email', type: 'text', label: 'Email', className: 'col-6', disabled: true },
-            hotelName: { name: 'hotelName', type: 'select', label: 'Hotel Name', className: 'col-6', options: [] },
-            address: { name: 'address', type: 'text', label: 'Address', className: 'col-6', disabled: false }
+            email: {
+                name: 'email',
+                type: 'text',
+                label: 'Email',
+                className: fieldClass,
+                disabled: true
+            },
+            onboarded: {
+                name: 'onboarded',
+                type: 'text',
+                label: 'Onboarded',
+                className: fieldClass,
+                disabled: true
+            },
+            hotel: {
+                name: 'hotel',
+                type: 'select',
+                label: 'Hotel Name',
+                className: 'col my-2',
+                isMulti: false,
+                options: []
+            }
         }
     },
     reducers: {
-        setUpdateManagerModal: (state) => {
-            state.updateManagerModal = !state.updateManagerModal;
-        },
         setSelectedRow: (state, action) => {
             state.selectedRow = action.payload;
-        },
-        setIsRemoveManager: (state) => {
-            state.isRemoveManager = !state.isRemoveManager;
         },
         getManagersRequest() {},
         getManagerSuccess(state, action) {
@@ -42,15 +62,13 @@ const managerSlice = createSlice({
         updateManagerRequest() {},
         removeManagerRequest() {},
         setHotelOption(state, action) {
-            state.managerOptions.hotelName.options = action.payload;
+            state.managerOptions.hotel.options = action.payload;
         }
     }
 });
 
 export const {
-    setUpdateManagerModal,
     setSelectedRow,
-    setIsRemoveManager,
     getManagersRequest,
     getManagerSuccess,
     setFormInfo,

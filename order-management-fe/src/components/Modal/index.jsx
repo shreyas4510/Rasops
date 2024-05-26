@@ -38,6 +38,7 @@ function OTMModal({
                                     options={property.options}
                                     setFieldValue={setFieldValue}
                                     disabled={property.disabled}
+                                    isMulti={property.isMulti}
                                 />
                             );
                         })}

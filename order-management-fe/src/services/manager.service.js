@@ -1,6 +1,6 @@
 import { api, method } from '../api/apiClient';
 
-export const getManagers = async (_ownerId) => {
+export const getManagers = async () => {
     try {
         return await api(method.GET, `/manager`);
     } catch (error) {
