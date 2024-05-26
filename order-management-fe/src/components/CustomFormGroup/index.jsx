@@ -1,5 +1,5 @@
 import { ErrorMessage, Field } from 'formik';
-import { FormGroup, FormLabel } from 'react-bootstrap';
+import { Form, FormGroup, FormLabel } from 'react-bootstrap';
 import Select from 'react-select';
 
 function CustomFormGroup({
@@ -29,6 +29,20 @@ function CustomFormGroup({
                             isMulti={isMulti}
                             onChange={(selectedOptions) => {
                                 setFieldValue(name, selectedOptions);
+                            }}
+                        />
+                    )}
+                </Field>
+            ) : type === 'switch' ? (
+                <Field name={name}>
+                    {({ field }) => (
+                        <Form.Check
+                            {...field}
+                            type="switch"
+                            disabled={disabled}
+                            defaultChecked={field.value}
+                            onChange={(e) => {
+                                setFieldValue(name, e.target.checked);
                             }}
                         />
                     )}

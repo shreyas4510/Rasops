@@ -7,7 +7,7 @@ import CryptoJS from 'crypto-js';
 import env from '../../config/env';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getManagersRequest } from '../../store/slice/manager.slice';
+import { FaHandPointRight } from 'react-icons/fa';
 import { MdEditDocument } from 'react-icons/md';
 import { MdDeleteForever } from 'react-icons/md';
 import {
@@ -16,7 +16,7 @@ import {
     getHotelRequest,
     removeHotelRequest,
     setDeleteHotelConfirm,
-    setFormData,
+    setHotelFormData,
     updateHotelRequest,
     getAssignableManagerRequest
 } from '../../store/slice/hotel.slice';
@@ -121,6 +121,21 @@ function Hotels() {
                         <ActionDropdown
                             options={[
                                 {
+                                    label: 'Check-In',
+                                    icon: FaHandPointRight,
+                                    onClick: () => {
+                                        const details = CryptoJS.AES.encrypt(
+                                            JSON.stringify({
+                                                role: user.data.role,
+                                                hotelId: row.original.id
+                                            }),
+                                            env.cryptoSecret
+                                        ).toString();
+                                        localStorage.setItem('data', details);
+                                        navigate('/dashboard');
+                                    }
+                                },
+                                {
                                     label: 'Edit',
                                     icon: MdEditDocument,
                                     onClick: () => {
@@ -130,7 +145,7 @@ function Hotels() {
                                             managers = [];
                                         }
                                         dispatch(
-                                            setFormData(
+                                            setHotelFormData(
                                                 updateOptions({
                                                     ...row.original,
                                                     manager: managers.map((item) => ({
@@ -189,22 +204,7 @@ function Hotels() {
     return (
         <>
             <div className="heading-container">
-                <h4
-                    className="text-center text-white pt-5"
-                    onClick={() => {
-                        const details = CryptoJS.AES.encrypt(
-                            JSON.stringify({
-                                role: user.data.role,
-                                managerId: 'test-manager-id'
-                            }),
-                            env.cryptoSecret
-                        ).toString();
-                        localStorage.setItem('data', details);
-                        navigate('/dashboard');
-                    }}
-                >
-                    Hotels
-                </h4>
+                <h4 className="text-center text-white pt-5">Hotels</h4>
             </div>
             <div className="text-end mx-5 my-4">
                 <CustomButton
@@ -217,7 +217,7 @@ function Hotels() {
                         </span>
                     }
                     onClick={() => {
-                        dispatch(setFormData(createOptions));
+                        dispatch(setHotelFormData(createOptions));
                         dispatch(getAssignableManagerRequest());
                     }}
                 />
@@ -234,7 +234,7 @@ function Hotels() {
                 handleSubmit={handleSubmit}
                 description={hotelOptions}
                 handleClose={() => {
-                    dispatch(setFormData(false));
+                    dispatch(setHotelFormData(false));
                 }}
                 isFooter={false}
                 size={'lg'}

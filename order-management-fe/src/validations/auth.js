@@ -42,3 +42,19 @@ export const passwordSchema = Yup.object().shape({
         .oneOf([Yup.ref('password'), null], 'Passwords must match')
         .required()
 });
+
+export const settingsSchema = Yup.object().shape({
+    firstName: Yup.string().min(3).max(30).required(),
+    lastName: Yup.string().min(3).max(30).required(),
+    newPassword: Yup.string(),
+    confirmPassword: Yup.string().when('newPassword', {
+        is: (value) => value && value.length > 0,
+        then: () =>
+            Yup.string()
+                .required('Confirm password is required when setting new password.')
+                .oneOf([Yup.ref('newPassword'), null], 'Must match new password.'),
+        otherwise: () => Yup.string()
+    }),
+    notification: Yup.boolean().required(),
+    payment: Yup.boolean().required()
+});
