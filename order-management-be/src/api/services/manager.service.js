@@ -35,7 +35,8 @@ const fetch = async (payload) => {
                                     model: db.hotel,
                                     attributes: ['id', 'name']
                                 }
-                            ]
+                            ],
+                            separate: true
                         }
                     ]
                 }
@@ -172,7 +173,9 @@ const getAssignable = async (ownerId, filter) => {
                     model: db.users,
                     where: {
                         id: {
-                            [Op.notIn]: literal(`(SELECT userId FROM ${TABLES.HOTEL_USER_RELATION})`)
+                            [Op.notIn]: literal(
+                                `(SELECT userId FROM ${TABLES.HOTEL_USER_RELATION} WHERE deletedAt IS NULL)`
+                            )
                         }
                     }
                 }
