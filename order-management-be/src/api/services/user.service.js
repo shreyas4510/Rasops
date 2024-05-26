@@ -3,11 +3,13 @@ import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
+import { db } from '../../config/database.js';
 import env from '../../config/env.js';
 import logger from '../../config/logger.js';
 import { INVITE_STATUS } from '../models/invite.model.js';
 import { USER_ROLES, USER_STATUS } from '../models/user.model.js';
 import inviteRepo from '../repositories/invite.repository.js';
+import preferencesRepo from '../repositories/preferences.repository.js';
 import userRepo from '../repositories/user.repository.js';
 import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
 import { sendEmail } from './email.service.js';
@@ -35,6 +37,16 @@ const create = async (payload) => {
             logger('debug', `Updating invite status for invite ID: ${payload.invite}`);
             await inviteRepo.update({ id: payload.invite }, { status: INVITE_STATUS[1], userId: user.id });
         }
+
+        // user preferences saved
+        const preferences = {
+            id: uuidv4(),
+            userId: user.id,
+            notification: false,
+            payment: false
+        };
+        await preferencesRepo.save(preferences);
+        logger('info', 'User preferences saved successfully:', data);
 
         // send verification email to the user
         logger('debug', 'Sending verification email to the user');
@@ -334,10 +346,18 @@ const removeInvite = async (id) => {
 const getUser = async (user) => {
     try {
         const { id } = user;
-        return await userRepo.findOne({
+
+        const fetchOptions = {
             where: { id },
-            attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role']
-        });
+            attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role'],
+            include: [
+                {
+                    model: db.preferences,
+                    attributes: ['notification', 'payment']
+                }
+            ]
+        };
+        return await userRepo.findOne(fetchOptions);
     } catch (error) {
         logger('error', 'Error while getting user details', { id: user.id, error });
         throw CustomError(error.code, error.message);
@@ -347,12 +367,29 @@ const getUser = async (user) => {
 const update = async (id, payload) => {
     try {
         const options = { where: { id } };
-        const updateData = await userRepo.update(options, payload);
+        const { preferences, ...rest } = payload;
+
+        logger('debug', `Preferences options : ${JSON.stringify(preferences)}`);
+        logger('debug', `User updates : ${JSON.stringify(rest)}`);
+
+        const updateData = await userRepo.update(options, rest);
         logger('debug', `${id} User updated successfully with status ${updateData[0]}`);
-        return await userRepo.findOne({
+
+        const preferenceOptions = { where: { userId: id } };
+        await preferencesRepo.update(preferenceOptions, preferences);
+        logger('debug', `${id} User preferences updated successfully`);
+
+        const fetchOptions = {
             where: { id },
-            attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role']
-        });
+            attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber', 'role'],
+            include: [
+                {
+                    model: db.preferences,
+                    attributes: ['notification', 'payment']
+                }
+            ]
+        };
+        return await userRepo.findOne(fetchOptions);
     } catch (error) {
         logger('error', `Error while updating user details ${id} ${error}`);
         throw CustomError(error.code, error.message);
