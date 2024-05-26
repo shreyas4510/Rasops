@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
-import { FcPlus } from 'react-icons/fc';
+import { TiPlus } from 'react-icons/ti';
 import OTMModal from '../../components/Modal';
 import { hotelRegistrationSchema } from '../../validations/hotel';
 import CryptoJS from 'crypto-js';
@@ -8,6 +8,8 @@ import env from '../../config/env';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getManagersRequest } from '../../store/slice/manager.slice';
+import { MdEditDocument } from 'react-icons/md';
+import { MdDeleteForever } from 'react-icons/md';
 import {
     setHotelOptions,
     createHotelRequest,
@@ -22,6 +24,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import Table from '../../components/Table';
 import ActionDropdown from '../../components/ActionDropdown';
 import { getHotelUpdateDifference } from '../../utils';
+import CustomButton from '../../components/CustomButton';
 
 function Hotels() {
     const dispatch = useDispatch();
@@ -69,24 +72,6 @@ function Hotels() {
         const id = deleteHotelConfirm.id;
         dispatch(removeHotelRequest(id));
     };
-
-    useEffect(() => {
-        if (!managers.data.rows && user.data?.id) {
-            dispatch(getManagersRequest(user.data.id));
-        }
-    }, [managers.data.rows, user.data]);
-
-    useEffect(() => {
-        if (managers.data?.rows?.length) {
-            const options = managers.data.rows.reduce((cur, next) => {
-                if (!next.hotelId) cur.push({ value: next.id, label: next.name });
-                return cur;
-            }, []);
-            const data = { ...hotelOptions };
-            data.manager = { ...data.manager, options };
-            dispatch(setHotelOptions(data));
-        }
-    }, [managers.data.rows]);
 
     useEffect(() => {
         dispatch(getHotelRequest());
@@ -137,38 +122,30 @@ function Hotels() {
                             options={[
                                 {
                                     label: 'Edit',
+                                    icon: MdEditDocument,
                                     onClick: () => {
-                                        const { id } = row.original;
-                                        const manager = managers.data.rows.reduce((cur, next) => {
-                                            if (next.hotelId === id) {
-                                                cur.push({ label: next.name, value: next.id });
-                                            }
-                                            return cur;
-                                        }, []);
+                                        let { managers } = row.original;
+                                        console.log(managers);
+                                        if (!Object.keys(managers).length) {
+                                            managers = [];
+                                        }
                                         dispatch(
                                             setFormData(
                                                 updateOptions({
                                                     ...row.original,
-                                                    manager: row?.original?.managers.map((row) => {
-                                                        return { label: row?.name, value: row?.id };
-                                                    })
+                                                    manager: managers.map((item) => ({
+                                                        label: item.name,
+                                                        value: item.id
+                                                    }))
                                                 })
                                             )
-                                        );
-                                        dispatch(
-                                            setHotelOptions({
-                                                ...hotelOptions,
-                                                manager: {
-                                                    ...hotelOptions.manager,
-                                                    options: [...hotelOptions.manager.options, ...manager]
-                                                }
-                                            })
                                         );
                                         dispatch(getAssignableManagerRequest());
                                     }
                                 },
                                 {
                                     label: 'Delete',
+                                    icon: MdDeleteForever,
                                     onClick: () => {
                                         dispatch(
                                             setDeleteHotelConfirm({
@@ -229,18 +206,21 @@ function Hotels() {
                     Hotels
                 </h4>
             </div>
-            <div className="text-end m-4">
-                <Button
-                    style={{ background: '#198754' }}
+            <div className="text-end mx-5 my-4">
+                <CustomButton
                     className="d-flex border-none gap-2 ms-auto"
+                    disabled={false}
+                    label={
+                        <span className="d-flex align-items-center">
+                            <TiPlus size={20} color="white" />
+                            <span className="mx-2">Add Hotel</span>
+                        </span>
+                    }
                     onClick={() => {
                         dispatch(setFormData(createOptions));
                         dispatch(getAssignableManagerRequest());
                     }}
-                >
-                    <FcPlus data-testid="plus-icon" size={20} color="white" className="m-auto" />
-                    Add Hotel
-                </Button>
+                />
             </div>
             <div className="mx-5 d-flex flex-column">
                 <Table columns={columns} data={data.rows} count={data.count} />

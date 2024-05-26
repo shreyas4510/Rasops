@@ -6,6 +6,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import moment from 'moment';
 import OTMModal from '../../components/Modal';
 import { useDispatch } from 'react-redux';
+import { MdDeleteForever } from 'react-icons/md';
 import {
     inviteUserRequest,
     listInviteRequest,
@@ -122,6 +123,7 @@ function Invites() {
                         options={[
                             {
                                 label: 'Delete',
+                                icon: MdDeleteForever,
                                 onClick: setRemoveInvite,
                                 meta: { id: row.original.id },
                                 onClick: () => {

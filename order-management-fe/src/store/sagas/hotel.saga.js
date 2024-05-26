@@ -1,14 +1,7 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import * as service from '../../services/hotel.service';
-import {
-    createHotelSuccess,
-    getHotelRequest,
-    getHotelSuccess,
-    removeHotelSuccess,
-    setAssignableManagers,
-    setFormData
-} from '../slice';
+import { getHotelRequest, getHotelSuccess, removeHotelSuccess, setAssignableManagers, setFormData } from '../slice';
 import {
     CREATE_HOTEL_REQUEST,
     GET_ASSIGNABLE_MANAGER,
@@ -20,9 +13,9 @@ import {
 function* createHotelRequestSaga(action) {
     try {
         const data = action.payload;
-        const res = yield service.create(data);
-        yield put(createHotelSuccess(res));
+        yield service.create(data);
         toast.success('Hotel Created successfully');
+        yield put(getHotelRequest());
         yield put(setFormData(false));
     } catch (error) {
         toast.error(`Failed to create hotel ${error?.message}`);
