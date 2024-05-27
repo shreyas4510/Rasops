@@ -4,7 +4,7 @@ import { Card, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaUserEdit } from 'react-icons/fa';
 import { setSettingsFormData, updateUserRequest } from '../../store/slice';
-import OTMModal from '../../components/Modal';
+import OMTModal from '../../components/Modal';
 import { settingsSchema } from '../../validations/auth';
 import env from '../../config/env';
 import CryptoJS from 'crypto-js';
@@ -132,7 +132,7 @@ const Settings = () => {
                     </Row>
                 </Card.Body>
             </Card>
-            <OTMModal
+            <OMTModal
                 show={formData}
                 type="form"
                 title={formData?.title}

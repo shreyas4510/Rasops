@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Table from '../../components/Table';
 import { TbUserEdit } from 'react-icons/tb';
 import { MdDeleteForever } from 'react-icons/md';
-import OTMModal from '../../components/Modal';
+import OMTModal from '../../components/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     getManagersRequest,
@@ -194,7 +194,7 @@ function Managers() {
                     onSortingChange={onSortingChange}
                 />
             </div>
-            <OTMModal
+            <OMTModal
                 show={formInfo}
                 type="form"
                 title={formInfo?.title}
@@ -209,7 +209,7 @@ function Managers() {
                 submitText={formInfo.submitText}
                 closeText={formInfo.closeText}
             />
-            <OTMModal
+            <OMTModal
                 show={selectedRow}
                 size="md"
                 closeText={'Cancel'}

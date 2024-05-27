@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { TiPlus } from 'react-icons/ti';
-import OTMModal from '../../components/Modal';
+import OMTModal from '../../components/Modal';
 import { hotelRegistrationSchema } from '../../validations/hotel';
 import CryptoJS from 'crypto-js';
 import env from '../../config/env';
@@ -225,7 +225,7 @@ function Hotels() {
             <div className="mx-5 d-flex flex-column">
                 <Table columns={columns} data={data.rows} count={data.count} />
             </div>
-            <OTMModal
+            <OMTModal
                 show={formData}
                 type="form"
                 title={formData.title}
@@ -241,7 +241,7 @@ function Hotels() {
                 submitText={formData.submitText}
                 closeText={formData.closeText}
             />
-            <OTMModal
+            <OMTModal
                 show={deleteHotelConfirm}
                 title={'Delete Hotel'}
                 handleSubmit={handleDelete}

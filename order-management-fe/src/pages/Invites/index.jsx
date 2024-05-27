@@ -4,7 +4,7 @@ import '../../assets/styles/invite.css';
 import Table from '../../components/Table';
 import { createColumnHelper } from '@tanstack/react-table';
 import moment from 'moment';
-import OTMModal from '../../components/Modal';
+import OMTModal from '../../components/Modal';
 import { useDispatch } from 'react-redux';
 import { MdDeleteForever } from 'react-icons/md';
 import {
@@ -183,7 +183,7 @@ function Invites() {
                     filtering={filtering}
                 />
             </div>
-            <OTMModal
+            <OMTModal
                 show={isRemoveInvite}
                 size="md"
                 closeText={'Cancel'}
