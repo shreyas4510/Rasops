@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import CustomFormGroup from '../CustomFormGroup';
 import CustomButton from '../CustomButton';
 
-function OTMModal({
+function OMTModal({
     title,
     type = 'string',
     description,
@@ -97,4 +97,4 @@ function OTMModal({
     );
 }
 
-export default OTMModal;
+export default OMTModal;

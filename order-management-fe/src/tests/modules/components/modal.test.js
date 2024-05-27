@@ -1,17 +1,17 @@
 import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import OTMModal from '../../../components/Modal';
+import OMTModal from '../../../components/Modal';
 import { closebtn, description, submitbtn, title } from '../../utils/components/dummy.modal';
 
 const testFn = jest.fn();
 
 describe('test otm modal component', () => {
     test('test rendering of otm modal', async () => {
-        // Rendering the OTMModal component with provided props
+        // Rendering the OMTModal component with provided props
         await act(async () => {
             render(
-                <OTMModal
+                <OMTModal
                     title={title}
                     description={description}
                     show={true}
