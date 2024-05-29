@@ -12,6 +12,8 @@ import Hotels from '../pages/Hotels';
 import Managers from '../pages/Managers';
 import Settings from '../pages/Settings';
 import Menu from '../pages/Menu';
+import Orders from '../pages/Orders';
+import Tables from '../pages/Tables';
 
 export default function Routes() {
     return (
@@ -32,6 +34,8 @@ export default function Routes() {
                     <Route path="manager" element={<Managers />} />
                     <Route path="menu" element={<Menu />} />
                     <Route path="settings" element={<Settings />} />
+                    <Route path="tables" element={<Tables />} />
+                    <Route path="orders" element={<Orders />} />
                 </Route>
                 <Route path="/404" element={<>Not Found</>} />
                 <Route path="*" element={<Navigate to="/404" />} />

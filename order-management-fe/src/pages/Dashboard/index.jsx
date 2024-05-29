@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 function Dashboard() {
-    return <>Dashboard Page</>;
+    const hotelId = useSelector((state) => state.hotel.globalHotelId);
+    return <>Dashboard Page - {hotelId}</>;
 }
 
 export default Dashboard;

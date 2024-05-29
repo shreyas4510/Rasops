@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { IoMdArrowRoundBack, IoMdSettings, IoMdArrowRoundForward } from 'react-icons/io';
 import { MdOutlineDashboardCustomize, MdOutlineRestaurantMenu, MdOutlineAttachMoney } from 'react-icons/md';
 import { BsEnvelopePlusFill } from 'react-icons/bs';
@@ -12,10 +12,17 @@ import '../../assets/styles/sidebar.css';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import env from '../../config/env';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import Loader from '../Loader';
+import { USER_ROLES } from '../../utils/auth';
+import NoHotel from '../NoHotel';
 
 function Sidebar() {
     const [compress, setCompress] = useState(false);
+    const user = useSelector((state) => state.user?.data);
+    const globalHotelId = useSelector((state) => state.hotel?.globalHotelId);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const ownertTabs = [
         {
@@ -92,13 +99,24 @@ function Sidebar() {
             CryptoJS.AES.decrypt(localStorage.getItem('data'), env.cryptoSecret).toString(CryptoJS.enc.Utf8)
         );
         tabs =
-            Object.keys(viewData).length === 1 && viewData.role.toLowerCase() === 'owner'
+            Object.keys(viewData).length === 1 && viewData.role.toUpperCase() === USER_ROLES[0]
                 ? [...ownertTabs, ...commonTabs].sort((a, b) => a.order - b.order)
                 : [...managerTabs, ...commonTabs].sort((a, b) => a.order - b.order);
     } catch (error) {
         toast.error('Oops! Something went wrong. Please try logging in again.');
         localStorage.clear();
     }
+
+    const render = () => {
+        if (Object.keys(user).length && user.role.toUpperCase() === USER_ROLES[0]) {
+            return <Outlet />;
+        } else if (Object.keys(user).length && user.role.toUpperCase() === USER_ROLES[1]) {
+            if (!globalHotelId && [...managerTabs].find((obj) => obj.path === location.pathname)) return <NoHotel />;
+            else if ([...managerTabs, ...commonTabs].find((obj) => obj.path === location.pathname)) return <Outlet />;
+            else <Loader />;
+        }
+        return <></>;
+    };
 
     return (
         <>
@@ -156,7 +174,7 @@ function Sidebar() {
                 </ul>
             </div>
             <div className={`main-container ${compress ? 'main-container-compress' : 'main-container-full'}`}>
-                <Outlet />
+                {render()}
             </div>
         </>
     );

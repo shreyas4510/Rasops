@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
 import CustomSelect from '../../components/CustomSelect';
 import { TiPlus } from 'react-icons/ti';
@@ -6,6 +6,8 @@ import ActionDropdown from '../../components/ActionDropdown';
 import Table from '../../components/Table';
 import { createColumnHelper } from '@tanstack/react-table';
 import '../../assets/styles/menu.css';
+import { useSelector } from 'react-redux';
+import NoHotel from '../../components/NoHotel';
 
 function Menu() {
     const columnHelper = createColumnHelper();
@@ -55,6 +57,8 @@ function Menu() {
             }
         })
     ];
+
+    useEffect(() => {}, []);
 
     return (
         <>

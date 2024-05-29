@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Button } from 'react-bootstrap';
 import { TiPlus } from 'react-icons/ti';
 import OMTModal from '../../components/Modal';
 import { hotelRegistrationSchema } from '../../validations/hotel';
@@ -11,19 +10,19 @@ import { FaHandPointRight } from 'react-icons/fa';
 import { MdEditDocument } from 'react-icons/md';
 import { MdDeleteForever } from 'react-icons/md';
 import {
-    setHotelOptions,
     createHotelRequest,
     getHotelRequest,
     removeHotelRequest,
     setDeleteHotelConfirm,
     setHotelFormData,
     updateHotelRequest,
-    getAssignableManagerRequest
+    getAssignableManagerRequest,
+    setGlobalHotelId
 } from '../../store/slice/hotel.slice';
 import { createColumnHelper } from '@tanstack/react-table';
 import Table from '../../components/Table';
 import ActionDropdown from '../../components/ActionDropdown';
-import { getHotelUpdateDifference } from '../../utils';
+import { getHotelUpdateDifference } from '../../utils/hotel.js';
 import CustomButton from '../../components/CustomButton';
 
 function Hotels() {
@@ -131,6 +130,7 @@ function Hotels() {
                                             }),
                                             env.cryptoSecret
                                         ).toString();
+                                        dispatch(setGlobalHotelId(row.original.id));
                                         localStorage.setItem('data', details);
                                         navigate('/dashboard');
                                     }
@@ -140,7 +140,6 @@ function Hotels() {
                                     icon: MdEditDocument,
                                     onClick: () => {
                                         let { managers } = row.original;
-                                        console.log(managers);
                                         if (!Object.keys(managers).length) {
                                             managers = [];
                                         }
