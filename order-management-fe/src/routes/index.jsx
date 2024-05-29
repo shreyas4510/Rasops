@@ -11,6 +11,7 @@ import Invites from '../pages/Invites';
 import Hotels from '../pages/Hotels';
 import Managers from '../pages/Managers';
 import Settings from '../pages/Settings';
+import Menu from '../pages/Menu';
 
 export default function Routes() {
     return (
@@ -29,6 +30,7 @@ export default function Routes() {
                     <Route path="invites" element={<Invites />} />
                     <Route path="hotels" element={<Hotels />} />
                     <Route path="manager" element={<Managers />} />
+                    <Route path="menu" element={<Menu />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>
                 <Route path="/404" element={<>Not Found</>} />
