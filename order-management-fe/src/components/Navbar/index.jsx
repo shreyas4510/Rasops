@@ -8,10 +8,11 @@ import '../../assets/styles/navbar.css';
 import CustomButton from '../CustomButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { getUserRequest } from '../../store/slice';
+import { getUserRequest, setGlobalHotelId } from '../../store/slice';
 import CryptoJS from 'crypto-js';
 import env from '../../config/env';
 import { IoCaretBack } from 'react-icons/io5';
+import { USER_ROLES } from '../../utils/auth';
 
 function Navbars() {
     const user = useSelector((state) => state.user.data);
@@ -25,20 +26,25 @@ function Navbars() {
         navigate('/');
     };
 
-    useEffect(() => {
-        if (!user.id) {
-            dispatch(getUserRequest({ navigate }));
-        }
-    }, []);
-
     const viewData = JSON.parse(
         CryptoJS.AES.decrypt(localStorage.getItem('data'), env.cryptoSecret).toString(CryptoJS.enc.Utf8)
     );
 
+    useEffect(() => {
+        if (!user.id) {
+            dispatch(getUserRequest({ navigate }));
+        }
+        if (viewData.hotelId) {
+            console.log('Here');
+            navigate('/dashboard');
+            dispatch(setGlobalHotelId(viewData.hotelId));
+        }
+    }, []);
+
     return (
         <Navbar className="py-1 navbar-container">
             <Nav className="ms-auto d-flex align-items-center">
-                {Object.keys(viewData).length > 1 && viewData.role.toLowerCase() === 'owner' && (
+                {Object.keys(viewData).length > 1 && viewData.role.toUpperCase() === USER_ROLES[0] && (
                     <CustomButton
                         className="switch-button mx-4 d-flex align-items-center fw-bold"
                         onClick={() => {
@@ -46,6 +52,7 @@ function Navbars() {
                                 JSON.stringify({ role: user.role }),
                                 env.cryptoSecret
                             ).toString();
+                            dispatch(setGlobalHotelId(null));
                             localStorage.setItem('data', details);
                             navigate('/hotels');
                         }}

@@ -166,7 +166,7 @@ function Table({
     );
 
     return (
-        <>
+        <div className="position-relative">
             {!data.length ? <NoData /> : <></>}
             <table className="w-100">
                 <thead className="table-header">
@@ -206,7 +206,7 @@ function Table({
                 </tbody>
             </table>
             {pageCount > 1 ? <Footer /> : <></>}
-        </>
+        </div>
     );
 }
 

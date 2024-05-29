@@ -16,7 +16,7 @@ const save = async (payload) => {
 const findOne = async (payload) => {
     try {
         logger('debug', 'Fetching user data in the database');
-        return await db.users.findOne(payload);
+        return JSON.parse(JSON.stringify((await db.users.findOne(payload)), null, 4));
     } catch (error) {
         const err = error?.errors[0]?.message;
         logger('error', `Error occurred while finding user data: ${err || error.message}`);

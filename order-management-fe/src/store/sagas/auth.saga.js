@@ -1,7 +1,10 @@
+import CryptoJS from 'crypto-js';
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
+import env from '../../config/env';
 import * as service from '../../services/auth.service';
-import { getUserRequest, getUserSuccess, setSettingsFormData } from '../slice';
+import { USER_ROLES } from '../../utils/auth';
+import { getUserRequest, getUserSuccess, setGlobalHotelId, setSettingsFormData } from '../slice';
 import {
     FORGOT_PASSWORD_REQUEST,
     GET_USER_REQUEST,
@@ -81,9 +84,14 @@ function* getUserRequestSaga(action) {
         const res = yield service.getUser();
         yield put(getUserSuccess(res));
         if (navigate) {
-            if (res.role.toLowerCase() === 'owner') {
+            const viewData = JSON.parse(
+                CryptoJS.AES.decrypt(localStorage.getItem('data'), env.cryptoSecret).toString(CryptoJS.enc.Utf8)
+            );
+
+            if (res.role.toUpperCase() === USER_ROLES[0] && Object.keys(viewData).length === 1) {
                 navigate('/hotels');
             } else {
+                yield put(setGlobalHotelId(res.hotelId || viewData.hotelId));
                 navigate('/dashboard');
             }
         }
