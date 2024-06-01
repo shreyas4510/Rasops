@@ -4,7 +4,7 @@ import * as service from '../../services/manager.service';
 import { getManagerSuccess, getManagersRequest, setFormInfo, setSelectedRow } from '../slice';
 import { GET_MANAGERS_REQUEST, REMOVE_MANAGER_REQUEST, UPDATE_MANAGER_REQUEST } from '../types';
 
-function* getManagerRequestSaga(action) {
+function* getManagerRequestSaga() {
     try {
         const res = yield service.getManagers();
         yield put(getManagerSuccess(res));

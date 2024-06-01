@@ -6,19 +6,21 @@ const menuSlice = createSlice({
     initialState: {
         data: {},
         selectedCategory: {},
-        menuModalData: false
+        addCategoryModalData: false
     },
     reducers: {
         getCategoryRequest() {},
         getCategorySucess(state, action) {
             state.data = action.payload;
         },
-        setMenuModalData(state, action) {
-            state.menuModalData = action.payload;
-        }
+        setAddCategoryModalData(state, action) {
+            state.addCategoryModalData = action.payload;
+        },
+        createCategoryRequest() {}
     }
 });
 
-export const { getCategoryRequest, getCategorySucess, setMenuModalData } = menuSlice.actions;
+export const { getCategoryRequest, getCategorySucess, setAddCategoryModalData, createCategoryRequest } =
+    menuSlice.actions;
 
 export const menuReducer = menuSlice.reducer;
