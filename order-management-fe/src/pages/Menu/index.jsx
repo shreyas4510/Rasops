@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
 import CustomSelect from '../../components/CustomSelect';
 import { TiPlus } from 'react-icons/ti';
@@ -8,14 +8,15 @@ import { createColumnHelper } from '@tanstack/react-table';
 import '../../assets/styles/menu.css';
 import { useDispatch, useSelector } from 'react-redux';
 import OMTModal from '../../components/Modal';
-import { setMenuModalData } from '../../store/slice/menu.slice';
+import { createCategoryRequest, setAddCategoryModalData } from '../../store/slice/menu.slice';
 import moment from 'moment/moment';
 import { IoCloseSharp } from 'react-icons/io5';
 import { validateCreateCategory } from '../../validations/menu.js';
 
 function Menu() {
     const dispatch = useDispatch();
-    const { selectedCategory, menuModalData } = useSelector((state) => state.menu);
+    const { selectedCategory, addCategoryModalData } = useSelector((state) => state.menu);
+    const hotelId = useSelector((state) => state.hotel.globalHotelId);
 
     const columnHelper = createColumnHelper();
     const columns = [
@@ -91,7 +92,7 @@ function Menu() {
             initialValues: updatedInitialVals,
             options: updatedOps
         };
-        dispatch(setMenuModalData(modalData));
+        dispatch(setAddCategoryModalData(modalData));
         return modalData;
     };
 
@@ -114,7 +115,7 @@ function Menu() {
             options: updatedOptions
         };
 
-        dispatch(setMenuModalData(modalData));
+        dispatch(setAddCategoryModalData(modalData));
         return modalData;
     };
 
@@ -163,11 +164,25 @@ function Menu() {
             closeText: 'Close'
         };
 
-        dispatch(setMenuModalData(addOptions));
+        dispatch(setAddCategoryModalData(addOptions));
     };
 
     const handleSubmit = (values, { setSubmitting }) => {
-        console.log(values);
+        setSubmitting(true);
+
+        const payload = Object.entries(values).reduce((cur, next) => {
+            const obj = next[0].split('_');
+            if (!cur[obj[1]]) cur[obj[1]] = {};
+            cur[obj[1]][obj[0]] = next[1];
+            return cur;
+        }, {});
+        dispatch(
+            createCategoryRequest({
+                hotelId,
+                data: Object.values(payload)
+            })
+        );
+        setSubmitting(false);
     };
 
     return (
@@ -235,20 +250,20 @@ function Menu() {
             )}
 
             <OMTModal
-                show={menuModalData}
+                show={addCategoryModalData}
                 type="form"
-                validationSchema={validateCreateCategory(menuModalData?.initialValues)}
-                title={menuModalData?.title}
-                initialValues={menuModalData?.initialValues || {}}
+                validationSchema={validateCreateCategory(addCategoryModalData?.initialValues)}
+                title={addCategoryModalData?.title}
+                initialValues={addCategoryModalData?.initialValues || {}}
                 handleSubmit={handleSubmit}
-                description={menuModalData?.options || {}}
+                description={addCategoryModalData?.options || {}}
                 handleClose={() => {
-                    dispatch(setMenuModalData(false));
+                    dispatch(setAddCategoryModalData(false));
                 }}
                 isFooter={false}
                 size={'lg'}
-                submitText={menuModalData?.submitText}
-                closeText={menuModalData?.closeText}
+                submitText={addCategoryModalData?.submitText}
+                closeText={addCategoryModalData?.closeText}
             />
         </>
     );
