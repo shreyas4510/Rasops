@@ -35,7 +35,6 @@ function Navbars() {
             dispatch(getUserRequest({ navigate }));
         }
         if (viewData.hotelId) {
-            console.log('Here');
             navigate('/dashboard');
             dispatch(setGlobalHotelId(viewData.hotelId));
         }

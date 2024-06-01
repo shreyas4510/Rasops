@@ -4,16 +4,21 @@ import { CATEGORY } from '../types/menu';
 const menuSlice = createSlice({
     name: CATEGORY,
     initialState: {
-        data: {}
+        data: {},
+        selectedCategory: {},
+        menuModalData: false
     },
     reducers: {
         getCategoryRequest() {},
         getCategorySucess(state, action) {
             state.data = action.payload;
+        },
+        setMenuModalData(state, action) {
+            state.menuModalData = action.payload;
         }
     }
 });
 
-export const { getCategoryRequest, getCategorySucess } = menuSlice.actions;
+export const { getCategoryRequest, getCategorySucess, setMenuModalData } = menuSlice.actions;
 
-export const authReducer = menuSlice.reducer;
+export const menuReducer = menuSlice.reducer;
