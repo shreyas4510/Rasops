@@ -1,6 +1,8 @@
 import { ErrorMessage, Field } from 'formik';
 import { Form, FormGroup, FormLabel } from 'react-bootstrap';
 import Select from 'react-select';
+import CustomButton from '../CustomButton';
+import moment from 'moment';
 
 function CustomFormGroup({
     name = '',
@@ -11,11 +13,16 @@ function CustomFormGroup({
     formKey = '',
     options = [],
     setFieldValue = () => {},
-    isMulti = true
+    isMulti = true,
+    onClick = () => {},
+    icon: Icon = <></>,
+    getValues = false,
+    values = {},
+    setFormValues // specific for the cross button
 }) {
     return (
-        <FormGroup className={className} key={formKey}>
-            {label && (
+        <FormGroup className={className} key={`${formKey}`}>
+            {label && type != 'button' && (
                 <FormLabel htmlFor={name} className="small text-muted m-0">
                     {label}
                 </FormLabel>
@@ -47,9 +54,44 @@ function CustomFormGroup({
                         />
                     )}
                 </Field>
+            ) : type === 'button' ? (
+                <Field name={name}>
+                    {({ field }) => (
+                        <CustomButton
+                            {...field}
+                            type={type}
+                            className={className}
+                            disabled={disabled}
+                            label={label}
+                            onClick={() => {
+                                getValues ? onClick(values) : onClick();
+                            }}
+                        />
+                    )}
+                </Field>
+            ) : type === 'icon' ? (
+                <Field name={name}>
+                    {({ field }) => (
+                        <Icon
+                            {...field}
+                            key={name}
+                            role="button"
+                            className={className}
+                            onClick={() => {
+                                if (Object.keys(values).length <= 2) return;
+
+                                const key = name.split('_')[1];
+                                delete values[`name_${key}`];
+                                delete values[`order_${key}`];
+                                setFormValues(values);
+                                onClick(key, values);
+                            }}
+                        />
+                    )}
+                </Field>
             ) : (
                 <Field
-                    data-testid={`${name}-input-${new Date().getTime()}`}
+                    data-testid={`${name}-input-${moment().valueOf()}`}
                     type={type}
                     name={name}
                     className="form-control"
@@ -57,7 +99,7 @@ function CustomFormGroup({
                 />
             )}
             <ErrorMessage
-                data-testid={`${name}-error-${new Date().getTime()}`}
+                data-testid={`${name}-error-${moment().valueOf()}`}
                 name={name}
                 component="div"
                 className="text-danger error-message"

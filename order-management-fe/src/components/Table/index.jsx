@@ -5,6 +5,7 @@ import { FaCaretRight, FaCaretLeft } from 'react-icons/fa6';
 import { PiCaretDoubleRightFill, PiCaretDoubleLeftFill } from 'react-icons/pi';
 import '../../assets/styles/table.css';
 import NoData from '../NoData';
+import moment from 'moment';
 
 const defaultPagination = {
     pageIndex: 0,
@@ -177,7 +178,7 @@ function Table({
                                     <th
                                         className="text-center py-3 table-border"
                                         style={{ cursor: `${header.column.getIsSorted() ? 'pointer' : ''}` }}
-                                        key={`${header.id}-${new Date()}`}
+                                        key={`${header.id}-${moment().valueOf()}`}
                                         id={header.id}
                                     >
                                         <ThComponent header={header} />

@@ -24,22 +24,34 @@ function OMTModal({
             onSubmit={handleSubmit}
             enableReinitialize={true}
         >
-            {({ isSubmitting, isValid, dirty, setFieldValue }) => (
+            {({ isSubmitting, isValid, dirty, setFieldValue, values, setValues }) => (
                 <Form className="d-flex flex-column">
                     <div className="row mb-4">
-                        {Object.entries(description).map(([key, property]) => {
+                        {Object.entries(description).map(([key, property], index) => {
+                            const disableCheck =
+                                property.invalidDisable && (isSubmitting || !isValid || !dirty)
+                                    ? true
+                                    : property.disabled;
                             return (
-                                <CustomFormGroup
-                                    key={key}
-                                    className={property.className}
-                                    name={property.name}
-                                    type={property.type}
-                                    label={property.label}
-                                    options={property.options}
-                                    setFieldValue={setFieldValue}
-                                    disabled={property.disabled}
-                                    isMulti={property.isMulti}
-                                />
+                                <>
+                                    <CustomFormGroup
+                                        key={`${key}-${index}`}
+                                        className={property.className}
+                                        name={property.name}
+                                        type={property.type}
+                                        label={property.label}
+                                        options={property.options}
+                                        setFieldValue={setFieldValue}
+                                        disabled={disableCheck}
+                                        isMulti={property.isMulti}
+                                        onClick={property.onClick}
+                                        icon={property.icon}
+                                        values={values}
+                                        getValues={property.getValues}
+                                        // specific for the cross button
+                                        setFormValues={setValues}
+                                    />
+                                </>
                             );
                         })}
                     </div>
