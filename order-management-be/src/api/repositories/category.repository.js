@@ -5,7 +5,7 @@ import { CustomError } from '../utils/common.js';
 const save = async (payload) => {
     try {
         logger('info', `Saving category for menu ${JSON.stringify(payload)}`);
-        return await db.categories.create(payload);
+        return await db.categories.bulkCreate(payload);
     } catch (error) {
         const err = error?.errors[0]?.message;
         logger('error', `Error occurred while saving category: ${err || error.message}`);

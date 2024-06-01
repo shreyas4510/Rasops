@@ -41,29 +41,15 @@ const remove = async (id) => {
 
 const createCategory = async (payload) => {
     try {
-        const { name, hotelId, order } = payload;
-        const checkOptions = {
-            where: {
-                hotelId,
-                [Op.or]: {
-                    order,
-                    name
-                }
-            }
-        };
-        const duplicateCategory = await categoryRepo.find(checkOptions);
-        if (duplicateCategory.count) {
-            logger('error', `Category name and order should be unique.`);
-            throw CustomError(STATUS_CODE.BAD_REQUEST, 'Category name and order should be unique');
-        }
-
-        const options = {
+        const { hotelId, data } = payload;
+        const options = data.map(({ name, order }) => ({
             id: uuidv4(),
             name,
             hotelId,
             order
-        };
+        }));
 
+        logger('info', `Options to add new Categories ${JSON.stringify(options)}`);
         const result = await categoryRepo.save(options);
         return result;
     } catch (error) {
