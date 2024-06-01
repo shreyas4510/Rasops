@@ -353,7 +353,7 @@ const getUser = async (user) => {
             include: [
                 {
                     model: db.preferences,
-                    attributes: ['notification', 'payment'],
+                    attributes: ['notification', 'payment']
                 },
                 {
                     model: db.hotelUserRelation,
@@ -361,7 +361,7 @@ const getUser = async (user) => {
                 }
             ]
         };
-        const result = (await userRepo.findOne(fetchOptions));
+        const result = await userRepo.findOne(fetchOptions);
         result.hotelId = null;
         if (result.role === USER_ROLES[1] && result.hotelUserRelations?.length) {
             result.hotelId = result.hotelUserRelations[0].hotelId;

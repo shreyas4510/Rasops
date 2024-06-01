@@ -5,9 +5,15 @@ import { CustomError } from '../utils/common.js';
 export const createCategoryValidation = (payload) => {
     try {
         const schema = Joi.object({
-            name: Joi.string().required(),
             hotelId: Joi.string().required(),
-            order: Joi.number()
+            data: Joi.array()
+                .items(
+                    Joi.object({
+                        name: Joi.string().required(),
+                        order: Joi.number().required()
+                    })
+                )
+                .unique((a, b) => a.name === b.name && a.order === b.order)
         });
         return schema.validate(payload);
     } catch (error) {
