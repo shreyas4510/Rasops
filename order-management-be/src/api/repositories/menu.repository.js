@@ -35,4 +35,15 @@ const remove = async (options) => {
     }
 };
 
-export default { save, update, remove };
+const find = async (options) => {
+    try {
+        logger('debug', 'Fetching menu items in the database');
+        return await db.menu.findAndCountAll(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while finding menu items: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, update, remove, find };
