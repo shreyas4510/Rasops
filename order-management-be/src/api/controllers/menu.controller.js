@@ -126,10 +126,10 @@ const updateCategory = async (req, res) => {
 
 const removeCategory = async (req, res) => {
     try {
-        const { id } = req.params;
-        logger('debug', `Remove a category ${id}`);
+        const { categoryIds } = req.body;
+        logger('debug', `Remove a category ${categoryIds}`);
 
-        const result = await menuService.removeCategory(id);
+        const result = await menuService.removeCategory(categoryIds);
         logger('info', 'Category removed successfully', { result });
 
         return res.status(STATUS_CODE.OK).send(result);
