@@ -7,7 +7,8 @@ import { CustomError } from '../utils/common.js';
 
 const create = async (payload) => {
     try {
-        const options = payload.map((item) => ({ id: uuidv4(), ...item }));
+        const { categoryId, hotelId, data } = payload;
+        const options = data.map((item) => ({ id: uuidv4(), categoryId, hotelId, ...item }));
         logger('debug', 'Request to add menu items');
         return await menuRepo.save(options);
     } catch (error) {
@@ -34,6 +35,45 @@ const remove = async (id) => {
         return { message: 'Menu Item removed successfully' };
     } catch (error) {
         logger('error', 'Error while removing menu item', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const fetch = async (payload) => {
+    try {
+        const {
+            categoryId,
+            limit = 10,
+            skip = 0,
+            sortKey = 'updatedAt',
+            sortOrder = 'DESC',
+            filterKey,
+            filterValue
+        } = payload;
+
+        const options = {
+            where: { categoryId },
+            limit: Number(limit),
+            offset: Number(skip)
+        };
+
+        if (sortKey && sortOrder) {
+            options.order = [[sortKey, sortOrder]];
+        }
+
+        if (filterKey && filterValue) {
+            options.where = {
+                [Op.and]: [{ categoryId }, { [filterKey]: { [Op.like]: `%${filterValue}%` } }]
+            };
+        }
+
+        logger('debug', `Fetching menu items with options ${JSON.stringify(options)}`);
+        const data = await menuRepo.find(options);
+
+        logger('debug', `Menu items fetched successfully ${JSON.stringify(data)}`);
+        return data;
+    } catch (error) {
+        logger('error', `Error while fetching menu items ${JSON.stringify(error)}`);
         throw CustomError(error.code, error.message);
     }
 };
@@ -118,6 +158,7 @@ export default {
     create,
     update,
     remove,
+    fetch,
     createCategory,
     fetchCategory,
     updateCategory,

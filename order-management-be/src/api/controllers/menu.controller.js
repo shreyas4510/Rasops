@@ -66,6 +66,33 @@ const remove = async (req, res) => {
     }
 };
 
+const fetch = async (req, res) => {
+    try {
+        const { params, query } = req;
+        const { limit, skip, sortKey, sortOrder, filterKey, filterValue } = query;
+        const { id } = params;
+
+        const payload = {
+            limit,
+            skip,
+            sortKey,
+            sortOrder,
+            filterKey,
+            filterValue,
+            categoryId: id
+        };
+        logger('debug', 'Received request to list menu with query:', { query });
+
+        const result = await menuService.fetch(payload);
+        logger('info', 'Menu list fetched successfully');
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during fetching menu items ${error}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 const createCategory = async (req, res) => {
     try {
         const { body } = req;
@@ -143,6 +170,7 @@ export default {
     create,
     update,
     remove,
+    fetch,
     createCategory,
     fetchCategory,
     updateCategory,

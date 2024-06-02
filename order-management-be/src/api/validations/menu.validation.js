@@ -37,14 +37,18 @@ export const updateCategoryValidation = (payload) => {
 
 export const createValidation = (payload) => {
     try {
-        const schema = Joi.array().items(
-            Joi.object({
-                name: Joi.string().required(),
-                price: Joi.number().required(),
-                categoryId: Joi.string().required(),
-                hotelId: Joi.string().required()
-            })
-        );
+        const schema = Joi.object({
+            categoryId: Joi.string().required(),
+            hotelId: Joi.string().required(),
+            data: Joi.array()
+                .items(
+                    Joi.object({
+                        name: Joi.string().required(),
+                        price: Joi.number().required()
+                    })
+                )
+                .unique((a, b) => a.name === b.name)
+        });
         return schema.validate(payload);
     } catch (error) {
         logger('error', `Error in creating menu ${error}`);
