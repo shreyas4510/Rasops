@@ -35,3 +35,30 @@ export const removeCategories = async (payload) => {
         throw error;
     }
 };
+
+export const fetchMenuItems = async ({
+    categoryId,
+    skip = 0,
+    limit = 10,
+    sortKey = '',
+    sortOrder = '',
+    filterKey = '',
+    filterValue = ''
+}) => {
+    try {
+        const query = `skip=${skip}&limit=${limit}&sortKey=${sortKey}&sortOrder=${sortOrder}&filterKey=${filterKey}&filterValue=${filterValue}`;
+        return await api(method.GET, `/menu/${categoryId}?${query}`);
+    } catch (error) {
+        console.error(`Error while fetching menu items ${error}`);
+        throw error;
+    }
+};
+
+export const saveMenuItems = async (payload) => {
+    try {
+        return await api(method.POST, `/menu`, payload);
+    } catch (error) {
+        console.error(`Error while storing menu items ${error}`);
+        throw error;
+    }
+};
