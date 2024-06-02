@@ -4,40 +4,49 @@ import { CATEGORY } from '../types/menu';
 const menuSlice = createSlice({
     name: CATEGORY,
     initialState: {
-        data: {},
+        categories: {},
+        menuItems: {},
         categoriesOptions: [],
         selectedCategory: {},
-        categoryModalData: false
+        modalData: false
     },
     reducers: {
         getCategoryRequest() {},
         getCategorySucess(state, action) {
             const { rows } = action.payload;
             const categories = rows?.map((item) => ({ label: item.name, value: item.id }));
-            state.data = action.payload;
+            state.categories = action.payload;
             state.categoriesOptions = categories;
             state.selectedCategory = categories[0];
         },
-        setcategoryModalData(state, action) {
-            state.categoryModalData = action.payload;
+        setMenuModalData(state, action) {
+            state.modalData = action.payload;
         },
         createCategoryRequest() {},
         setSelectedCategory(state, action) {
             state.selectedCategory = action.payload;
         },
         updateCategoryRequest() {},
-        removeCategoryRequest() {}
+        removeCategoryRequest() {},
+        getMenuItemsRequest() {},
+        getMenuItemsSuccess(state, action) {
+            state.menuItems = action.payload;
+        },
+        createMenuItemRequest() {}
     }
 });
 
 export const {
     getCategoryRequest,
     getCategorySucess,
-    setcategoryModalData,
+    setMenuModalData,
     createCategoryRequest,
     setSelectedCategory,
     updateCategoryRequest,
-    removeCategoryRequest
+    removeCategoryRequest,
+    getMenuItemsRequest,
+    getMenuItemsSuccess,
+    createMenuItemRequest
 } = menuSlice.actions;
 
 export const menuReducer = menuSlice.reducer;

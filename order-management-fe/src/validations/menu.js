@@ -30,8 +30,9 @@ export const validateCreateCategory = (initialValues, data = []) => {
 
                 if (isValid) {
                     Object.entries(this.parent).forEach(([vKey, vValue]) => {
-                        if (vKey !== key && vKey.startsWith(`${key.split('_')[0]}`) && vValue === value)
+                        if (vKey !== key && vKey.startsWith(`${key.split('_')[0]}`) && vValue === value) {
                             isValid = false;
+                        }
                     });
                 }
                 return isValid;
@@ -72,3 +73,37 @@ export const validateUpdateCategory = (initialValues, data = []) => {
 };
 
 export const defaultValidation = Yup.object().shape({});
+
+export const validateCreateMenuItem = (initialValues, data = []) => {
+    if (!initialValues) return Yup.object().shape();
+
+    const names = data.map((obj) => obj.name);
+    const valid = {};
+    Object.keys(initialValues).forEach((key) => {
+        const messageKey = key.startsWith('name_') ? 'Name' : 'Price';
+        if (key.startsWith('name_')) {
+            valid[key] = Yup.string()
+                .required(`${messageKey} is required`)
+                .test('is-unique', `${messageKey} value must be unique`, function (value) {
+                    let isValid = true;
+                    const type = key.split('_')[0];
+                    if (type === 'name') {
+                        isValid = !names.includes(value);
+                    }
+
+                    if (isValid) {
+                        Object.entries(this.parent).forEach(([vKey, vValue]) => {
+                            if (vKey !== key && vKey.startsWith(`${key.split('_')[0]}`) && vValue === value) {
+                                isValid = false;
+                            }
+                        });
+                    }
+                    return isValid;
+                });
+        } else {
+            valid[key] = Yup.string().required(`${messageKey} is required`);
+        }
+    });
+
+    return Yup.object().shape(valid);
+};

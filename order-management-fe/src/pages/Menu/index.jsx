@@ -10,9 +10,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import OMTModal from '../../components/Modal';
 import {
     createCategoryRequest,
+    createMenuItemRequest,
     getCategoryRequest,
+    getMenuItemsRequest,
     removeCategoryRequest,
-    setcategoryModalData,
+    setMenuModalData,
     setSelectedCategory,
     updateCategoryRequest
 } from '../../store/slice/menu.slice';
@@ -21,59 +23,34 @@ import { IoCloseSharp } from 'react-icons/io5';
 import {
     defaultValidation,
     validateCreateCategory,
-    validateRemoveCategory,
+    validateCreateMenuItem,
     validateUpdateCategory
 } from '../../validations/menu.js';
 
 function Menu() {
     const dispatch = useDispatch();
-    const { selectedCategory, categoryModalData, categoriesOptions, data } = useSelector((state) => state.menu);
+    const { selectedCategory, modalData, categoriesOptions, categories, menuItems } = useSelector(
+        (state) => state.menu
+    );
     const hotelId = useSelector((state) => state.hotel.globalHotelId);
 
     const columnHelper = createColumnHelper();
     const columns = [
         columnHelper.display({
-            id: 'email',
-            header: 'Email',
-            cell: (props) => <div>{props.row.original.email}</div>
+            id: 'name',
+            header: 'Name',
+            cell: ({ row }) => <div>{row.original.name}</div>
+        }),
+        columnHelper.display({
+            id: 'price',
+            header: 'Price',
+            cell: ({ row }) => <div>{row.original.price}</div>
         }),
         columnHelper.display({
             id: 'createdAt',
-            header: 'Invited',
+            header: 'Added On',
             cell: ({ row }) => {
                 return row.original.createdAt && <div>{moment(row.original.createdAt).format('DD-MMM-YYYY')}</div>;
-            }
-        }),
-        columnHelper.display({
-            id: 'status',
-            header: 'Status',
-            cell: ({ row }) => <div>{row.original.status}</div>
-        }),
-        columnHelper.display({
-            id: 'actions',
-            header: 'Actions',
-            enableSorting: 'FALSE',
-            enableFiltering: 'FALSE',
-            cell: ({ row }) => {
-                return row.original.status ? (
-                    <ActionDropdown
-                        disabled={row.original.status.toUpperCase() === 'ACCEPTED'}
-                        options={[
-                            {
-                                label: 'Delete',
-                                icon: MdDeleteForever,
-                                onClick: setRemoveInvite,
-                                meta: { id: row.original.id },
-                                onClick: () => {
-                                    dispatch(setSelectedInvite(row.original.id));
-                                    handleClose();
-                                }
-                            }
-                        ]}
-                    />
-                ) : (
-                    <></>
-                );
             }
         })
     ];
@@ -84,13 +61,14 @@ function Menu() {
         }
     }, [hotelId]);
 
-    const handleAddButtonClick = (modalData, values) => {
+    const handleAddButtonClick = (modalData, values, type) => {
         const { options } = modalData;
         const { add_button, ...rest } = options;
+        const secondInput = type === 'category' ? 'order' : 'price';
 
         const updatedOps = { ...rest };
         const key = moment().valueOf();
-        ['name', 'order', 'icon'].map((item) => {
+        ['name', secondInput, 'icon'].map((item) => {
             const iconKey = Object.keys(updatedOps).find((key) => key.startsWith(`${item}_`));
             updatedOps[`${item}_${key}`] = {
                 ...rest[iconKey],
@@ -102,7 +80,7 @@ function Menu() {
         const updatedInitialVals = {
             ...values,
             [`name_${key}`]: '',
-            [`order_${key}`]: ''
+            [`${secondInput}_${key}`]: ''
         };
 
         modalData = {
@@ -110,22 +88,23 @@ function Menu() {
             initialValues: updatedInitialVals,
             options: updatedOps
         };
-        dispatch(setcategoryModalData(modalData));
+        dispatch(setMenuModalData(modalData));
         return modalData;
     };
 
-    const handleRemoveClick = (id, modalData) => {
+    const handleRemoveClick = (id, modalData, type) => {
         const { options, initialValues } = modalData;
+        const secondInput = type === 'category' ? 'order' : 'price';
 
         let updatedOptions = { ...options };
         let updatedInitialVals = { ...initialValues };
 
         delete updatedOptions[`name_${id}`];
-        delete updatedOptions[`order_${id}`];
+        delete updatedOptions[`${secondInput}_${id}`];
         delete updatedOptions[`icon_${id}`];
 
         delete updatedInitialVals[`name_${id}`];
-        delete updatedInitialVals[`order_${id}`];
+        delete updatedInitialVals[`${secondInput}_${id}`];
 
         modalData = {
             ...modalData,
@@ -133,29 +112,29 @@ function Menu() {
             options: updatedOptions
         };
 
-        dispatch(setcategoryModalData(modalData));
+        dispatch(setMenuModalData(modalData));
         return modalData;
     };
 
-    const handleAddCategoryClick = () => {
+    const handleAddItemClick = (type) => {
+        const nameKey = 'name_0';
+        const secondInput = type === 'category' ? 'order_0' : 'price_0';
+
         let addOptions = {
-            title: 'Create Category',
-            type: 'create',
-            initialValues: {
-                name_0: '',
-                order_0: ''
-            },
+            title: type === 'category' ? 'Create Category' : 'Create Menu',
+            type: type === 'category' ? 'create' : 'createmenu',
+            initialValues: { name_0: '', [secondInput]: '' },
             options: {
-                name_0: {
-                    name: 'name_0',
+                [nameKey]: {
+                    name: nameKey,
                     type: 'text',
                     label: 'Name',
                     className: 'col-6 my-2'
                 },
-                order_0: {
-                    name: 'order_0',
+                [secondInput]: {
+                    name: secondInput,
                     type: 'number',
-                    label: 'Order',
+                    label: type === 'category' ? 'Order' : 'Price',
                     className: 'col-5 my-2'
                 },
                 icon_0: {
@@ -164,7 +143,7 @@ function Menu() {
                     icon: IoCloseSharp,
                     className: 'col my-2 align-self-end w-100 pointer',
                     onClick: (id) => {
-                        addOptions = handleRemoveClick(id, addOptions);
+                        addOptions = handleRemoveClick(id, addOptions, type);
                     }
                 },
                 add_button: {
@@ -175,7 +154,7 @@ function Menu() {
                     getValues: true,
                     invalidDisable: true,
                     onClick: (values) => {
-                        addOptions = handleAddButtonClick(addOptions, values);
+                        addOptions = handleAddButtonClick(addOptions, values, type);
                     }
                 }
             },
@@ -183,11 +162,11 @@ function Menu() {
             closeText: 'Close'
         };
 
-        dispatch(setcategoryModalData(addOptions));
+        dispatch(setMenuModalData(addOptions));
     };
 
     const handleUpdateCategoryClick = () => {
-        const { rows } = data;
+        const { rows } = categories;
         const category = rows.find((obj) => obj.id === selectedCategory.value);
         let updateOptions = {
             title: 'Update Category',
@@ -214,11 +193,11 @@ function Menu() {
             closeText: 'Close'
         };
 
-        dispatch(setcategoryModalData(updateOptions));
+        dispatch(setMenuModalData(updateOptions));
     };
 
     const handleDeleteCategoryClick = () => {
-        const { rows } = data;
+        const { rows } = categories;
         const { options, initialValues } = rows.reduce(
             (cur, next) => {
                 const key = `category_${next.id}`;
@@ -251,32 +230,43 @@ function Menu() {
             closeText: 'Close'
         };
 
-        dispatch(setcategoryModalData(removeOptions));
+        dispatch(setMenuModalData(removeOptions));
     };
 
     const handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
 
-        if (categoryModalData.type === 'create') {
+        if (['create', 'createmenu'].includes(modalData.type)) {
             const payload = Object.entries(values).reduce((cur, next) => {
                 const obj = next[0].split('_');
                 if (!cur[obj[1]]) cur[obj[1]] = {};
                 cur[obj[1]][obj[0]] = next[1];
                 return cur;
             }, {});
-            dispatch(
-                createCategoryRequest({
-                    hotelId,
-                    data: Object.values(payload)
-                })
-            );
+
+            if (modalData.type === 'create') {
+                dispatch(
+                    createCategoryRequest({
+                        hotelId,
+                        data: Object.values(payload)
+                    })
+                );
+            } else {
+                dispatch(
+                    createMenuItemRequest({
+                        hotelId,
+                        categoryId: selectedCategory.value,
+                        data: Object.values(payload)
+                    })
+                );
+            }
         }
 
-        if (categoryModalData.type === 'update') {
+        if (modalData.type === 'update') {
             const categoryId = selectedCategory.value;
             const data = {};
             Object.keys(values).map((key) => {
-                if (values[key] !== categoryModalData.initialValues[key]) data[key] = values[key];
+                if (values[key] !== modalData.initialValues[key]) data[key] = values[key];
             });
 
             dispatch(
@@ -288,7 +278,7 @@ function Menu() {
             );
         }
 
-        if (categoryModalData.type === 'remove') {
+        if (modalData.type === 'remove') {
             const categoryIds = Object.entries(values).reduce((cur, [key, value]) => {
                 const id = key.split('_')[1];
                 if (value) cur.push(id);
@@ -302,11 +292,13 @@ function Menu() {
     };
 
     const getValidationSchema = () => {
-        switch (categoryModalData.type) {
+        switch (modalData.type) {
             case 'create':
-                return validateCreateCategory(categoryModalData?.initialValues, data?.rows);
+                return validateCreateCategory(modalData?.initialValues, categories?.rows);
             case 'update':
-                return validateUpdateCategory(categoryModalData?.initialValues, data?.rows);
+                return validateUpdateCategory(modalData?.initialValues, categories?.rows);
+            case 'createmenu':
+                return validateCreateMenuItem(modalData?.initialValues, menuItems?.rows);
             default:
                 return defaultValidation;
         }
@@ -323,6 +315,7 @@ function Menu() {
                         value={selectedCategory}
                         onChange={(item) => {
                             dispatch(setSelectedCategory(item));
+                            dispatch(getMenuItemsRequest({ categoryId: item.value }));
                         }}
                     />
                     <ActionDropdown
@@ -330,7 +323,7 @@ function Menu() {
                             {
                                 label: 'Add',
                                 icon: TiPlus,
-                                onClick: handleAddCategoryClick
+                                onClick: () => handleAddItemClick('category')
                             },
                             {
                                 label: 'Update',
@@ -360,7 +353,7 @@ function Menu() {
                                 {
                                     label: 'Add',
                                     icon: TiPlus,
-                                    onClick: () => {}
+                                    onClick: () => handleAddItemClick('menu')
                                 },
                                 {
                                     label: 'Update',
@@ -377,27 +370,27 @@ function Menu() {
                             ]}
                         />
                     </div>
-                    <Table columns={columns} data={[]} count={3} />
+                    <Table columns={columns} data={menuItems.rows} count={menuItems.count} />
                 </div>
             ) : (
                 <></>
             )}
 
             <OMTModal
-                show={categoryModalData}
+                show={modalData}
                 type="form"
                 validationSchema={getValidationSchema}
-                title={categoryModalData?.title}
-                initialValues={categoryModalData?.initialValues || {}}
+                title={modalData?.title}
+                initialValues={modalData?.initialValues || {}}
                 handleSubmit={handleSubmit}
-                description={categoryModalData?.options || {}}
+                description={modalData?.options || {}}
                 handleClose={() => {
-                    dispatch(setcategoryModalData(false));
+                    dispatch(setMenuModalData(false));
                 }}
                 isFooter={false}
-                size={categoryModalData.type === 'remove' ? 'md' : 'lg'}
-                submitText={categoryModalData?.submitText}
-                closeText={categoryModalData?.closeText}
+                size={modalData.type === 'remove' ? 'md' : 'lg'}
+                submitText={modalData?.submitText}
+                closeText={modalData?.closeText}
             />
         </>
     );
