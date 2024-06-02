@@ -3,6 +3,7 @@ import { Form, FormGroup, FormLabel } from 'react-bootstrap';
 import Select from 'react-select';
 import CustomButton from '../CustomButton';
 import moment from 'moment';
+import '../../assets/styles/formGroup.css';
 
 function CustomFormGroup({
     name = '',
@@ -22,7 +23,7 @@ function CustomFormGroup({
 }) {
     return (
         <FormGroup className={className} key={`${formKey}`}>
-            {label && type != 'button' && (
+            {label && !['button', 'strong'].includes(type) && (
                 <FormLabel htmlFor={name} className="small text-muted m-0">
                     {label}
                 </FormLabel>
@@ -47,6 +48,20 @@ function CustomFormGroup({
                             {...field}
                             type="switch"
                             disabled={disabled}
+                            defaultChecked={field.value}
+                            onChange={(e) => {
+                                setFieldValue(name, e.target.checked);
+                            }}
+                        />
+                    )}
+                </Field>
+            ) : type === 'checkbox' ? (
+                <Field name={name}>
+                    {({ field }) => (
+                        <Form.Check
+                            {...field}
+                            disabled={disabled}
+                            className="checkbox"
                             defaultChecked={field.value}
                             onChange={(e) => {
                                 setFieldValue(name, e.target.checked);
@@ -89,6 +104,8 @@ function CustomFormGroup({
                         />
                     )}
                 </Field>
+            ) : type === 'strong' ? (
+                <strong className={className}>{label}</strong>
             ) : (
                 <Field
                     data-testid={`${name}-input-${moment().valueOf()}`}

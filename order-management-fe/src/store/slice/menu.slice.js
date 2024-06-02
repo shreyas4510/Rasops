@@ -5,22 +5,39 @@ const menuSlice = createSlice({
     name: CATEGORY,
     initialState: {
         data: {},
+        categoriesOptions: [],
         selectedCategory: {},
-        addCategoryModalData: false
+        categoryModalData: false
     },
     reducers: {
         getCategoryRequest() {},
         getCategorySucess(state, action) {
+            const { rows } = action.payload;
+            const categories = rows?.map((item) => ({ label: item.name, value: item.id }));
             state.data = action.payload;
+            state.categoriesOptions = categories;
+            state.selectedCategory = categories[0];
         },
-        setAddCategoryModalData(state, action) {
-            state.addCategoryModalData = action.payload;
+        setcategoryModalData(state, action) {
+            state.categoryModalData = action.payload;
         },
-        createCategoryRequest() {}
+        createCategoryRequest() {},
+        setSelectedCategory(state, action) {
+            state.selectedCategory = action.payload;
+        },
+        updateCategoryRequest() {},
+        removeCategoryRequest() {}
     }
 });
 
-export const { getCategoryRequest, getCategorySucess, setAddCategoryModalData, createCategoryRequest } =
-    menuSlice.actions;
+export const {
+    getCategoryRequest,
+    getCategorySucess,
+    setcategoryModalData,
+    createCategoryRequest,
+    setSelectedCategory,
+    updateCategoryRequest,
+    removeCategoryRequest
+} = menuSlice.actions;
 
 export const menuReducer = menuSlice.reducer;
