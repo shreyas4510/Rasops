@@ -1,10 +1,9 @@
 import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
 import categoryRepo from '../repositories/category.repository.js';
 import menuRepo from '../repositories/menu.repository.js';
-import { CustomError, STATUS_CODE } from '../utils/common.js';
+import { CustomError } from '../utils/common.js';
 
 const create = async (payload) => {
     try {
@@ -62,11 +61,7 @@ const fetchCategory = async (hotelId) => {
     try {
         const options = {
             where: { hotelId },
-            include: [
-                {
-                    model: db.menu
-                }
-            ]
+            order: [['order', 'ASC']]
         };
         return await categoryRepo.find(options);
     } catch (error) {
@@ -86,18 +81,6 @@ const updateCategory = async (id, payload) => {
             query.order = payload.order;
         }
 
-        const checkOptions = {
-            where: {
-                id,
-                [Op.or]: { ...query }
-            }
-        };
-        const duplicateCategory = await categoryRepo.find(checkOptions);
-        if (duplicateCategory.count) {
-            logger('error', `Category name and order should be unique.`);
-            throw CustomError(STATUS_CODE.BAD_REQUEST, 'Category name and order should be unique');
-        }
-
         const updateOptions = { where: { id } };
         const updateData = { name: payload.name, order: payload.order };
         await categoryRepo.update(updateOptions, updateData);
@@ -108,12 +91,20 @@ const updateCategory = async (id, payload) => {
     }
 };
 
-const removeCategory = async (id) => {
+const removeCategory = async (categoryIds) => {
     try {
-        const options = { where: { id } };
+        const options = {
+            where: {
+                id: { [Op.in]: categoryIds }
+            }
+        };
         await categoryRepo.remove(options);
 
-        const menuQuery = { where: { categoryId: id } };
+        const menuQuery = {
+            where: {
+                categoryId: { [Op.in]: categoryIds }
+            }
+        };
         await menuRepo.remove(menuQuery);
 
         return { message: 'Category removed successfully' };
