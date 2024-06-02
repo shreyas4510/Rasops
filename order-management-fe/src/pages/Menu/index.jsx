@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
 import CustomSelect from '../../components/CustomSelect';
 import { TiPlus } from 'react-icons/ti';
@@ -8,14 +8,26 @@ import { createColumnHelper } from '@tanstack/react-table';
 import '../../assets/styles/menu.css';
 import { useDispatch, useSelector } from 'react-redux';
 import OMTModal from '../../components/Modal';
-import { createCategoryRequest, setAddCategoryModalData } from '../../store/slice/menu.slice';
+import {
+    createCategoryRequest,
+    getCategoryRequest,
+    removeCategoryRequest,
+    setcategoryModalData,
+    setSelectedCategory,
+    updateCategoryRequest
+} from '../../store/slice/menu.slice';
 import moment from 'moment/moment';
 import { IoCloseSharp } from 'react-icons/io5';
-import { validateCreateCategory } from '../../validations/menu.js';
+import {
+    defaultValidation,
+    validateCreateCategory,
+    validateRemoveCategory,
+    validateUpdateCategory
+} from '../../validations/menu.js';
 
 function Menu() {
     const dispatch = useDispatch();
-    const { selectedCategory, addCategoryModalData } = useSelector((state) => state.menu);
+    const { selectedCategory, categoryModalData, categoriesOptions, data } = useSelector((state) => state.menu);
     const hotelId = useSelector((state) => state.hotel.globalHotelId);
 
     const columnHelper = createColumnHelper();
@@ -66,6 +78,12 @@ function Menu() {
         })
     ];
 
+    useEffect(() => {
+        if (hotelId) {
+            dispatch(getCategoryRequest(hotelId));
+        }
+    }, [hotelId]);
+
     const handleAddButtonClick = (modalData, values) => {
         const { options } = modalData;
         const { add_button, ...rest } = options;
@@ -92,7 +110,7 @@ function Menu() {
             initialValues: updatedInitialVals,
             options: updatedOps
         };
-        dispatch(setAddCategoryModalData(modalData));
+        dispatch(setcategoryModalData(modalData));
         return modalData;
     };
 
@@ -115,13 +133,14 @@ function Menu() {
             options: updatedOptions
         };
 
-        dispatch(setAddCategoryModalData(modalData));
+        dispatch(setcategoryModalData(modalData));
         return modalData;
     };
 
     const handleAddCategoryClick = () => {
         let addOptions = {
             title: 'Create Category',
+            type: 'create',
             initialValues: {
                 name_0: '',
                 order_0: ''
@@ -164,25 +183,133 @@ function Menu() {
             closeText: 'Close'
         };
 
-        dispatch(setAddCategoryModalData(addOptions));
+        dispatch(setcategoryModalData(addOptions));
+    };
+
+    const handleUpdateCategoryClick = () => {
+        const { rows } = data;
+        const category = rows.find((obj) => obj.id === selectedCategory.value);
+        let updateOptions = {
+            title: 'Update Category',
+            type: 'update',
+            initialValues: {
+                name: category.name,
+                order: category.order
+            },
+            options: {
+                name: {
+                    name: 'name',
+                    type: 'text',
+                    label: 'Name',
+                    className: 'col-6 my-2'
+                },
+                order: {
+                    name: 'order',
+                    type: 'number',
+                    label: 'Order',
+                    className: 'col-6 my-2'
+                }
+            },
+            submitText: 'Update',
+            closeText: 'Close'
+        };
+
+        dispatch(setcategoryModalData(updateOptions));
+    };
+
+    const handleDeleteCategoryClick = () => {
+        const { rows } = data;
+        const { options, initialValues } = rows.reduce(
+            (cur, next) => {
+                const key = `category_${next.id}`;
+                cur.options[key] = {
+                    name: key,
+                    type: 'checkbox',
+                    label: `${next.name}`,
+                    className: 'd-flex justify-content-between my-2'
+                };
+                cur.initialValues[key] = false;
+                return cur;
+            },
+            { initialValues: {}, options: {} }
+        );
+
+        let removeOptions = {
+            title: 'Remove Categories',
+            type: 'remove',
+            initialValues,
+            options: {
+                warning: {
+                    name: 'warning',
+                    type: 'strong',
+                    label: '⚠️ Warning: Deleting categories will remove all menu items linked with them! Please be careful before proceeding!',
+                    className: 'text-center my-2 text-danger'
+                },
+                ...options
+            },
+            submitText: 'Remove',
+            closeText: 'Close'
+        };
+
+        dispatch(setcategoryModalData(removeOptions));
     };
 
     const handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
 
-        const payload = Object.entries(values).reduce((cur, next) => {
-            const obj = next[0].split('_');
-            if (!cur[obj[1]]) cur[obj[1]] = {};
-            cur[obj[1]][obj[0]] = next[1];
-            return cur;
-        }, {});
-        dispatch(
-            createCategoryRequest({
-                hotelId,
-                data: Object.values(payload)
-            })
-        );
+        if (categoryModalData.type === 'create') {
+            const payload = Object.entries(values).reduce((cur, next) => {
+                const obj = next[0].split('_');
+                if (!cur[obj[1]]) cur[obj[1]] = {};
+                cur[obj[1]][obj[0]] = next[1];
+                return cur;
+            }, {});
+            dispatch(
+                createCategoryRequest({
+                    hotelId,
+                    data: Object.values(payload)
+                })
+            );
+        }
+
+        if (categoryModalData.type === 'update') {
+            const categoryId = selectedCategory.value;
+            const data = {};
+            Object.keys(values).map((key) => {
+                if (values[key] !== categoryModalData.initialValues[key]) data[key] = values[key];
+            });
+
+            dispatch(
+                updateCategoryRequest({
+                    hotelId,
+                    categoryId,
+                    data
+                })
+            );
+        }
+
+        if (categoryModalData.type === 'remove') {
+            const categoryIds = Object.entries(values).reduce((cur, [key, value]) => {
+                const id = key.split('_')[1];
+                if (value) cur.push(id);
+                return cur;
+            }, []);
+
+            dispatch(removeCategoryRequest({ hotelId, categoryIds }));
+        }
+
         setSubmitting(false);
+    };
+
+    const getValidationSchema = () => {
+        switch (categoryModalData.type) {
+            case 'create':
+                return validateCreateCategory(categoryModalData?.initialValues, data?.rows);
+            case 'update':
+                return validateUpdateCategory(categoryModalData?.initialValues, data?.rows);
+            default:
+                return defaultValidation;
+        }
     };
 
     return (
@@ -190,7 +317,14 @@ function Menu() {
             <div className="w-50 mx-auto my-5">
                 <h6>Categories</h6>
                 <div className="d-flex">
-                    <CustomSelect className="w-100 me-4" />
+                    <CustomSelect
+                        className="w-100 me-4"
+                        options={categoriesOptions || []}
+                        value={selectedCategory}
+                        onChange={(item) => {
+                            dispatch(setSelectedCategory(item));
+                        }}
+                    />
                     <ActionDropdown
                         options={[
                             {
@@ -201,14 +335,14 @@ function Menu() {
                             {
                                 label: 'Update',
                                 icon: MdModeEditOutline,
-                                disabled: true,
-                                onClick: () => {}
+                                disabled: !Object.keys(selectedCategory).length,
+                                onClick: handleUpdateCategoryClick
                             },
                             {
                                 label: 'Delete',
-                                disabled: true,
+                                disabled: !Object.keys(selectedCategory).length,
                                 icon: MdDeleteForever,
-                                onClick: () => {}
+                                onClick: handleDeleteCategoryClick
                             }
                         ]}
                     />
@@ -217,7 +351,7 @@ function Menu() {
             {Object.keys(selectedCategory).length ? (
                 <div className="m-5 d-flex flex-column">
                     <div className="options-container d-flex align-items-center px-4">
-                        <h5 className="text-white">Bevereges</h5>
+                        <h5 className="text-white">{selectedCategory.label}</h5>
                         <ActionDropdown
                             className="ms-auto"
                             buttonColor="white"
@@ -250,20 +384,20 @@ function Menu() {
             )}
 
             <OMTModal
-                show={addCategoryModalData}
+                show={categoryModalData}
                 type="form"
-                validationSchema={validateCreateCategory(addCategoryModalData?.initialValues)}
-                title={addCategoryModalData?.title}
-                initialValues={addCategoryModalData?.initialValues || {}}
+                validationSchema={getValidationSchema}
+                title={categoryModalData?.title}
+                initialValues={categoryModalData?.initialValues || {}}
                 handleSubmit={handleSubmit}
-                description={addCategoryModalData?.options || {}}
+                description={categoryModalData?.options || {}}
                 handleClose={() => {
-                    dispatch(setAddCategoryModalData(false));
+                    dispatch(setcategoryModalData(false));
                 }}
                 isFooter={false}
-                size={'lg'}
-                submitText={addCategoryModalData?.submitText}
-                closeText={addCategoryModalData?.closeText}
+                size={categoryModalData.type === 'remove' ? 'md' : 'lg'}
+                submitText={categoryModalData?.submitText}
+                closeText={categoryModalData?.closeText}
             />
         </>
     );
