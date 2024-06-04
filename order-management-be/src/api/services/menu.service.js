@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import logger from '../../config/logger.js';
 import categoryRepo from '../repositories/category.repository.js';
 import menuRepo from '../repositories/menu.repository.js';
-import { CustomError } from '../utils/common.js';
+import { CustomError, STATUS_CODE } from '../utils/common.js';
 
 const create = async (payload) => {
     try {
@@ -17,8 +17,22 @@ const create = async (payload) => {
     }
 };
 
-const update = async (id, payload) => {
+const update = async (id, hotelId, payload) => {
     try {
+        if (payload.name) {
+            const duplicateOptions = {
+                where: {
+                    hotelId,
+                    name: payload.name
+                }
+            };
+            const res = await menuRepo.find(duplicateOptions);
+            if (res.count) {
+                logger('error', `Menu item already exists ${payload.name}`);
+                throw CustomError(STATUS_CODE.CONFLICT, 'Name already exists');
+            }
+        }
+
         const options = { where: { id } };
         await menuRepo.update(options, payload);
         return { message: 'Menu Item updated successfully' };
@@ -28,11 +42,15 @@ const update = async (id, payload) => {
     }
 };
 
-const remove = async (id) => {
+const remove = async (menuIds) => {
     try {
-        const options = { where: { id } };
+        const options = {
+            where: {
+                id: { [Op.in]: menuIds }
+            }
+        };
         await menuRepo.remove(options);
-        return { message: 'Menu Item removed successfully' };
+        return { message: 'Menu Items removed successfully' };
     } catch (error) {
         logger('error', 'Error while removing menu item', { error });
         throw CustomError(error.code, error.message);

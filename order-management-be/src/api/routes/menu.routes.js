@@ -8,12 +8,16 @@ router.route('/category').all(authenticate).post(menuController.createCategory).
 router.get('/category/:hotelId', authenticate, menuController.fetchCategory);
 router.put('/category/:id', authenticate, menuController.updateCategory);
 
-router.post('/', authenticate, menuController.create);
+router
+    .route('/')
+    .all(authenticate)
+    .post(menuController.create)
+    .delete(menuController.remove);
+
 router
     .route('/:id')
     .all(authenticate)
     .put(menuController.update)
-    .delete(menuController.remove)
     .get(menuController.fetch);
 
 export default router;

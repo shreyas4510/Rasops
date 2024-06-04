@@ -35,13 +35,13 @@ const update = async (req, res) => {
         const payload = req.body;
         logger('debug', 'update a menu ', { payload });
 
-        const validation = updateValidation(payload);
+        const validation = updateValidation(payload.data);
         if (validation.error) {
             logger('error', 'Menu updation validation error', { error: validation.error });
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: validation.error.message });
         }
 
-        const result = await menuService.update(id, payload);
+        const result = await menuService.update(id, payload.hotelId, payload.data);
         logger('info', 'Menu updated successfully', { result });
 
         return res.status(STATUS_CODE.OK).send(result);
@@ -53,11 +53,11 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const { id } = req.params;
-        logger('debug', 'remove a menu item', { id });
+        const { menuIds } = req.body;
+        logger('debug', 'remove a menu item', { menuIds });
 
-        const result = await menuService.remove(id);
-        logger('info', 'Menu item removed successfully', { result });
+        const result = await menuService.remove(menuIds);
+        logger('info', 'Menu items removed successfully', { result });
 
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
