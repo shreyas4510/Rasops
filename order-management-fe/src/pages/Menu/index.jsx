@@ -38,14 +38,7 @@ function Menu() {
         (state) => state.menu
     );
     const hotelId = useSelector((state) => state.hotel.globalHotelId);
-    const [temp, setTemp] =  useState({
-        pageIndex: 0,
-        pageSize: 10
-    });
 
-    // console.log(pagination);
-
-    /**** table pagination start ****/
     const onPaginationChange = (paginate) => {
         dispatch(setPagination(paginate(pagination)));
     };
@@ -62,14 +55,10 @@ function Menu() {
         };
         dispatch(getMenuItemsRequest(params));
     }, [ pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value ]);
-    /**** table pagination end ****/
 
-    /**** table sorting start ****/
     const onSortingChange = (e) => {
         const sortDetails = e()[0];
-        console.log(sortDetails);
         const data = [...sorting][0];
-        console.log(data);
         if (!data || data.id !== sortDetails.id) {
             dispatch(setSorting([{ id: sortDetails.id, desc: false }]));
             return;
@@ -77,9 +66,7 @@ function Menu() {
 
         dispatch(setSorting([{ ...data, desc: !data.desc }]));
     };
-    /**** table sorting end ****/
 
-    /**** table filtering start ****/
     const onFilterChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
@@ -89,7 +76,6 @@ function Menu() {
             value: value
         }));
     };
-    /**** table filtering emd ****/
 
     const columnHelper = createColumnHelper();
     const columns = [
