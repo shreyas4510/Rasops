@@ -62,3 +62,21 @@ export const saveMenuItems = async (payload) => {
         throw error;
     }
 };
+
+export const removeMenuItems = async (payload) => {
+    try {
+        return await api(method.DELETE, `/menu`, payload);
+    } catch (error) {
+        console.error(`Error while removing menu items ${error}`);
+        throw error;
+    }
+};
+
+export const updateMenuItem = async (id, payload) => {
+    try {
+        return await api(method.PUT, `/menu/${id}`, payload);
+    } catch (error) {
+        console.error(`Error while updating menu item ${error}`);
+        throw error;
+    }
+};
