@@ -68,7 +68,7 @@ function Table({
         <>
             <div
                 onClick={(e) => {
-                    if (header.column.columnDef.enableSorting === 'FALSE' || pageCount <= 1) return;
+                    if (header.column.columnDef.enableSorting === 'FALSE') return;
                     return header.column.toggleSorting(e);
                 }}
             >
@@ -76,7 +76,7 @@ function Table({
                 {header.column.getIsSorted() === 'asc' && <TiArrowSortedUp size={20} />}
                 {header.column.getIsSorted() === 'desc' && <TiArrowSortedDown size={20} />}
             </div>
-            {filtering.field && pageCount > 1 && (
+            {filtering.field && (
                 <input
                     type="text"
                     className="w-75 form-control mx-auto"

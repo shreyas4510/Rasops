@@ -8,10 +8,16 @@ const menuSlice = createSlice({
         menuItems: {},
         categoriesOptions: [],
         selectedCategory: {},
-        modalData: false
+        modalData: false,
+        sorting: [],
+        filtering: {},
+        pagination: {
+            pageIndex: 0,
+            pageSize: 10
+        }
     },
     reducers: {
-        getCategoryRequest() {},
+        getCategoryRequest() { },
         getCategorySucess(state, action) {
             const { rows } = action.payload;
             const categories = rows?.map((item) => ({ label: item.name, value: item.id }));
@@ -22,17 +28,28 @@ const menuSlice = createSlice({
         setMenuModalData(state, action) {
             state.modalData = action.payload;
         },
-        createCategoryRequest() {},
+        createCategoryRequest() { },
         setSelectedCategory(state, action) {
             state.selectedCategory = action.payload;
         },
-        updateCategoryRequest() {},
-        removeCategoryRequest() {},
-        getMenuItemsRequest() {},
+        updateCategoryRequest() { },
+        removeCategoryRequest() { },
+        getMenuItemsRequest() { },
         getMenuItemsSuccess(state, action) {
             state.menuItems = action.payload;
         },
-        createMenuItemRequest() {}
+        createMenuItemRequest() { },
+        removeMenuItemRequest() { },
+        updateMenuItemsRequest() { },
+        setSorting(state, action) {
+            state.sorting = action.payload;
+        },
+        setFiltering(state, action) {
+            state.filtering = action.payload;
+        },
+        setPagination(state, action) {
+            state.pagination = action.payload;
+        }
     }
 });
 
@@ -46,7 +63,12 @@ export const {
     removeCategoryRequest,
     getMenuItemsRequest,
     getMenuItemsSuccess,
-    createMenuItemRequest
+    createMenuItemRequest,
+    removeMenuItemRequest,
+    updateMenuItemsRequest,
+    setSorting,
+    setFiltering,
+    setPagination
 } = menuSlice.actions;
 
 export const menuReducer = menuSlice.reducer;

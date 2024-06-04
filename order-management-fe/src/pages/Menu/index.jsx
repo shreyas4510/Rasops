@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
 import CustomSelect from '../../components/CustomSelect';
 import { TiPlus } from 'react-icons/ti';
@@ -14,9 +14,14 @@ import {
     getCategoryRequest,
     getMenuItemsRequest,
     removeCategoryRequest,
+    removeMenuItemRequest,
+    setFiltering,
     setMenuModalData,
+    setPagination,
     setSelectedCategory,
-    updateCategoryRequest
+    setSorting,
+    updateCategoryRequest,
+    updateMenuItemsRequest
 } from '../../store/slice/menu.slice';
 import moment from 'moment/moment';
 import { IoCloseSharp } from 'react-icons/io5';
@@ -29,10 +34,62 @@ import {
 
 function Menu() {
     const dispatch = useDispatch();
-    const { selectedCategory, modalData, categoriesOptions, categories, menuItems } = useSelector(
+    const { selectedCategory, modalData, categoriesOptions, categories, menuItems, sorting, filtering, pagination } = useSelector(
         (state) => state.menu
     );
     const hotelId = useSelector((state) => state.hotel.globalHotelId);
+    const [temp, setTemp] =  useState({
+        pageIndex: 0,
+        pageSize: 10
+    });
+
+    // console.log(pagination);
+
+    /**** table pagination start ****/
+    const onPaginationChange = (paginate) => {
+        dispatch(setPagination(paginate(pagination)));
+    };
+
+    useEffect(() => {
+        const params = {
+            skip: pagination?.pageIndex ? pagination?.pageIndex * pagination?.pageSize : undefined,
+            limit: pagination?.pageSize,
+            sortKey: sorting[0]?.id,
+            sortOrder: sorting[0] ? (sorting[0].desc ? 'desc' : 'asc') : undefined,
+            filterKey: filtering?.field,
+            filterValue: filtering?.value,
+            categoryId: selectedCategory.value
+        };
+        dispatch(getMenuItemsRequest(params));
+    }, [ pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value ]);
+    /**** table pagination end ****/
+
+    /**** table sorting start ****/
+    const onSortingChange = (e) => {
+        const sortDetails = e()[0];
+        console.log(sortDetails);
+        const data = [...sorting][0];
+        console.log(data);
+        if (!data || data.id !== sortDetails.id) {
+            dispatch(setSorting([{ id: sortDetails.id, desc: false }]));
+            return;
+        }
+
+        dispatch(setSorting([{ ...data, desc: !data.desc }]));
+    };
+    /**** table sorting end ****/
+
+    /**** table filtering start ****/
+    const onFilterChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        dispatch(setFiltering({
+            field: name,
+            value: value
+        }));
+    };
+    /**** table filtering emd ****/
 
     const columnHelper = createColumnHelper();
     const columns = [
@@ -52,7 +109,26 @@ function Menu() {
             cell: ({ row }) => {
                 return row.original.createdAt && <div>{moment(row.original.createdAt).format('DD-MMM-YYYY')}</div>;
             }
+        }),
+        columnHelper.display({
+            id: 'update',
+            header: 'Update',
+            enableSorting: 'FALSE',
+            enableFiltering: 'FALSE',
+            cell: ({ row }) => {
+                return row.original.name ? (
+                    <MdModeEditOutline
+                        color='#49AC60'
+                        size={20}
+                        role='button'
+                        onClick={() => handleUpdateItemClick('menu', row.original)}
+                    />
+                ) : (
+                    <></>
+                );
+            }
         })
+
     ];
 
     useEffect(() => {
@@ -165,39 +241,69 @@ function Menu() {
         dispatch(setMenuModalData(addOptions));
     };
 
-    const handleUpdateCategoryClick = () => {
-        const { rows } = categories;
-        const category = rows.find((obj) => obj.id === selectedCategory.value);
-        let updateOptions = {
-            title: 'Update Category',
-            type: 'update',
-            initialValues: {
+    const handleUpdateItemClick = (type, data = {}) => {
+
+        let initialValues = {};
+        let options = {
+            name: {
+                name: 'name',
+                type: 'text',
+                label: 'Name',
+                className: 'col-6 my-2'
+            }
+        }
+
+        if (type === 'category') {
+            const { rows } = categories;
+            const category = rows.find((obj) => obj.id === selectedCategory.value);
+            initialValues = {
                 name: category.name,
                 order: category.order
-            },
-            options: {
-                name: {
-                    name: 'name',
-                    type: 'text',
-                    label: 'Name',
-                    className: 'col-6 my-2'
-                },
+            }
+            options = {
+                ...options,
                 order: {
                     name: 'order',
                     type: 'number',
                     label: 'Order',
                     className: 'col-6 my-2'
                 }
-            },
+            }
+        } else {
+            initialValues = {
+                name: data.name,
+                price: data.price
+            }
+
+            options = {
+                ...options,
+                price: {
+                    name: 'price',
+                    type: 'number',
+                    label: 'Price',
+                    className: 'col-6 my-2'
+                }
+            }
+        }
+
+        let updateOptions = {
+            title: type === 'category' ? 'Update Category' : 'Update Menu Item',
+            type: type === 'category' ? 'update' : 'updatemenu',
+            initialValues,
+            options,
             submitText: 'Update',
             closeText: 'Close'
         };
 
+        if (type === 'menu') {
+            updateOptions.updateItemId = data.id;
+        }
+
         dispatch(setMenuModalData(updateOptions));
     };
 
-    const handleDeleteCategoryClick = () => {
-        const { rows } = categories;
+    const handleDeleteItemClick = (type) => {
+        const { rows } = type === 'category' ? categories : menuItems;
         const { options, initialValues } = rows.reduce(
             (cur, next) => {
                 const key = `category_${next.id}`;
@@ -214,14 +320,18 @@ function Menu() {
         );
 
         let removeOptions = {
-            title: 'Remove Categories',
-            type: 'remove',
+            title: type === 'category' ? 'Remove Categories' : 'Remove Menu Items',
+            type: type === 'category' ? 'remove' : 'removemenu',
             initialValues,
             options: {
                 warning: {
                     name: 'warning',
                     type: 'strong',
-                    label: '⚠️ Warning: Deleting categories will remove all menu items linked with them! Please be careful before proceeding!',
+                    label: (
+                        type === 'category' ?
+                            '⚠️ Warning: Deleting categories will remove all menu items linked with them! Please be careful before proceeding!' :
+                            `⚠️ Warning: The action cannot be undone! Please be careful before proceeding!`
+                    ),
                     className: 'text-center my-2 text-danger'
                 },
                 ...options
@@ -235,6 +345,7 @@ function Menu() {
 
     const handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
+        const categoryId = selectedCategory.value;
 
         if (['create', 'createmenu'].includes(modalData.type)) {
             const payload = Object.entries(values).reduce((cur, next) => {
@@ -262,30 +373,44 @@ function Menu() {
             }
         }
 
-        if (modalData.type === 'update') {
-            const categoryId = selectedCategory.value;
+        if (['update', 'updatemenu'].includes(modalData.type)) {
             const data = {};
             Object.keys(values).map((key) => {
                 if (values[key] !== modalData.initialValues[key]) data[key] = values[key];
             });
 
-            dispatch(
-                updateCategoryRequest({
-                    hotelId,
-                    categoryId,
-                    data
-                })
-            );
+            if (modalData.type === 'update') {
+                dispatch(
+                    updateCategoryRequest({
+                        hotelId,
+                        categoryId,
+                        data
+                    })
+                );                
+            } else {
+                dispatch(
+                    updateMenuItemsRequest({
+                        categoryId,
+                        id: modalData.updateItemId,
+                        data,
+                        hotelId
+                    })
+                )
+            }
         }
 
-        if (modalData.type === 'remove') {
-            const categoryIds = Object.entries(values).reduce((cur, [key, value]) => {
+        if (['remove', 'removemenu'].includes(modalData.type)) {
+            const itemIds = Object.entries(values).reduce((cur, [key, value]) => {
                 const id = key.split('_')[1];
                 if (value) cur.push(id);
                 return cur;
             }, []);
 
-            dispatch(removeCategoryRequest({ hotelId, categoryIds }));
+            if (modalData.type === 'remove') {
+                dispatch(removeCategoryRequest({ hotelId, itemIds }));
+            } else {
+                dispatch(removeMenuItemRequest({ categoryId, itemIds }))
+            }
         }
 
         setSubmitting(false);
@@ -329,13 +454,13 @@ function Menu() {
                                 label: 'Update',
                                 icon: MdModeEditOutline,
                                 disabled: !Object.keys(selectedCategory).length,
-                                onClick: handleUpdateCategoryClick
+                                onClick: () => handleUpdateItemClick('category')
                             },
                             {
                                 label: 'Delete',
                                 disabled: !Object.keys(selectedCategory).length,
                                 icon: MdDeleteForever,
-                                onClick: handleDeleteCategoryClick
+                                onClick: () => handleDeleteItemClick('category')
                             }
                         ]}
                     />
@@ -358,19 +483,32 @@ function Menu() {
                                 {
                                     label: 'Update',
                                     icon: MdModeEditOutline,
-                                    disabled: true,
-                                    onClick: () => {}
+                                    disabled: !menuItems.count,
+                                    onClick: () => { }
                                 },
                                 {
                                     label: 'Delete',
-                                    disabled: true,
+                                    disabled: !menuItems.count,
                                     icon: MdDeleteForever,
-                                    onClick: () => {}
+                                    onClick: () => handleDeleteItemClick('menu')
                                 }
                             ]}
                         />
                     </div>
-                    <Table columns={columns} data={menuItems.rows} count={menuItems.count} />
+                    <Table
+                        columns={columns}
+                        data={menuItems.rows}
+                        count={menuItems.count}
+                        // pagination props
+                        onPaginationChange={onPaginationChange}
+                        pagination={pagination}
+                        // sorting props
+                        onSortingChange={onSortingChange}
+                        sorting={sorting}
+                        // filtering props
+                        onFilterChange={onFilterChange}
+                        filtering={filtering}
+                    />
                 </div>
             ) : (
                 <></>
