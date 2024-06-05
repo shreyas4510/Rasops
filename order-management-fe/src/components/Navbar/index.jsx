@@ -12,7 +12,7 @@ import { getUserRequest, setGlobalHotelId } from '../../store/slice';
 import CryptoJS from 'crypto-js';
 import env from '../../config/env';
 import { IoCaretBack } from 'react-icons/io5';
-import { USER_ROLES } from '../../utils/auth';
+import { USER_ROLES } from '../../utils/constants';
 
 function Navbars() {
     const user = useSelector((state) => state.user.data);

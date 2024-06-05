@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import env from '../../config/env';
 import * as service from '../../services/auth.service';
-import { USER_ROLES } from '../../utils/auth';
+import { USER_ROLES } from '../../utils/constants';
 import { getUserRequest, getUserSuccess, setGlobalHotelId, setSettingsFormData } from '../slice';
 import {
     FORGOT_PASSWORD_REQUEST,

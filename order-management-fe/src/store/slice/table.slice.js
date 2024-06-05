@@ -9,9 +9,7 @@ const tablesSlice = createSlice({
             const { data, count } = action.payload;
             state.tablesData = data;
             state.tablesCounts = count;
-            if (count) {
-                state.selectedTable = data[0];
-            }
+            state.selectedTable = (data[0] || {});
         },
         setSelectedTable(state, action) {
             state.selectedTable = action.payload;

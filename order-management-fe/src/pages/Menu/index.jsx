@@ -32,6 +32,7 @@ import {
     validateUpdateCategory
 } from '../../validations/menu.js';
 import NoData from '../../components/NoData/index.jsx';
+import { MENU_STATUS } from '../../utils/constants.js';
 
 function Menu() {
     const dispatch = useDispatch();
@@ -89,6 +90,13 @@ function Menu() {
             id: 'price',
             header: 'Price',
             cell: ({ row }) => <div>{row.original.price}</div>
+        }),
+        columnHelper.display({
+            id: 'status',
+            header: 'Status',
+            cell: ({ row }) => {
+                return row.original.status && <h6>{row.original.status}</h6>;
+            }
         }),
         columnHelper.display({
             id: 'createdAt',
@@ -229,16 +237,8 @@ function Menu() {
     };
 
     const handleUpdateItemClick = (type, data = {}) => {
-
         let initialValues = {};
-        let options = {
-            name: {
-                name: 'name',
-                type: 'text',
-                label: 'Name',
-                className: 'col-6 my-2'
-            }
-        }
+        let options = {}
 
         if (type === 'category') {
             const { rows } = categories;
@@ -248,7 +248,12 @@ function Menu() {
                 order: category.order
             }
             options = {
-                ...options,
+                name: {
+                    name: 'name',
+                    type: 'text',
+                    label: 'Name',
+                    className: 'col-6 my-2'
+                },
                 order: {
                     name: 'order',
                     type: 'number',
@@ -259,16 +264,29 @@ function Menu() {
         } else {
             initialValues = {
                 name: data.name,
-                price: data.price
+                price: data.price,
+                status: data.status === MENU_STATUS[0] ? true : false
             }
 
             options = {
-                ...options,
+                name: {
+                    name: 'name',
+                    type: 'text',
+                    label: 'Name',
+                    className: 'col-12 my-2'
+                },
                 price: {
                     name: 'price',
                     type: 'number',
                     label: 'Price',
-                    className: 'col-6 my-2'
+                    className: 'col-12 my-2'
+                },
+                status: {
+                    name: 'status',
+                    type: 'switch',
+                    checked: data.status === MENU_STATUS[0] ? true : false,
+                    label: 'Status',
+                    className: 'col-12 my-2'
                 }
             }
         }
