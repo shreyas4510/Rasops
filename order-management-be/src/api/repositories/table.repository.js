@@ -5,7 +5,7 @@ import { CustomError } from '../utils/common.js';
 const save = async (payload) => {
     try {
         logger('info', 'Saving table data to the database');
-        return await db.tables.create(payload);
+        return await db.tables.bulkCreate(payload);
     } catch (error) {
         const err = error?.errors[0]?.message;
         logger('error', `Error occurred while saving table: ${err || error.message}`);

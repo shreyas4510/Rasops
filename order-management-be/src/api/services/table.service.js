@@ -1,30 +1,34 @@
 import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
 import tableRepo from '../repositories/table.repository.js';
-import { CustomError, STATUS_CODE } from '../utils/common.js';
+import { CustomError } from '../utils/common.js';
 
-const create = async (payload) => {
+const create = async (hotelId, payload) => {
     try {
-        const { hotelId, tableNumber } = payload;
-
-        const options = {
+        const { count } = payload;
+        const getOptions = {
             where: {
-                hotelId,
-                tableNumber
-            }
+                hotelId
+            },
+            order: [['tableNumber', 'DESC']],
+            attributes: ['tableNumber'],
+            limit: 1
         };
-        const tables = await tableRepo.find(options);
-        if (tables.count) {
-            logger('error', `Table already exists try using different table number`);
-            throw CustomError(STATUS_CODE.BAD_REQUEST, 'Table already exists try using different table number');
+        const records = await tableRepo.find(getOptions);
+        let startNo = 1;
+        if (records.count) {
+            startNo = records.rows[0].tableNumber + 1;
         }
 
-        const data = {
-            id: uuidv4(),
-            ...options.where
-        };
+        const data = [];
+        for (let tableNumber = startNo; tableNumber < startNo + count; tableNumber++) {
+            data.push({
+                id: uuidv4(),
+                hotelId,
+                tableNumber
+            });
+        }
         const res = await tableRepo.save(data);
         logger('debug', `${data.id} Table created successfully`);
 
@@ -44,6 +48,7 @@ const fetch = async (payload) => {
             where: {
                 hotelId
             },
+            order: [['tableNumber', 'ASC']],
             attributes: ['id', 'tableNumber'],
             limit
         };
@@ -62,35 +67,29 @@ const fetch = async (payload) => {
     }
 };
 
-const remove = async (id) => {
+const remove = async (hotelId, payload) => {
     try {
-        const options = { where: { id } };
-        logger('debug', `Removing table with payload ${JSON.stringify(options)}`);
+        const { count } = payload;
+        const options = {
+            where: { hotelId },
+            limit: count,
+            attributes: ['id'],
+            order: [['tableNumber', 'DESC']]
+        };
+        const records = await tableRepo.find(options);
+        logger('debug', `Count of the records ${records.count}`);
 
-        await tableRepo.remove(options);
+        const removeOptions = {
+            where: {
+                id: { [Op.in]: records.rows.map(({ id }) => id) }
+            }
+        };
+
+        logger('debug', `Removing table with payload ${JSON.stringify(removeOptions)}`);
+        await tableRepo.remove(removeOptions);
         return { message: 'Table removed successfully' };
     } catch (error) {
-        logger('error', `Error while removing table ${id}`);
-        throw CustomError(error.code, error.message);
-    }
-};
-
-const get = async (id) => {
-    try {
-        const options = {
-            where: { id },
-            include: [
-                {
-                    model: db.hotel,
-                    attributes: ['name']
-                }
-            ]
-        };
-        logger('debug', `Fetch table with payload ${JSON.stringify(options)}`);
-
-        return await tableRepo.find(options);
-    } catch (error) {
-        logger('error', `Error while fetching table ${id}`);
+        logger('error', `Error while removing table ${hotelId}`);
         throw CustomError(error.code, error.message);
     }
 };
@@ -98,6 +97,5 @@ const get = async (id) => {
 export default {
     create,
     fetch,
-    remove,
-    get
+    remove
 };

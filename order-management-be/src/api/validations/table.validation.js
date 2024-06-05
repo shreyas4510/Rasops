@@ -2,27 +2,14 @@ import Joi from 'joi';
 import logger from '../../config/logger.js';
 import { CustomError } from '../utils/common.js';
 
-export const registerValidation = (payload) => {
+export const tableValidation = (payload) => {
     try {
         const schema = Joi.object({
-            tableNumber: Joi.number().required(),
-            hotelId: Joi.string().required()
+            count: Joi.number().required()
         });
         return schema.validate(payload);
     } catch (error) {
         logger('error', `Error in register table validation ${error}`);
-        throw CustomError(error.code, error.message);
-    }
-};
-
-export const fetchTableValidation = (payload) => {
-    try {
-        const schema = Joi.object({
-            hotelId: Joi.string().required()
-        });
-        return schema.validate(payload);
-    } catch (error) {
-        logger('error', `Error in vaidating hotel id ${error}`);
         throw CustomError(error.code, error.message);
     }
 };
