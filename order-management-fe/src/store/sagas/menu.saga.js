@@ -17,7 +17,7 @@ import {
     REMOVE_MENU_ITEM_REQUEST,
     UPDATE_CATEGORY_REQUEST,
     UPDATE_MENU_ITEM_REQUEST
-} from '../types/menu';
+} from '../types';
 
 function* getCategoryRequestSaga(action) {
     try {

@@ -1,6 +1,7 @@
 const env = {
     baseUrl: process.env.REACT_APP_BASE_URL,
-    cryptoSecret: process.env.REACT_APP_CRYPTO_SECRET_KEY
+    cryptoSecret: process.env.REACT_APP_CRYPTO_SECRET_KEY,
+    appUrl: process.env.REACT_APP_ORDER_PLACE_URL
 };
 
 export default env;
