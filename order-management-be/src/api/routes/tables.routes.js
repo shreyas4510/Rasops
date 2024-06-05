@@ -4,7 +4,10 @@ import authenticate from '../middlewares/auth.js';
 
 const router = Router();
 
-router.route('/').all(authenticate).post(tableController.create).get(tableController.fetch);
-router.route('/:id').all(authenticate).get(tableController.get).delete(tableController.remove);
+router.route('/:hotelId')
+    .all(authenticate)
+    .get(tableController.fetch)
+    .post(tableController.create)
+    .delete(tableController.remove);
 
 export default router;

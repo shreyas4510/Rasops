@@ -10,7 +10,7 @@ const tableModel = (sequelize) =>
                 primaryKey: true
             },
             tableNumber: {
-                type: DataTypes.STRING,
+                type: DataTypes.INTEGER,
                 allowNull: false
             },
             hotelId: {
