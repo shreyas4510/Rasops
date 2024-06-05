@@ -16,7 +16,7 @@ function Tables() {
 
     const dispatch = useDispatch();
     const hotelId = useSelector(state => state.hotel.globalHotelId);
-    const { tablesData, tablesModalData, selectedTable } = useSelector(state => state.table);
+    const { tablesData, tablesModalData, selectedTable, tablesCounts } = useSelector(state => state.table);
 
     useEffect(() => {
         dispatch(getTablesRequest({ hotelId }))
@@ -117,7 +117,7 @@ function Tables() {
                 validationSchema={
                     tablesModalData.type === 'add' ?
                         addTableValidationSchema :
-                        (() => removeTableValidationSchema(tablesData.length))
+                        (() => removeTableValidationSchema(tablesCounts))
                 }
                 title={tablesModalData?.title}
                 initialValues={tablesModalData?.initialValues || {}}
