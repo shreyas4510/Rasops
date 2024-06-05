@@ -4,7 +4,8 @@ import authenticate from '../middlewares/auth.js';
 
 const router = Router();
 
-router.route('/:hotelId')
+router
+    .route('/:hotelId')
     .all(authenticate)
     .get(tableController.fetch)
     .post(tableController.create)
