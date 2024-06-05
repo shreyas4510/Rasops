@@ -14,7 +14,7 @@ function* getTablesRequestSaga(action) {
             return cur;
         }, [])
 
-        yield put(getTablesSuccess(data));
+        yield put(getTablesSuccess({ data, count: res.count }));
     } catch (error) {
         console.error('Failed to fetch tables ', error);
         toast.error(`Failed to fetch tables ${error.message}`);
