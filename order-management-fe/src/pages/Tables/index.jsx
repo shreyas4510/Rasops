@@ -11,6 +11,7 @@ import { TiPlus } from "react-icons/ti";
 import ActionDropdown from "../../components/ActionDropdown";
 import { MdDeleteForever } from "react-icons/md";
 import debounce from 'lodash.debounce';
+import CryptoJS from 'crypto-js';
 
 function Tables() {
 
@@ -54,7 +55,7 @@ function Tables() {
         if (tablesModalData.type === 'add') {
             dispatch(addTablesRequest({ hotelId, ...values }));
         }
-        
+
         if (tablesModalData.type === 'delete') {
             dispatch(removeTablesRequest({ hotelId, ...values }));
         }
@@ -100,7 +101,13 @@ function Tables() {
                         <h5 style={{ color: '#49ac60' }} className="fw-bold" >{selectedTable.label}</h5>
                         <QRCodeSVG
                             size={400}
-                            value={`${env.appUrl}/${selectedTable.value}`}
+                            value={
+                                `${env.appUrl}/place/${CryptoJS.AES.encrypt(
+                                    JSON.stringify({
+                                        hotelId,
+                                        tableId: selectedTable.value
+                                    }), env.cryptoSecret).toString()}`
+                            }
                             className="mt-5"
                         />
                     </div>

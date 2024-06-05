@@ -23,7 +23,7 @@ const menuSlice = createSlice({
             const categories = rows?.map((item) => ({ label: item.name, value: item.id }));
             state.categories = action.payload;
             state.categoriesOptions = categories;
-            state.selectedCategory = categories[0];
+            state.selectedCategory = (categories[0] || {});
         },
         setMenuModalData(state, action) {
             state.modalData = action.payload;

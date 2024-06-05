@@ -14,7 +14,7 @@ import env from '../../config/env';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import Loader from '../Loader';
-import { USER_ROLES } from '../../utils/auth';
+import { USER_ROLES } from '../../utils/constants';
 import NoHotel from '../NoHotel';
 
 function Sidebar() {

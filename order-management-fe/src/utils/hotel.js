@@ -1,4 +1,4 @@
-import { USER_ROLES } from './auth';
+import { USER_ROLES } from './constants';
 
 export function getHotelUpdateDifference(obj1, obj2) {
     const keys1 = Object.keys(obj1);
