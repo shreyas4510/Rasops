@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
+export const MENU_STATUS = ['AVAILABLE', 'UNAVAILABLE'];
+
 const menuModel = (sequelize) =>
     sequelize.define(
         TABLES.MENU,
@@ -28,6 +30,12 @@ const menuModel = (sequelize) =>
                     model: TABLES.HOTEL,
                     key: 'id'
                 }
+            },
+            status: {
+                type: DataTypes.ENUM,
+                values: MENU_STATUS,
+                allowNull: false,
+                defaultValue: MENU_STATUS[0]
             },
             price: {
                 type: DataTypes.FLOAT,
