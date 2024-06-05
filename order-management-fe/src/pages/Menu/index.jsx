@@ -31,6 +31,7 @@ import {
     validateCreateMenuItem,
     validateUpdateCategory
 } from '../../validations/menu.js';
+import NoData from '../../components/NoData/index.jsx';
 
 function Menu() {
     const dispatch = useDispatch();
@@ -54,7 +55,7 @@ function Menu() {
             categoryId: selectedCategory.value
         };
         dispatch(getMenuItemsRequest(params));
-    }, [ pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value ]);
+    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value]);
 
     const onSortingChange = (e) => {
         const sortDetails = e()[0];
@@ -372,7 +373,7 @@ function Menu() {
                         categoryId,
                         data
                     })
-                );                
+                );
             } else {
                 dispatch(
                     updateMenuItemsRequest({
@@ -497,7 +498,9 @@ function Menu() {
                     />
                 </div>
             ) : (
-                <></>
+                <div className="d-flex">
+                    <NoData className="menu-no-data" />
+                </div>
             )}
 
             <OMTModal

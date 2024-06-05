@@ -4,26 +4,26 @@ import { INVITE } from '../types';
 const inviteSlice = createSlice({
     name: INVITE,
     reducers: {
-        setEmail: (state, action) => {
+        setEmail(state, action) {
             state.email = action.payload;
         },
-        setRemoveInvite: (state) => {
+        setRemoveInvite(state) {
             state.isRemoveInvite = !state.isRemoveInvite;
         },
-        inviteUserRequest: () => {},
-        inviteUserSuccess: (state) => {
+        inviteUserRequest() {},
+        inviteUserSuccess(state) {
             state.change = !state.change;
         },
-        listInviteRequest: () => {},
-        listUserSuccess: (state, action) => {
+        listInviteRequest() {},
+        listUserSuccess(state, action) {
             state.inviteData = action.payload;
         },
-        removeInviteRequest: () => {},
-        removeUserSuccess: (state) => {
+        removeInviteRequest() {},
+        removeUserSuccess(state) {
             state.change = !state.change;
             state.isRemoveInvite = false;
         },
-        setSelectedInvite: (state, action) => {
+        setSelectedInvite(state, action) {
             state.selectedInvite = action.payload;
         }
     },

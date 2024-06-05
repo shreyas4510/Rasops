@@ -49,7 +49,7 @@ const managerSlice = createSlice({
         }
     },
     reducers: {
-        setSelectedRow: (state, action) => {
+        setSelectedRow(state, action) {
             state.selectedRow = action.payload;
         },
         getManagersRequest() {},
