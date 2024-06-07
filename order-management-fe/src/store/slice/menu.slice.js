@@ -17,30 +17,30 @@ const menuSlice = createSlice({
         }
     },
     reducers: {
-        getCategoryRequest() { },
+        getCategoryRequest() {},
         getCategorySucess(state, action) {
             const { rows } = action.payload;
             const categories = rows?.map((item) => ({ label: item.name, value: item.id }));
             state.categories = action.payload;
             state.categoriesOptions = categories;
-            state.selectedCategory = (categories[0] || {});
+            state.selectedCategory = categories[0] || {};
         },
         setMenuModalData(state, action) {
             state.modalData = action.payload;
         },
-        createCategoryRequest() { },
+        createCategoryRequest() {},
         setSelectedCategory(state, action) {
             state.selectedCategory = action.payload;
         },
-        updateCategoryRequest() { },
-        removeCategoryRequest() { },
-        getMenuItemsRequest() { },
+        updateCategoryRequest() {},
+        removeCategoryRequest() {},
+        getMenuItemsRequest() {},
         getMenuItemsSuccess(state, action) {
             state.menuItems = action.payload;
         },
-        createMenuItemRequest() { },
-        removeMenuItemRequest() { },
-        updateMenuItemsRequest() { },
+        createMenuItemRequest() {},
+        removeMenuItemRequest() {},
+        updateMenuItemsRequest() {},
         setSorting(state, action) {
             state.sorting = action.payload;
         },

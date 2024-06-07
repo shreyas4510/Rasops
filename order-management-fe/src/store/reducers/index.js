@@ -1,4 +1,13 @@
-import { authReducer, hotelReducer, inviteReducer, loaderReducer, managerReducer, menuReducer, orderPlacementReducer, tablesReducer } from '../slice';
+import {
+    authReducer,
+    hotelReducer,
+    inviteReducer,
+    loaderReducer,
+    managerReducer,
+    menuReducer,
+    orderPlacementReducer,
+    tablesReducer
+} from '../slice';
 
 const rootReducers = {
     loader: loaderReducer,

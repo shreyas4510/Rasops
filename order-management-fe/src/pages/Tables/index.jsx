@@ -1,27 +1,33 @@
-import CustomSelect from "../../components/CustomSelect";
-import NoData from "../../components/NoData";
-import OMTModal from "../../components/Modal";
-import { addTableValidationSchema, removeTableValidationSchema } from "../../validations/tables";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { addTablesRequest, getTablesRequest, removeTablesRequest, setSelectedTable, setTableModalData, setTableUrl } from "../../store/slice";
+import CustomSelect from '../../components/CustomSelect';
+import NoData from '../../components/NoData';
+import OMTModal from '../../components/Modal';
+import { addTableValidationSchema, removeTableValidationSchema } from '../../validations/tables';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import {
+    addTablesRequest,
+    getTablesRequest,
+    removeTablesRequest,
+    setSelectedTable,
+    setTableModalData,
+    setTableUrl
+} from '../../store/slice';
 import { QRCodeSVG } from 'qrcode.react';
-import env from "../../config/env";
-import { TiPlus } from "react-icons/ti";
-import ActionDropdown from "../../components/ActionDropdown";
-import { MdDeleteForever } from "react-icons/md";
+import env from '../../config/env';
+import { TiPlus } from 'react-icons/ti';
+import ActionDropdown from '../../components/ActionDropdown';
+import { MdDeleteForever } from 'react-icons/md';
 import debounce from 'lodash.debounce';
 import CryptoJS from 'crypto-js';
 
 function Tables() {
-
     const dispatch = useDispatch();
-    const hotelId = useSelector(state => state.hotel.globalHotelId);
-    const { tablesData, tablesModalData, selectedTable, tablesCounts, tableUrl } = useSelector(state => state.table);
+    const hotelId = useSelector((state) => state.hotel.globalHotelId);
+    const { tablesData, tablesModalData, selectedTable, tablesCounts, tableUrl } = useSelector((state) => state.table);
 
     useEffect(() => {
-        dispatch(getTablesRequest({ hotelId }))
-    }, [])
+        dispatch(getTablesRequest({ hotelId }));
+    }, []);
 
     useEffect(() => {
         if (hotelId && selectedTable.value) {
@@ -33,18 +39,16 @@ function Tables() {
                     name: selectedTable.label
                 }),
                 env.cryptoSecret
-            ).toString()
+            ).toString();
 
-            const url = `${env.appUrl}/place/${encodeURIComponent(token)}`
+            const url = `${env.appUrl}/place/${encodeURIComponent(token)}`;
             dispatch(setTableUrl(url));
         }
-    }, [selectedTable.value])
+    }, [selectedTable.value]);
 
     const debounceTableSearch = debounce(async (inputValue) => {
-        if (inputValue && !isNaN(inputValue))
-            dispatch(getTablesRequest({ hotelId, filter: inputValue }));
+        if (inputValue && !isNaN(inputValue)) dispatch(getTablesRequest({ hotelId, filter: inputValue }));
     }, 500);
-
 
     const handleTableActionClick = (type) => {
         const data = {
@@ -63,9 +67,9 @@ function Tables() {
             },
             submitText: type === 'add' ? 'Add' : 'Remove',
             closeText: 'Close'
-        }
+        };
         dispatch(setTableModalData(data));
-    }
+    };
 
     const handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
@@ -78,7 +82,7 @@ function Tables() {
         }
 
         setSubmitting(false);
-    }
+    };
 
     return (
         <>
@@ -112,34 +116,27 @@ function Tables() {
                     />
                 </div>
             </div>
-            {
-                Object.keys(selectedTable).length ? (
-                    <div className="d-flex flex-column align-items-center">
-                        <h5 style={{ color: '#49ac60' }} className="fw-bold" >{selectedTable.label}</h5>
-                        {console.log(tableUrl)}
-                        {
-                            tableUrl &&
-                            <QRCodeSVG
-                                size={400}
-                                value={tableUrl}
-                                className="mt-5"
-                            />
-                        }
-                    </div>
-                ) : (
-                    <div className="d-flex">
-                        <NoData className="tables-no-data" />
-                    </div>
-                )
-            }
+            {Object.keys(selectedTable).length ? (
+                <div className="d-flex flex-column align-items-center">
+                    <h5 style={{ color: '#49ac60' }} className="fw-bold">
+                        {selectedTable.label}
+                    </h5>
+                    {console.log(tableUrl)}
+                    {tableUrl && <QRCodeSVG size={400} value={tableUrl} className="mt-5" />}
+                </div>
+            ) : (
+                <div className="d-flex">
+                    <NoData className="tables-no-data" />
+                </div>
+            )}
 
             <OMTModal
                 show={tablesModalData}
                 type="form"
                 validationSchema={
-                    tablesModalData.type === 'add' ?
-                        addTableValidationSchema :
-                        (() => removeTableValidationSchema(tablesCounts))
+                    tablesModalData.type === 'add'
+                        ? addTableValidationSchema
+                        : () => removeTableValidationSchema(tablesCounts)
                 }
                 title={tablesModalData?.title}
                 initialValues={tablesModalData?.initialValues || {}}

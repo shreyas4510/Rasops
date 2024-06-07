@@ -1,6 +1,6 @@
 import Select from 'react-select';
 
-function CustomSelect({ value = {}, onChange = () => { }, className = '', options = [], onInputChange = () => { } }) {
+function CustomSelect({ value = {}, onChange = () => {}, className = '', options = [], onInputChange = () => {} }) {
     return (
         <Select
             className={className}
