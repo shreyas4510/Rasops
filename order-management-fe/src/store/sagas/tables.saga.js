@@ -1,8 +1,8 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
-import { ADD_TABLE_REQUEST, GET_TABLE_REQUEST, REMOVE_TABLE_REQUEST } from '../types';
-import * as service from '../../services/tables.service'
+import * as service from '../../services/tables.service';
 import { getTablesRequest, getTablesSuccess, setTableModalData } from '../slice';
+import { ADD_TABLE_REQUEST, GET_TABLE_REQUEST, REMOVE_TABLE_REQUEST } from '../types';
 
 function* getTablesRequestSaga(action) {
     try {
@@ -12,7 +12,7 @@ function* getTablesRequestSaga(action) {
         const data = res.rows?.reduce((cur, next) => {
             cur.push({ label: `Table-${next.tableNumber}`, value: next.id });
             return cur;
-        }, [])
+        }, []);
 
         yield put(getTablesSuccess({ data, count: res.count }));
     } catch (error) {
@@ -29,7 +29,6 @@ function* addTablesRequestSaga(action) {
 
         yield put(setTableModalData(false));
         yield put(getTablesRequest({ hotelId }));
-
     } catch (error) {
         console.error('Failed to add tables ', error);
         yield put(setTableModalData(false));

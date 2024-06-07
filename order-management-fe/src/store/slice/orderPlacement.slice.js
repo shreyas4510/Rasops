@@ -4,10 +4,10 @@ import { ORDER_PLACEMENT } from '../types/place';
 const orderPlacementSlice = createSlice({
     name: ORDER_PLACEMENT,
     reducers: {
-        setPlacementData( state, action ) {
+        setPlacementData(state, action) {
             state.placementData = action.payload;
         },
-        setIsRegistered( state, action ) {
+        setIsRegistered(state, action) {
             state.isRegistered = action.payload;
         },
         setCurrentPage(state, action) {
@@ -20,9 +20,6 @@ const orderPlacementSlice = createSlice({
         currentPage: 0
     }
 });
-export const {
-    setPlacementData,
-    setCurrentPage
-} = orderPlacementSlice.actions;
+export const { setPlacementData, setCurrentPage } = orderPlacementSlice.actions;
 
 export const orderPlacementReducer = orderPlacementSlice.reducer;

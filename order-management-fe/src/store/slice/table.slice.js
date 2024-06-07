@@ -4,12 +4,12 @@ import { TABLES } from '../types';
 const tablesSlice = createSlice({
     name: TABLES,
     reducers: {
-        getTablesRequest() { },
-        getTablesSuccess( state, action ) {
+        getTablesRequest() {},
+        getTablesSuccess(state, action) {
             const { data, count } = action.payload;
             state.tablesData = data;
             state.tablesCounts = count;
-            state.selectedTable = (data[0] || {});
+            state.selectedTable = data[0] || {};
         },
         setSelectedTable(state, action) {
             state.selectedTable = action.payload;
@@ -19,7 +19,7 @@ const tablesSlice = createSlice({
         },
         addTablesRequest() {},
         removeTablesRequest() {},
-        setTableUrl( state, action ) {
+        setTableUrl(state, action) {
             state.tableUrl = action.payload;
         }
     },

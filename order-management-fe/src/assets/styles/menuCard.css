@@ -11,7 +11,7 @@
 .corner-view {
     width: 45px;
     height: 45px;
-    background: #FDFD96;
+    background: #fdfd96;
     position: absolute;
 }
 
@@ -40,15 +40,15 @@
 }
 
 .menu-title {
-    color: #FDFD96;
+    color: #fdfd96;
     position: absolute;
     top: 0;
     border-bottom-right-radius: 80px;
-    display: flex
+    display: flex;
 }
 
 .list-view {
-    color: #FDFD96;
+    color: #fdfd96;
 }
 
 .order-input {

@@ -36,9 +36,8 @@ import { MENU_STATUS } from '../../utils/constants.js';
 
 function Menu() {
     const dispatch = useDispatch();
-    const { selectedCategory, modalData, categoriesOptions, categories, menuItems, sorting, filtering, pagination } = useSelector(
-        (state) => state.menu
-    );
+    const { selectedCategory, modalData, categoriesOptions, categories, menuItems, sorting, filtering, pagination } =
+        useSelector((state) => state.menu);
     const hotelId = useSelector((state) => state.hotel.globalHotelId);
 
     const onPaginationChange = (paginate) => {
@@ -73,10 +72,12 @@ function Menu() {
         const name = e.target.name;
         const value = e.target.value;
 
-        dispatch(setFiltering({
-            field: name,
-            value: value
-        }));
+        dispatch(
+            setFiltering({
+                field: name,
+                value: value
+            })
+        );
     };
 
     const columnHelper = createColumnHelper();
@@ -113,9 +114,9 @@ function Menu() {
             cell: ({ row }) => {
                 return row.original.name ? (
                     <MdModeEditOutline
-                        color='#49AC60'
+                        color="#49AC60"
                         size={20}
-                        role='button'
+                        role="button"
                         onClick={() => handleUpdateItemClick('menu', row.original)}
                     />
                 ) : (
@@ -123,7 +124,6 @@ function Menu() {
                 );
             }
         })
-
     ];
 
     useEffect(() => {
@@ -238,7 +238,7 @@ function Menu() {
 
     const handleUpdateItemClick = (type, data = {}) => {
         let initialValues = {};
-        let options = {}
+        let options = {};
 
         if (type === 'category') {
             const { rows } = categories;
@@ -246,7 +246,7 @@ function Menu() {
             initialValues = {
                 name: category.name,
                 order: category.order
-            }
+            };
             options = {
                 name: {
                     name: 'name',
@@ -260,13 +260,13 @@ function Menu() {
                     label: 'Order',
                     className: 'col-6 my-2'
                 }
-            }
+            };
         } else {
             initialValues = {
                 name: data.name,
                 price: data.price,
                 status: data.status === MENU_STATUS[0] ? true : false
-            }
+            };
 
             options = {
                 name: {
@@ -288,7 +288,7 @@ function Menu() {
                     label: 'Status',
                     className: 'col-12 my-2'
                 }
-            }
+            };
         }
 
         let updateOptions = {
@@ -332,11 +332,10 @@ function Menu() {
                 warning: {
                     name: 'warning',
                     type: 'strong',
-                    label: (
-                        type === 'category' ?
-                            '⚠️ Warning: Deleting categories will remove all menu items linked with them! Please be careful before proceeding!' :
-                            `⚠️ Warning: The action cannot be undone! Please be careful before proceeding!`
-                    ),
+                    label:
+                        type === 'category'
+                            ? '⚠️ Warning: Deleting categories will remove all menu items linked with them! Please be careful before proceeding!'
+                            : `⚠️ Warning: The action cannot be undone! Please be careful before proceeding!`,
                     className: 'text-center my-2 text-danger'
                 },
                 ...options
@@ -400,7 +399,7 @@ function Menu() {
                         data,
                         hotelId
                     })
-                )
+                );
             }
         }
 
@@ -414,7 +413,7 @@ function Menu() {
             if (modalData.type === 'remove') {
                 dispatch(removeCategoryRequest({ hotelId, itemIds }));
             } else {
-                dispatch(removeMenuItemRequest({ categoryId, itemIds }))
+                dispatch(removeMenuItemRequest({ categoryId, itemIds }));
             }
         }
 
@@ -489,7 +488,7 @@ function Menu() {
                                     label: 'Update',
                                     icon: MdModeEditOutline,
                                     disabled: !menuItems.count,
-                                    onClick: () => { }
+                                    onClick: () => {}
                                 },
                                 {
                                     label: 'Delete',
