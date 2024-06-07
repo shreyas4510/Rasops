@@ -4,7 +4,7 @@ import OMTModal from "../../components/Modal";
 import { addTableValidationSchema, removeTableValidationSchema } from "../../validations/tables";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { addTablesRequest, getTablesRequest, removeTablesRequest, setSelectedTable, setTableModalData } from "../../store/slice";
+import { addTablesRequest, getTablesRequest, removeTablesRequest, setSelectedTable, setTableModalData, setTableUrl } from "../../store/slice";
 import { QRCodeSVG } from 'qrcode.react';
 import env from "../../config/env";
 import { TiPlus } from "react-icons/ti";
@@ -17,11 +17,28 @@ function Tables() {
 
     const dispatch = useDispatch();
     const hotelId = useSelector(state => state.hotel.globalHotelId);
-    const { tablesData, tablesModalData, selectedTable, tablesCounts } = useSelector(state => state.table);
+    const { tablesData, tablesModalData, selectedTable, tablesCounts, tableUrl } = useSelector(state => state.table);
 
     useEffect(() => {
         dispatch(getTablesRequest({ hotelId }))
     }, [])
+
+    useEffect(() => {
+        if (hotelId && selectedTable.value) {
+            console.log('setting table url');
+            const token = CryptoJS.AES.encrypt(
+                JSON.stringify({
+                    hotelId,
+                    tableId: selectedTable.value,
+                    name: selectedTable.label
+                }),
+                env.cryptoSecret
+            ).toString()
+
+            const url = `${env.appUrl}/place/${encodeURIComponent(token)}`
+            dispatch(setTableUrl(url));
+        }
+    }, [selectedTable.value])
 
     const debounceTableSearch = debounce(async (inputValue) => {
         if (inputValue && !isNaN(inputValue))
@@ -99,17 +116,15 @@ function Tables() {
                 Object.keys(selectedTable).length ? (
                     <div className="d-flex flex-column align-items-center">
                         <h5 style={{ color: '#49ac60' }} className="fw-bold" >{selectedTable.label}</h5>
-                        <QRCodeSVG
-                            size={400}
-                            value={
-                                `${env.appUrl}/place/${CryptoJS.AES.encrypt(
-                                    JSON.stringify({
-                                        hotelId,
-                                        tableId: selectedTable.value
-                                    }), env.cryptoSecret).toString()}`
-                            }
-                            className="mt-5"
-                        />
+                        {console.log(tableUrl)}
+                        {
+                            tableUrl &&
+                            <QRCodeSVG
+                                size={400}
+                                value={tableUrl}
+                                className="mt-5"
+                            />
+                        }
                     </div>
                 ) : (
                     <div className="d-flex">

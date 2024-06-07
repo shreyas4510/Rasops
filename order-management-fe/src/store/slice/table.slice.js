@@ -18,13 +18,17 @@ const tablesSlice = createSlice({
             state.tablesModalData = action.payload;
         },
         addTablesRequest() {},
-        removeTablesRequest() {}
+        removeTablesRequest() {},
+        setTableUrl( state, action ) {
+            state.tableUrl = action.payload;
+        }
     },
     initialState: {
         tablesData: [],
         tablesModalData: false,
         selectedTable: {},
-        tablesCounts: 0
+        tablesCounts: 0,
+        tableUrl: ''
     }
 });
 export const {
@@ -33,7 +37,8 @@ export const {
     setSelectedTable,
     setTableModalData,
     addTablesRequest,
-    removeTablesRequest
+    removeTablesRequest,
+    setTableUrl
 } = tablesSlice.actions;
 
 export const tablesReducer = tablesSlice.reducer;

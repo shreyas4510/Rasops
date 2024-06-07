@@ -5,3 +5,4 @@ export * from './invite.slice';
 export * from './loader.slice';
 export * from './menu.slice';
 export * from './table.slice';
+export * from './orderPlacement.slice';
