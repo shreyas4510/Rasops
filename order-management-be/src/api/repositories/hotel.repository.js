@@ -35,8 +35,20 @@ const remove = async (options) => {
     }
 };
 
+const find = async (options) => {
+    try {
+        logger('debug', 'Get hotel details: ', { options });
+        return await db.hotel.findOne(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', 'Error while fetching hotel data', { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
 export default {
     save,
     update,
-    remove
+    remove,
+    find
 };

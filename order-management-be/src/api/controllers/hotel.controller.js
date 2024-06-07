@@ -78,9 +78,25 @@ const remove = async (req, res) => {
     }
 };
 
+const getDetails = async (req, res) => {
+    try {
+        const { hotelId } = req.params;
+        logger('debug', `Fetching hotel details for cutomer ${hotelId}`);
+
+        const result = await hotelService.getDetails(hotelId);
+        logger('info', 'Hotel details fetched successfully', { result });
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during fetching hotel details ${JSON.stringify(error)}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     register,
     update,
     list,
-    remove
+    remove,
+    getDetails
 };

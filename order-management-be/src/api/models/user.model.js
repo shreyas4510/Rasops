@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
 export const USER_STATUS = ['ACTIVE', 'INACTIVE'];
-export const USER_ROLES = ['OWNER', 'MANAGER', 'CUSTOMER'];
+export const USER_ROLES = ['OWNER', 'MANAGER'];
 
 const userModel = (sequelize) =>
     sequelize.define(
