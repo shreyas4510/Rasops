@@ -1,0 +1,57 @@
+.menu-container {
+    height: auto;
+    min-height: 90vh;
+    background: radial-gradient(#570d0a, #08182d);
+    width: 85%;
+    max-width: 500px;
+    border: none;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.corner-view {
+    width: 45px;
+    height: 45px;
+    background: #FDFD96;
+    position: absolute;
+}
+
+.top-left-corner {
+    left: 0;
+    top: 0;
+    border-bottom-right-radius: 80px;
+}
+
+.bottom-left-corner {
+    left: 0;
+    bottom: 0;
+    border-top-right-radius: 80px;
+}
+
+.bottom-right-corner {
+    right: 0;
+    bottom: 0;
+    border-top-left-radius: 80px;
+}
+
+.top-right-corner {
+    right: 0;
+    top: 0;
+    border-bottom-left-radius: 80px;
+}
+
+.menu-title {
+    color: #FDFD96;
+    position: absolute;
+    top: 0;
+    border-bottom-right-radius: 80px;
+    display: flex
+}
+
+.list-view {
+    color: #FDFD96;
+}
+
+.order-input {
+    max-width: 35px;
+    max-height: 35px;
+}

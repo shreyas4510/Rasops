@@ -213,7 +213,7 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
         });
 
         const menuItemData = [];
-        menus.forEach(item => {
+        menus.forEach((item) => {
             menuItemData.push({
                 name: item.name,
                 id: item.id,
@@ -234,14 +234,19 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
     const categoriesPerPage = 12;
     const categoriesCount = Math.ceil(typeData.category.length / categoriesPerPage);
     for (let index = page; index < page + categoriesCount; index++) {
-        data[index] = { title: 'Categories', type: types.category, data: typeData.category.splice(0, categoriesPerPage) };
+        data[index] = {
+            title: 'Categories',
+            type: types.category,
+            data: typeData.category.splice(0, categoriesPerPage)
+        };
     }
     page += categoriesCount;
 
     const mapping = {};
     const menusPerPage = 10;
     Object.keys(typeData.menuData).forEach((key) => {
-        const id = key.split('_')[0]; const name = key.split('_')[1];
+        const id = key.split('_')[0];
+        const name = key.split('_')[1];
         mapping[id] = page;
         const menuCount = Math.ceil(typeData.menuData[key].length / menusPerPage);
         const menus = typeData.menuData[key];
@@ -259,15 +264,19 @@ const getDetails = async (hotelId) => {
         const options = {
             where: { id: hotelId },
             attributes: ['id', 'name'],
-            include: [{
-                model: db.categories,
-                attributes: ['id', 'name'],
-                include: [{
-                    model: db.menu,
-                    where: { status: MENU_STATUS[0] },
-                    attributes: ['id', 'name', 'price']
-                }]
-            }],
+            include: [
+                {
+                    model: db.categories,
+                    attributes: ['id', 'name'],
+                    include: [
+                        {
+                            model: db.menu,
+                            where: { status: MENU_STATUS[0] },
+                            attributes: ['id', 'name', 'price']
+                        }
+                    ]
+                }
+            ],
             order: [[db.categories, 'order', 'ASC']]
         };
         logger('debug', 'Fetching hotels details');

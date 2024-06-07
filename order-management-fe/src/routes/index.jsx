@@ -14,6 +14,7 @@ import Settings from '../pages/Settings';
 import Menu from '../pages/Menu';
 import Orders from '../pages/Orders';
 import Tables from '../pages/Tables';
+import OrderPlacement from '../pages/OrderPlacement';
 
 export default function Routes() {
     return (
@@ -26,6 +27,7 @@ export default function Routes() {
                     <Route path="forgot-password" element={<ForgotPassword />} />
                     <Route path="verify" element={<VerifyUser />} />
                     <Route path="reset" element={<ResetPassword />} />
+                    <Route path="place/:token" element={<OrderPlacement />} />
                 </Route>
                 <Route path="/" element={<AuthRoutes />}>
                     <Route path="dashboard" element={<Dashboard />} />
