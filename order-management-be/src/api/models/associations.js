@@ -32,14 +32,13 @@ function defineAssociations(db) {
     users.hasOne(preferences, { foreignKey: 'userId' });
     preferences.belongsTo(users, { foreignKey: 'userId' });
 
-    // hotel and customer relation 
+    // hotel and customer relation
     hotel.hasMany(customer, { foreignKey: 'hotelId' });
     customer.belongsTo(hotel, { foreignKey: 'hotelId' });
 
-    // table and customer relation 
+    // table and customer relation
     customer.hasOne(tables, { foreignKey: 'customerId' });
     tables.belongsTo(customer, { foreignKey: 'customerId' });
-   
 }
 
 export default defineAssociations;

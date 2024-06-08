@@ -25,7 +25,7 @@ const register = async (req, res) => {
     }
 };
 
-const getTableDetails = async(req, res) => {
+const getTableDetails = async (req, res) => {
     try {
         const { id } = req.params;
         const result = await orderService.getTableDetails(id);
@@ -34,7 +34,7 @@ const getTableDetails = async(req, res) => {
         logger('error', `Error while fetching table by id ${error}`);
         return res.status(error.code).send({ message: error.message });
     }
-}
+};
 
 export default {
     register,
