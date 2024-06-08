@@ -17,3 +17,12 @@ export const registerCustomer = async (payload) => {
         throw error;
     }
 };
+
+export const getMenuDetails = async (hotelId) => {
+    try {
+        return await api(method.GET, `order/menu/${hotelId}`);
+    } catch (error) {
+        console.error(`Error while fetching menu card details ${error}`);
+        throw error;
+    }
+};

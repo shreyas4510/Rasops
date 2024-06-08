@@ -48,10 +48,6 @@ const hotelSlice = createSlice({
         },
         setGlobalHotelId(state, action) {
             state.globalHotelId = action.payload;
-        },
-        getHotelDetailsRequest() {},
-        getHotelDetailsSuccess(state, action) {
-            state.hotelDetails = action.payload;
         }
     }
 });
@@ -71,9 +67,7 @@ export const {
     getHotelManagersSuccess,
     getAssignableManagerRequest,
     setAssignableManagers,
-    setGlobalHotelId,
-    getHotelDetailsRequest,
-    getHotelDetailsSuccess
+    setGlobalHotelId
 } = hotelSlice.actions;
 
 export const hotelReducer = hotelSlice.reducer;
