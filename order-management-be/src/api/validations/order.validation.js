@@ -15,11 +15,11 @@ export const customerRegistrationSchema = (payload) => {
                 tlds: { allow: ['com', 'net'] }
             }),
             hotelId: Joi.string().required(),
-            tableId: Joi.string().required(),
+            tableId: Joi.string().required()
         });
         return schema.validate(payload);
     } catch (error) {
         logger('error', `Error in register table validation ${error}`);
         throw CustomError(error.code, error.message);
     }
-}
+};

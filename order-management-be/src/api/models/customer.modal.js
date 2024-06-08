@@ -22,7 +22,7 @@ const customerModel = (sequelize) =>
                 allowNull: false
             },
             feedback: {
-                type: DataTypes.STRING,
+                type: DataTypes.STRING
             },
             rating: {
                 type: DataTypes.INTEGER

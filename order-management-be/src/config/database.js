@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import defineAssociations from '../api/models/associations.js';
 import categoryModel from '../api/models/category.model.js';
+import customerModel from '../api/models/customer.modal.js';
 import hotelModel from '../api/models/hotel.model.js';
 import hotelUserRelationModel from '../api/models/hotelUserRelation.model.js';
 import inviteModel from '../api/models/invite.model.js';
@@ -11,7 +12,6 @@ import userModel from '../api/models/user.model.js';
 import { CustomError } from '../api/utils/common.js';
 import env from './env.js';
 import logger from './logger.js';
-import customerModel from '../api/models/customer.modal.js';
 
 const config = {
     host: env.db.host,
