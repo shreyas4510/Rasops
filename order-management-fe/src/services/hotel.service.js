@@ -45,12 +45,3 @@ export const fetchAssignableManager = async () => {
         throw error;
     }
 };
-
-export const getDetails = async (hotelId) => {
-    try {
-        return await api(method.GET, `/hotel/${hotelId}`);
-    } catch (error) {
-        console.error(`Error while fetching assignable manager ${error}`);
-        throw error;
-    }
-};

@@ -4,7 +4,7 @@ import CryptoJS from 'crypto-js';
 import env from '../../config/env';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    getHotelDetailsRequest,
+    getMenuDetailsRequest,
     getTableDetailsRequest,
     registerCustomerRequest,
     setCurrentPage
@@ -21,8 +21,7 @@ const TABLE_STATUS = { open: 'OPEN', booked: 'BOOKED' };
 function OrderPlacement() {
     const { token } = useParams();
     const dispatch = useDispatch();
-    const { currentPage, tableDetails } = useSelector((state) => state.place);
-    const { hotelDetails: data } = useSelector((state) => state.hotel);
+    const { menuCard, currentPage, tableDetails } = useSelector((state) => state.orderPlacement);
 
     const initialValues = {
         name: '',
@@ -36,7 +35,7 @@ function OrderPlacement() {
             const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
 
             dispatch(getTableDetailsRequest(data.tableId));
-            dispatch(getHotelDetailsRequest(data.hotelId));
+            dispatch(getMenuDetailsRequest(data.hotelId));
         }
     }, [token]);
 
@@ -52,7 +51,7 @@ function OrderPlacement() {
                 dispatch(setCurrentPage(1));
                 break;
             case 'check-in':
-                const pageNo = data?.mapping[id] || 0;
+                const pageNo = menuCard?.mapping[id] || 0;
                 dispatch(setCurrentPage(pageNo));
                 break;
             case 'place':
@@ -70,7 +69,7 @@ function OrderPlacement() {
 
     const handleRegisterCustomer = (values, { setSubmitting }) => {
         setSubmitting(true);
-        const hotelId = data.id;
+        const hotelId = menuCard.id;
         const tableId = tableDetails.id;
 
         const payload = {
@@ -84,12 +83,12 @@ function OrderPlacement() {
         setSubmitting(false);
     };
 
-    if (!Object.keys(tableDetails).length || !Object.keys(data).length) {
+    if (!Object.keys(tableDetails).length || !Object.keys(menuCard).length) {
         return <Loader />;
     }
 
     return tableDetails.status === TABLE_STATUS.open ? (
-        <AuthContainer title={data.name}>
+        <AuthContainer title={menuCard.name}>
             <Formik
                 initialValues={initialValues}
                 validationSchema={customerRegistrationSchema}
@@ -123,9 +122,9 @@ function OrderPlacement() {
         </AuthContainer>
     ) : (
         <MenuCard
-            name={data.name}
-            data={data.data}
-            count={data.count}
+            name={menuCard.name}
+            data={menuCard.data}
+            count={menuCard.count}
             currentPage={currentPage}
             handleClick={handleClick}
             handleOnChange={handleOnChange}

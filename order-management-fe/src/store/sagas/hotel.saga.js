@@ -2,7 +2,6 @@ import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import * as service from '../../services/hotel.service';
 import {
-    getHotelDetailsSuccess,
     getHotelRequest,
     getHotelSuccess,
     removeHotelSuccess,
@@ -12,7 +11,6 @@ import {
 import {
     CREATE_HOTEL_REQUEST,
     GET_ASSIGNABLE_MANAGER,
-    GET_HOTEL_DETAILS,
     GET_HOTEL_REQUEST,
     REMOVE_HOTEL_REQUEST,
     UPDATE_HOTEL_REQUEST
@@ -77,22 +75,12 @@ function* getAssignableManagerSaga() {
     }
 }
 
-function* getHotelDetailsRequestSaga(action) {
-    try {
-        const res = yield service.getDetails(action.payload);
-        yield put(getHotelDetailsSuccess(res));
-    } catch (error) {
-        toast.error('Failed to fetch hotels details', error.message);
-    }
-}
-
-export default function* managerSaga() {
+export default function* hotelSaga() {
     yield all([
         takeLatest(CREATE_HOTEL_REQUEST, createHotelRequestSaga),
         takeLatest(GET_HOTEL_REQUEST, getHotelsRequestSaga),
         takeLatest(REMOVE_HOTEL_REQUEST, removeHotelsRequestSaga),
         takeLatest(UPDATE_HOTEL_REQUEST, updateHotelsRequestSaga),
-        takeLatest(GET_ASSIGNABLE_MANAGER, getAssignableManagerSaga),
-        takeLatest(GET_HOTEL_DETAILS, getHotelDetailsRequestSaga)
+        takeLatest(GET_ASSIGNABLE_MANAGER, getAssignableManagerSaga)
     ]);
 }

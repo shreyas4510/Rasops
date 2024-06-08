@@ -17,7 +17,7 @@ const rootReducers = {
     hotel: hotelReducer,
     menu: menuReducer,
     table: tablesReducer,
-    place: orderPlacementReducer
+    orderPlacement: orderPlacementReducer
 };
 
 export default rootReducers;
