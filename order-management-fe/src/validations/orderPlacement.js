@@ -5,5 +5,5 @@ export const customerRegistrationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     phoneNumber: Yup.string().min(10).max(10).required('Phone Number is required'),
     email: Yup.string().matches(emailRegex, 'Invalid email').required('Email is required'),
-    confirmation: Yup.boolean().test('is-true', '', value => value)
+    confirmation: Yup.boolean().test('is-true', '', (value) => value)
 });

@@ -18,6 +18,7 @@ const orderPlacementSlice = createSlice({
         tableDetails: {}
     }
 });
-export const { setCurrentPage, getTableDetailsRequest, getTableDetailsSuccess, registerCustomerRequest } = orderPlacementSlice.actions;
+export const { setCurrentPage, getTableDetailsRequest, getTableDetailsSuccess, registerCustomerRequest } =
+    orderPlacementSlice.actions;
 
 export const orderPlacementReducer = orderPlacementSlice.reducer;

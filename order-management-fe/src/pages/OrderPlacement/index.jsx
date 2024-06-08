@@ -3,7 +3,12 @@ import { useParams } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import env from '../../config/env';
 import { useDispatch, useSelector } from 'react-redux';
-import { getHotelDetailsRequest, getTableDetailsRequest, registerCustomerRequest, setCurrentPage } from '../../store/slice';
+import {
+    getHotelDetailsRequest,
+    getTableDetailsRequest,
+    registerCustomerRequest,
+    setCurrentPage
+} from '../../store/slice';
 import AuthContainer from '../../components/AuthContainer';
 import { Form, Formik } from 'formik';
 import CustomFormGroup from '../../components/CustomFormGroup';
@@ -30,7 +35,7 @@ function OrderPlacement() {
         if (token) {
             const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
 
-            dispatch(getTableDetailsRequest(data.tableId))
+            dispatch(getTableDetailsRequest(data.tableId));
             dispatch(getHotelDetailsRequest(data.hotelId));
         }
     }, [token]);
@@ -72,15 +77,15 @@ function OrderPlacement() {
             ...values,
             hotelId,
             tableId
-        }
+        };
 
         delete payload.confirmation;
-        dispatch(registerCustomerRequest(payload))
+        dispatch(registerCustomerRequest(payload));
         setSubmitting(false);
-    }
+    };
 
     if (!Object.keys(tableDetails).length || !Object.keys(data).length) {
-        return <Loader />
+        return <Loader />;
     }
 
     return tableDetails.status === TABLE_STATUS.open ? (
@@ -95,8 +100,13 @@ function OrderPlacement() {
                         <CustomFormGroup name="name" type="text" label="Name" />
                         <CustomFormGroup name="email" type="email" label="Email" />
                         <CustomFormGroup name="phoneNumber" type="number" label="Phone Number" />
-                        <div className='d-flex mt-2 align-items-center'>
-                            <CustomFormGroup name="confirmation" setFieldValue={setFieldValue} type="checkbox" className='none' />
+                        <div className="d-flex mt-2 align-items-center">
+                            <CustomFormGroup
+                                name="confirmation"
+                                setFieldValue={setFieldValue}
+                                type="checkbox"
+                                className="none"
+                            />
                             <p className="label-font text-secondary m-0 mx-2" style={{ fontSize: '12px' }}>
                                 I confirm the details are correct for payments and invoices.
                             </p>
@@ -120,7 +130,7 @@ function OrderPlacement() {
             handleClick={handleClick}
             handleOnChange={handleOnChange}
         />
-    )
+    );
 }
 
 export default OrderPlacement;

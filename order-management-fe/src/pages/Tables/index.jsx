@@ -34,7 +34,7 @@ function Tables() {
             const token = CryptoJS.AES.encrypt(
                 JSON.stringify({
                     hotelId,
-                    tableId: selectedTable.value,
+                    tableId: selectedTable.value
                 }),
                 env.cryptoSecret
             ).toString();
