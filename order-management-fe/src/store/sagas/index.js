@@ -4,8 +4,17 @@ import hotelSaga from './hotel.saga';
 import inviteSaga from './invite.saga';
 import managerSaga from './manager.saga';
 import menuSaga from './menu.saga';
+import orderPlacementSaga from './orderPlacement.saga';
 import tablesSaga from './tables.saga';
 
 export default function* () {
-    yield all([fork(authSaga), fork(managerSaga), fork(hotelSaga), fork(inviteSaga), fork(menuSaga), fork(tablesSaga)]);
+    yield all([
+        fork(authSaga),
+        fork(managerSaga),
+        fork(hotelSaga),
+        fork(inviteSaga),
+        fork(menuSaga),
+        fork(tablesSaga),
+        fork(orderPlacementSaga)
+    ]);
 }

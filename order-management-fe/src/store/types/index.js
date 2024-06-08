@@ -5,4 +5,4 @@ export * from './hotel.js';
 export * from './tables.js';
 export * from './loader.js';
 export * from './menu.js';
-export * from './place.js';
+export * from './orderPlacement.js';
