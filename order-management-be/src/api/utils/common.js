@@ -28,7 +28,8 @@ export const TABLES = {
     CATEGORIES: 'categories',
     MENU: 'menus',
     PREFERENCES: 'preferences',
-    CUSTOMER: 'customers'
+    CUSTOMER: 'customers',
+    ORDER: 'orders'
 };
 
 export const CustomError = (code = STATUS_CODE.INTERNAL_SERVER_ERROR, message = 'Something went wrong.') => {
