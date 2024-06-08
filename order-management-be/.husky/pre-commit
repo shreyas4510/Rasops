@@ -3,4 +3,4 @@
 cd order-management-be
 npm run lint:fix
 npm run prettier:write
-git add .
+# git add .
