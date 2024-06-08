@@ -42,6 +42,7 @@
         "nodemailer": "^6.9.11",
         "sequelize": "^6.37.1",
         "swagger-ui-express": "^5.0.0",
-        "uuid": "^9.0.1"
+        "uuid": "^9.0.1",
+        "winston": "^3.13.0"
     }
 }

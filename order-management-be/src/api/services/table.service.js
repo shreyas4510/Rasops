@@ -89,7 +89,7 @@ const remove = async (hotelId, payload) => {
         await tableRepo.remove(removeOptions);
         return { message: 'Table removed successfully' };
     } catch (error) {
-        logger('error', `Error while removing table ${hotelId}`);
+        logger('error', `Error while removing table`, error);
         throw CustomError(error.code, error.message);
     }
 };
