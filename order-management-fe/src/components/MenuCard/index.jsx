@@ -39,7 +39,11 @@ function MenuCard({
                         { Icon: FaArrowLeft, description: 'Previous Page' },
                         { Icon: FaArrowRight, description: 'Next Page' }
                     ].map(({ Icon, description }, index) => (
-                        <div key={`${index}-${description}`} className="d-flex align-items-center my-1" style={{ color: '#FDFD96' }}>
+                        <div
+                            key={`${index}-${description}`}
+                            className="d-flex align-items-center my-1"
+                            style={{ color: '#FDFD96' }}
+                        >
                             <Icon size={20} />
                             <span className="mx-2">:</span>
                             <span>{description}</span>
