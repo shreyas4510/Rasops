@@ -7,12 +7,12 @@ const orderPlacementSlice = createSlice({
         setCurrentPage(state, action) {
             state.currentPage = action.payload;
         },
-        getTableDetailsRequest() { },
+        getTableDetailsRequest() {},
         getTableDetailsSuccess(state, action) {
             state.tableDetails = action.payload;
         },
-        registerCustomerRequest() { },
-        getMenuDetailsRequest() { },
+        registerCustomerRequest() {},
+        getMenuDetailsRequest() {},
         getMenuDetailsSuccess(state, action) {
             state.menuCard = action.payload;
         }
@@ -23,7 +23,13 @@ const orderPlacementSlice = createSlice({
         menuCard: {}
     }
 });
-export const { setCurrentPage, getTableDetailsRequest, getTableDetailsSuccess, registerCustomerRequest, getMenuDetailsRequest, getMenuDetailsSuccess } =
-    orderPlacementSlice.actions;
+export const {
+    setCurrentPage,
+    getTableDetailsRequest,
+    getTableDetailsSuccess,
+    registerCustomerRequest,
+    getMenuDetailsRequest,
+    getMenuDetailsSuccess
+} = orderPlacementSlice.actions;
 
 export const orderPlacementReducer = orderPlacementSlice.reducer;
