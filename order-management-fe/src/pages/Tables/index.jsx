@@ -31,12 +31,10 @@ function Tables() {
 
     useEffect(() => {
         if (hotelId && selectedTable.value) {
-            console.log('setting table url');
             const token = CryptoJS.AES.encrypt(
                 JSON.stringify({
                     hotelId,
                     tableId: selectedTable.value,
-                    name: selectedTable.label
                 }),
                 env.cryptoSecret
             ).toString();
@@ -121,7 +119,6 @@ function Tables() {
                     <h5 style={{ color: '#49ac60' }} className="fw-bold">
                         {selectedTable.label}
                     </h5>
-                    {console.log(tableUrl)}
                     {tableUrl && <QRCodeSVG size={400} value={tableUrl} className="mt-5" />}
                 </div>
             ) : (

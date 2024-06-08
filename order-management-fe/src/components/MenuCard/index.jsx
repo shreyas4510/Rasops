@@ -38,8 +38,8 @@ function MenuCard({
                         { Icon: IoMdDoneAll, description: 'Place Order' },
                         { Icon: FaArrowLeft, description: 'Previous Page' },
                         { Icon: FaArrowRight, description: 'Next Page' }
-                    ].map(({ Icon, description }) => (
-                        <div className="d-flex align-items-center my-1" style={{ color: '#FDFD96' }}>
+                    ].map(({ Icon, description }, index) => (
+                        <div key={`${index}-${description}`} className="d-flex align-items-center my-1" style={{ color: '#FDFD96' }}>
                             <Icon size={20} />
                             <span className="mx-2">:</span>
                             <span>{description}</span>
