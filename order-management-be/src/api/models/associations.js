@@ -1,6 +1,6 @@
 function defineAssociations(db) {
     // Defaine all tables
-    const { users, invites, hotel, hotelUserRelation, tables, categories, menu, preferences, customer } = db;
+    const { users, invites, hotel, hotelUserRelation, tables, categories, menu, preferences, customer, orders } = db;
 
     // user and invite associations
     users.hasOne(invites, { foreignKey: 'userId' });
@@ -39,6 +39,14 @@ function defineAssociations(db) {
     // table and customer relation
     customer.hasOne(tables, { foreignKey: 'customerId' });
     tables.belongsTo(customer, { foreignKey: 'customerId' });
+
+    // order and customer relation
+    customer.hasMany(orders, { foreignKey: 'customerId' });
+    orders.belongsTo(customer, { foreignKey: 'customerId' });
+
+    // order and menu relation
+    menu.hasMany(orders, { foreignKey: 'menuId' });
+    orders.belongsTo(menu, { foreignKey: 'menuId' });
 }
 
 export default defineAssociations;
