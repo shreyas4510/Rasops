@@ -11,6 +11,7 @@ import userModel from '../api/models/user.model.js';
 import { CustomError } from '../api/utils/common.js';
 import env from './env.js';
 import logger from './logger.js';
+import customerModel from '../api/models/customer.modal.js';
 
 const config = {
     host: env.db.host,
@@ -50,6 +51,7 @@ const defineModels = (sequelize) => {
     db.categories = categoryModel(sequelize);
     db.menu = menuModel(sequelize);
     db.preferences = preferencesModel(sequelize);
+    db.customer = customerModel(sequelize);
 };
 
 const initDb = async () => {

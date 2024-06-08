@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
-const TABLE_STATUS = ['OPEN', 'BOOKED'];
+export const TABLE_STATUS = ['OPEN', 'BOOKED'];
 
 const tableModel = (sequelize) =>
     sequelize.define(
@@ -28,6 +28,14 @@ const tableModel = (sequelize) =>
                 values: TABLE_STATUS,
                 allowNull: false,
                 defaultValue: TABLE_STATUS[0]
+            },
+            customerId: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                references: {
+                    model: TABLES.CUSTOMER,
+                    key: 'id'
+                }
             },
             deletedAt: {
                 type: DataTypes.DATE,

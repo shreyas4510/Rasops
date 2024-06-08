@@ -20,11 +20,14 @@ const log = createLogger({
     transports: [new Console()]
 });
 
-export const logger = (level, message) => {
+export const logger = (level, message, payload) => {
     if (!Object.keys(colors).includes(level)) {
         throw new Error('Incorrect value of level');
     }
     log[level](`${moment().toISOString()} - ${JSON.stringify(message)}`);
+    if (payload) {
+        log[level](JSON.stringify(payload));
+    }
 };
 
 export default logger;

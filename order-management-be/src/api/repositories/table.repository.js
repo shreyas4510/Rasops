@@ -35,4 +35,26 @@ const remove = async (options) => {
     }
 };
 
-export default { save, find, remove };
+const findOne = async (options) => {
+    try {
+        logger('debug', 'Fetching table by id in the database');
+        return await db.tables.findOne(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while fetching table: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+const update = async (options, data) => {
+    try {
+        logger('debug', 'Updating table by id in the database', { options, data });
+        return await db.tables.update(data, options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while updating table: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, find, remove, findOne, update };
