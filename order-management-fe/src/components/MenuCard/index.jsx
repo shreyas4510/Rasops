@@ -23,16 +23,16 @@ function MenuCard({
     currentOrder = {},
     name = '',
     handleClick = () => {},
-    handleOnChange = () => {},
+    handleOnChange = () => {}
 }) {
-    const itemRefs = useRef({});    
+    const itemRefs = useRef({});
     const listData = data[currentPage];
 
     useEffect(() => {
         if (itemRefs && itemRefs.current[currentOrder.lastUpdated]) {
             itemRefs.current[currentOrder.lastUpdated].focus();
         }
-    })
+    });
 
     const CoverView = ({ type }) => {
         if (type !== types.cover) return;
@@ -74,11 +74,8 @@ function MenuCard({
                 </div>
             )}
             {type !== types.cover && (
-                <div
-                    className="pb-1 text-center view-order"
-                    onClick={() => handleClick({ action: 'view' })}
-                >
-                    <h6 role='button'>View Order</h6>
+                <div className="pb-1 text-center view-order" onClick={() => handleClick({ action: 'view' })}>
+                    <h6 role="button">View Order</h6>
                 </div>
             )}
             <div className="corner-view top-left-corner">
@@ -154,9 +151,11 @@ function MenuCard({
                         ref={(r) => (itemRefs.current[item.id] = r)}
                         name={item.id}
                         type="number"
-                        value={(
-                            currentOrder[item.id] ? (currentOrder[item.id]?.quantity || '') : (orders[item.id]?.quantity || '')
-                        )}
+                        value={
+                            currentOrder[item.id]
+                                ? currentOrder[item.id]?.quantity || ''
+                                : orders[item.id]?.quantity || ''
+                        }
                         placeholder="-"
                         className="form-control px-1 text-center py-1 order-input"
                         onChange={(e) => handleOnChange(e, item)}

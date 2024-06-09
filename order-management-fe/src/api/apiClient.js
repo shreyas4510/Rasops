@@ -11,7 +11,7 @@ const instance = axios.create({
     }
 });
 
-const STATUS_CODES = [ 401, 403 ];
+const STATUS_CODES = [401, 403];
 
 instance.interceptors.request.use(
     (config) => {
