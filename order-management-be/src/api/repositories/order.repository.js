@@ -8,7 +8,7 @@ const find = async (options) => {
         return await db.orders.findAndCountAll(options);
     } catch (error) {
         const err = error?.errors ? error?.errors[0]?.message : undefined;
-        logger('error', `Error occurred while fetching orders`, {error: err || error.message});
+        logger('error', `Error occurred while fetching orders`, { error: err || error.message });
         throw CustomError(error.code, err || error.message);
     }
 };
