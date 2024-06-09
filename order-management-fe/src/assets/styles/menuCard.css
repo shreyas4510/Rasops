@@ -43,8 +43,13 @@
     color: #fdfd96;
     position: absolute;
     top: 0;
-    border-bottom-right-radius: 80px;
     display: flex;
+}
+
+.view-order {
+    color: #fdfd96;
+    position: absolute;
+    bottom: 0;
 }
 
 .list-view {

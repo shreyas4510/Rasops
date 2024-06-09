@@ -18,11 +18,29 @@ export const registerCustomer = async (payload) => {
     }
 };
 
-export const getMenuDetails = async (hotelId) => {
+export const getMenuDetails = async (hotelId, customerId) => {
     try {
-        return await api(method.GET, `order/menu/${hotelId}`);
+        return await api(method.GET, `/order/menu?hotelId=${hotelId}&customerId=${customerId}`);
     } catch (error) {
         console.error(`Error while fetching menu card details ${error}`);
+        throw error;
+    }
+};
+
+export const placeOrder = async (payload) => {
+    try {
+        return await api(method.POST, '/order', payload);
+    } catch (error) {
+        console.error(`Error while fetching menu card details ${error}`);
+        throw error;
+    }
+};
+
+export const getOrder = async (customerId) => {
+    try {
+        return await api(method.GET, `/order/${customerId}`);
+    } catch (error) {
+        console.error(`Error while fetching order details ${error}`);
         throw error;
     }
 };

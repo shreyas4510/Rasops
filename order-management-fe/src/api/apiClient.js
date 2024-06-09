@@ -11,6 +11,8 @@ const instance = axios.create({
     }
 });
 
+const STATUS_CODES = [ 401, 403 ];
+
 instance.interceptors.request.use(
     (config) => {
         store.dispatch(setIsLoading(true));
@@ -31,6 +33,9 @@ instance.interceptors.response.use(
         return response;
     },
     (error) => {
+        if (error.response && STATUS_CODES.includes(error.response.status)) {
+            localStorage.clear();
+        }
         store.dispatch(setIsLoading(false));
         throw error;
     }

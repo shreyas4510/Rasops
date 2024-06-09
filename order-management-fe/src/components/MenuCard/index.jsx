@@ -6,6 +6,7 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { IoMdDoneAll } from 'react-icons/io';
 import Chef from '../../assets/images/chef.png';
 import { TiArrowRightThick } from 'react-icons/ti';
+import { useEffect, useRef } from 'react';
 
 const types = {
     cover: 'COVER',
@@ -17,12 +18,21 @@ const types = {
 function MenuCard({
     data = {},
     count = [],
+    orders = {},
     currentPage = 0,
+    currentOrder = {},
     name = '',
     handleClick = () => {},
-    handleOnChange = () => {}
+    handleOnChange = () => {},
 }) {
+    const itemRefs = useRef({});    
     const listData = data[currentPage];
+
+    useEffect(() => {
+        if (itemRefs && itemRefs.current[currentOrder.lastUpdated]) {
+            itemRefs.current[currentOrder.lastUpdated].focus();
+        }
+    })
 
     const CoverView = ({ type }) => {
         if (type !== types.cover) return;
@@ -61,6 +71,14 @@ function MenuCard({
                     <TbTopologyStarRing2 size={17} color="FDFD96" />
                     <h6 className="m-0 mx-2">{title}</h6>
                     <TbTopologyStarRing2 size={17} color="FDFD96" />
+                </div>
+            )}
+            {type !== types.cover && (
+                <div
+                    className="pb-1 text-center view-order"
+                    onClick={() => handleClick({ action: 'view' })}
+                >
+                    <h6 role='button'>View Order</h6>
                 </div>
             )}
             <div className="corner-view top-left-corner">
@@ -133,11 +151,15 @@ function MenuCard({
                 <p className="m-0 col-3 text-end">{`₹ ${item.price}`}</p>
                 <div className="d-flex align-items-center justify-content-end col-3">
                     <input
+                        ref={(r) => (itemRefs.current[item.id] = r)}
                         name={item.id}
                         type="number"
+                        value={(
+                            currentOrder[item.id] ? (currentOrder[item.id]?.quantity || '') : (orders[item.id]?.quantity || '')
+                        )}
                         placeholder="-"
                         className="form-control px-1 text-center py-1 order-input"
-                        onChange={handleOnChange}
+                        onChange={(e) => handleOnChange(e, item)}
                     />
                 </div>
             </div>
