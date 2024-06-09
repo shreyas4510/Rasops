@@ -2,13 +2,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
 import { MENU_STATUS } from '../models/menu.model.js';
+import { ORDER_STATUS } from '../models/order.model.js';
 import { TABLE_STATUS } from '../models/table.model.js';
 import customerRepo from '../repositories/customer.repository.js';
 import hotelRepo from '../repositories/hotel.repository.js';
+import orderRepo from '../repositories/order.repository.js';
 import tableRepo from '../repositories/table.repository.js';
 import { CustomError, STATUS_CODE } from '../utils/common.js';
-import { ORDER_STATUS } from '../models/order.model.js';
-import orderRepo from '../repositories/order.repository.js';
 
 const register = async (payload) => {
     try {
@@ -145,15 +145,17 @@ const getMenuDetails = async (hotelId, customerId) => {
                             model: db.menu,
                             where: { status: MENU_STATUS[0] },
                             attributes: ['id', 'name', 'price'],
-                            include: [{
-                                model: db.orders,
-                                where: {
-                                    status: ORDER_STATUS[0],
-                                    customerId
-                                },
-                                attributes: ['id', 'price', 'quantity'],
-                                required: false
-                            }]
+                            include: [
+                                {
+                                    model: db.orders,
+                                    where: {
+                                        status: ORDER_STATUS[0],
+                                        customerId
+                                    },
+                                    attributes: ['id', 'price', 'quantity'],
+                                    required: false
+                                }
+                            ]
                         }
                     ]
                 }
@@ -188,9 +190,9 @@ const placeOrder = async (payload) => {
                 customerId,
                 status: ORDER_STATUS[0]
             }
-        }
+        };
         const { rows: orders } = await orderRepo.find(previousOrders);
-        const existingOrderIds = orders.map(item => item.menuId);
+        const existingOrderIds = orders.map((item) => item.menuId);
 
         // add new fresh orders and update existing ones
         const data = [];
@@ -205,9 +207,9 @@ const placeOrder = async (payload) => {
                     quantity,
                     status: ORDER_STATUS[0],
                     description: `ADD:Incoming order: ${quantity} x ${menuName}. Let's get cooking!`
-                })
+                });
             } else {
-                const order = orders.find(item => item.menuId === menuId);
+                const order = orders.find((item) => item.menuId === menuId);
                 if (order.quantity < quantity) {
                     data.push({
                         id: order.id,
@@ -217,10 +219,13 @@ const placeOrder = async (payload) => {
                         quantity,
                         status: ORDER_STATUS[0],
                         description: `${order.description}#ADD:Added ${quantity - order.quantity} x ${menuName} to the order.`
-                    })
+                    });
                 } else {
                     const status = quantity <= 0 ? ORDER_STATUS[2] : ORDER_STATUS[0];
-                    const description = quantity <= 0 ? `REMOVE:${order.quantity - quantity} x ${menuName} has been cancelled.` : `REMOVE:Removed ${quantity} x ${menuName} from the order.`;
+                    const description =
+                        quantity <= 0
+                            ? `REMOVE:${order.quantity - quantity} x ${menuName} has been cancelled.`
+                            : `REMOVE:Removed ${quantity} x ${menuName} from the order.`;
 
                     data.push({
                         id: order.id,
@@ -230,7 +235,7 @@ const placeOrder = async (payload) => {
                         quantity,
                         status,
                         description: `${order.description}#${description}`
-                    })
+                    });
                 }
             }
         });
@@ -244,7 +249,7 @@ const placeOrder = async (payload) => {
         logger('error', 'Error while placing order', error);
         throw CustomError(error.code, error.message);
     }
-}
+};
 
 export default {
     register,

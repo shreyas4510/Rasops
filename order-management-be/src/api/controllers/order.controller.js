@@ -70,7 +70,7 @@ const placeOrder = async (req, res) => {
         logger('error', `Error occurred during placing order ${JSON.stringify(error)}`);
         return res.status(error.code).send({ message: error.message });
     }
-}
+};
 
 export default {
     register,
