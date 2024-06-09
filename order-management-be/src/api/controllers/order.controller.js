@@ -72,9 +72,25 @@ const placeOrder = async (req, res) => {
     }
 };
 
+const getOrder = async (req, res) => {
+    try {
+        const { customerId } = req.params;
+        logger('debug', `Get order details for customer ${customerId}`);
+
+        const result = await orderService.getOrder(customerId);
+        logger('debug', `Get order details response`, result);
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during fetching order ${JSON.stringify(error)}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     register,
     getTableDetails,
     getMenuDetails,
-    placeOrder
+    placeOrder,
+    getOrder
 };
