@@ -7,6 +7,8 @@ import customerRepo from '../repositories/customer.repository.js';
 import hotelRepo from '../repositories/hotel.repository.js';
 import tableRepo from '../repositories/table.repository.js';
 import { CustomError, STATUS_CODE } from '../utils/common.js';
+import { ORDER_STATUS } from '../models/order.model.js';
+import orderRepo from '../repositories/order.repository.js';
 
 const register = async (payload) => {
     try {
@@ -63,7 +65,6 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
     const types = {
         cover: 'COVER',
         category: 'CATEGORY',
-        title: 'TITLE',
         item: 'MENU_ITEM'
     };
 
@@ -87,7 +88,8 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
             menuItemData.push({
                 name: item.name,
                 id: item.id,
-                price: item.price
+                price: item.price,
+                order: item.orders[0]
             });
         });
         typeData.menuData = {
@@ -129,7 +131,7 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
     return { data, mapping };
 };
 
-const getMenuDetails = async (hotelId) => {
+const getMenuDetails = async (hotelId, customerId) => {
     try {
         const options = {
             where: { id: hotelId },
@@ -142,7 +144,16 @@ const getMenuDetails = async (hotelId) => {
                         {
                             model: db.menu,
                             where: { status: MENU_STATUS[0] },
-                            attributes: ['id', 'name', 'price']
+                            attributes: ['id', 'name', 'price'],
+                            include: [{
+                                model: db.orders,
+                                where: {
+                                    status: ORDER_STATUS[0],
+                                    customerId
+                                },
+                                attributes: ['id', 'price', 'quantity'],
+                                required: false
+                            }]
                         }
                     ]
                 }
@@ -167,8 +178,77 @@ const getMenuDetails = async (hotelId) => {
     }
 };
 
+const placeOrder = async (payload) => {
+    try {
+        const { customerId, menus } = payload;
+
+        // Find all orders in pending state
+        const previousOrders = {
+            where: {
+                customerId,
+                status: ORDER_STATUS[0]
+            }
+        }
+        const { rows: orders } = await orderRepo.find(previousOrders);
+        const existingOrderIds = orders.map(item => item.menuId);
+
+        // add new fresh orders and update existing ones
+        const data = [];
+        menus.forEach(({ menuId, menuName, quantity, price }) => {
+            if (!existingOrderIds.includes(menuId)) {
+                if (!quantity) return;
+                data.push({
+                    id: uuidv4(),
+                    menuId,
+                    customerId,
+                    price: price * quantity,
+                    quantity,
+                    status: ORDER_STATUS[0],
+                    description: `ADD:Incoming order: ${quantity} x ${menuName}. Let's get cooking!`
+                })
+            } else {
+                const order = orders.find(item => item.menuId === menuId);
+                if (order.quantity < quantity) {
+                    data.push({
+                        id: order.id,
+                        menuId,
+                        customerId,
+                        price: price * quantity,
+                        quantity,
+                        status: ORDER_STATUS[0],
+                        description: `${order.description}#ADD:Added ${quantity - order.quantity} x ${menuName} to the order.`
+                    })
+                } else {
+                    const status = quantity <= 0 ? ORDER_STATUS[2] : ORDER_STATUS[0];
+                    const description = quantity <= 0 ? `REMOVE:${order.quantity - quantity} x ${menuName} has been cancelled.` : `REMOVE:Removed ${quantity} x ${menuName} from the order.`;
+
+                    data.push({
+                        id: order.id,
+                        menuId,
+                        customerId,
+                        price: price * quantity,
+                        quantity,
+                        status,
+                        description: `${order.description}#${description}`
+                    })
+                }
+            }
+        });
+
+        const options = { updateOnDuplicate: ['price', 'quantity', 'description', 'status'] };
+        const res = await orderRepo.save(data, options);
+        logger('info', 'order operations successful', res);
+
+        return res;
+    } catch (error) {
+        logger('error', 'Error while placing order', error);
+        throw CustomError(error.code, error.message);
+    }
+}
+
 export default {
     register,
     getTableDetails,
-    getMenuDetails
+    getMenuDetails,
+    placeOrder
 };

@@ -57,7 +57,7 @@ function MenuCard({
     const CornerView = ({ type, title }) => (
         <>
             {type !== types.cover && (
-                <div className="pt-3 align-items-center justify-content-center menu-title">
+                <div className="pt-2 mx-5 text-center align-items-center justify-content-center menu-title">
                     <TbTopologyStarRing2 size={17} color="FDFD96" />
                     <h6 className="m-0 mx-2">{title}</h6>
                     <TbTopologyStarRing2 size={17} color="FDFD96" />
