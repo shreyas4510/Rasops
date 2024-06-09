@@ -1,8 +1,21 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import * as service from '../../services/orderPlacement.service';
-import { getMenuDetailsRequest, getMenuDetailsSuccess, getTableDetailsRequest, getTableDetailsSuccess, setOrderDetails, setViewOrderDetails } from '../slice';
-import { GET_MENU_DETAIL_REQUEST, GET_ORDER_DETAILS_REQUEST, GET_TABLE_DETAILS_REQUEST, PLACE_ORDER_REQUEST, REGISTER_CUSTOMER_REQUEST } from '../types';
+import {
+    getMenuDetailsRequest,
+    getMenuDetailsSuccess,
+    getTableDetailsRequest,
+    getTableDetailsSuccess,
+    setOrderDetails,
+    setViewOrderDetails
+} from '../slice';
+import {
+    GET_MENU_DETAIL_REQUEST,
+    GET_ORDER_DETAILS_REQUEST,
+    GET_TABLE_DETAILS_REQUEST,
+    PLACE_ORDER_REQUEST,
+    REGISTER_CUSTOMER_REQUEST
+} from '../types';
 
 function* getTablesDetailsRequestSaga(action) {
     try {
@@ -44,7 +57,7 @@ function* placeOrderRequestSaga(action) {
         yield put(setOrderDetails({}));
         yield put(setViewOrderDetails({}));
         yield put(getMenuDetailsRequest({ hotelId, customerId: payload.customerId }));
-        toast.success('Order received! Your delicious meal is on the way. Thank you for your patience!')
+        toast.success('Order received! Your delicious meal is on the way. Thank you for your patience!');
     } catch (error) {
         console.error('Failed to place order', error);
         toast.error('Failed to fetch menu card details', error.message);

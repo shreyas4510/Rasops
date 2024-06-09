@@ -27,7 +27,9 @@ import { ORDER_STATUS, TABLE_STATUS } from '../../utils/constants';
 function OrderPlacement() {
     const { token } = useParams();
     const dispatch = useDispatch();
-    const { menuCard, currentPage, tableDetails, orderDetails, viewOrderDetails } = useSelector((state) => state.orderPlacement);
+    const { menuCard, currentPage, tableDetails, orderDetails, viewOrderDetails } = useSelector(
+        (state) => state.orderPlacement
+    );
     const updateRefs = useRef({});
 
     const initialValues = {
@@ -46,28 +48,30 @@ function OrderPlacement() {
 
     useEffect(() => {
         if (tableDetails.customer) {
-            dispatch(getMenuDetailsRequest({
-                hotelId: tableDetails.hotel.id,
-                customerId: tableDetails.customer.id
-            }));
+            dispatch(
+                getMenuDetailsRequest({
+                    hotelId: tableDetails.hotel.id,
+                    customerId: tableDetails.customer.id
+                })
+            );
         }
-    }, [tableDetails.customer])
+    }, [tableDetails.customer]);
 
     useEffect(() => {
         if (updateRefs && updateRefs.current[viewOrderDetails?.updated?.last]) {
             updateRefs.current[viewOrderDetails.updated.last].focus();
         }
-    })
+    });
 
     const handleOrderSubmit = () => {
         const { last, ...updatedData } = viewOrderDetails.updated;
         const payload = {
             hotelId: tableDetails.hotel.id,
             customerId: tableDetails.customer.id,
-            menus: Object.values(updatedData) 
-        }
+            menus: Object.values(updatedData)
+        };
         dispatch(placeOrderRequest(payload));
-    }
+    };
 
     const handleClick = ({ action, id = '' }) => {
         switch (action) {
@@ -90,11 +94,13 @@ function OrderPlacement() {
             case 'place':
                 const menus = { ...orderDetails };
                 delete menus.lastUpdated;
-                dispatch(placeOrderRequest({
-                    hotelId: tableDetails.hotel.id,
-                    customerId: tableDetails.customer.id,
-                    menus: Object.values(menus)
-                }));
+                dispatch(
+                    placeOrderRequest({
+                        hotelId: tableDetails.hotel.id,
+                        customerId: tableDetails.customer.id,
+                        menus: Object.values(menus)
+                    })
+                );
                 break;
             default:
                 break;
@@ -107,12 +113,14 @@ function OrderPlacement() {
             menuName: item.name,
             quantity: Number(e.target.value),
             price: item.price
-        }
-        dispatch(setOrderDetails({
-            ...orderDetails,
-            lastUpdated: item.id,
-            [item.id]: obj
-        }))
+        };
+        dispatch(
+            setOrderDetails({
+                ...orderDetails,
+                lastUpdated: item.id,
+                [item.id]: obj
+            })
+        );
     };
 
     const handleRegisterCustomer = (values, { setSubmitting }) => {
@@ -132,22 +140,24 @@ function OrderPlacement() {
     };
 
     const OrderView = ({ item }) => (
-        <div className='d-flex align-items-center my-2'>
-            <p className='m-0 col-8'>{item.menu.name}</p>
-            <div className='col-2 d-flex justify-content-center'>
-                {
-                    item.status === ORDER_STATUS[0] ? (
-                        <input
-                            ref={(r) => (updateRefs.current[item.id] = r)}
-                            name={item.id}
-                            type="number"
-                            value={(
-                                viewOrderDetails.updated[item.id] ? (viewOrderDetails.updated[item.id]?.quantity || '') : (item.quantity || '')
-                            )}
-                            placeholder="-"
-                            className="form-control px-1 text-center py-1 order-input"
-                            onChange={(e) => {
-                                dispatch(setUpdatedOrderDetails({
+        <div className="d-flex align-items-center my-2">
+            <p className="m-0 col-8">{item.menu.name}</p>
+            <div className="col-2 d-flex justify-content-center">
+                {item.status === ORDER_STATUS[0] ? (
+                    <input
+                        ref={(r) => (updateRefs.current[item.id] = r)}
+                        name={item.id}
+                        type="number"
+                        value={
+                            viewOrderDetails.updated[item.id]
+                                ? viewOrderDetails.updated[item.id]?.quantity || ''
+                                : item.quantity || ''
+                        }
+                        placeholder="-"
+                        className="form-control px-1 text-center py-1 order-input"
+                        onChange={(e) => {
+                            dispatch(
+                                setUpdatedOrderDetails({
                                     ...viewOrderDetails.updated,
                                     last: item.id,
                                     [item.id]: {
@@ -155,18 +165,22 @@ function OrderPlacement() {
                                         menuName: item.menu.name,
                                         price: item.menu.price,
                                         quantity: Number(e.target.value || 0)
-                                    }                                    
-                                }))
-                            }}
-                        />
-                    ) : (
-                        <strong>{item.quantity}</strong>
-                    )
-                }
+                                    }
+                                })
+                            );
+                        }}
+                    />
+                ) : (
+                    <strong>{item.quantity}</strong>
+                )}
             </div>
-            <strong className='col-2 text-end'>₹ {item.menu.price * (viewOrderDetails.updated[item.id] ? viewOrderDetails.updated[item.id].quantity : item.quantity) }</strong>
+            <strong className="col-2 text-end">
+                ₹{' '}
+                {item.menu.price *
+                    (viewOrderDetails.updated[item.id] ? viewOrderDetails.updated[item.id].quantity : item.quantity)}
+            </strong>
         </div>
-    )
+    );
 
     if (!Object.keys(tableDetails).length) {
         return <Loader />;
@@ -221,23 +235,19 @@ function OrderPlacement() {
                 show={viewOrderDetails.count}
                 title={viewOrderDetails?.title}
                 handleSubmit={handleOrderSubmit}
-                description={(
+                description={
                     <div>
-                        {Object.values(viewOrderDetails.data || {}).map(item => (
-                            <OrderView
-                                key={`${item.id}-${item.name}`}
-                                item={item}
-                            />
+                        {Object.values(viewOrderDetails.data || {}).map((item) => (
+                            <OrderView key={`${item.id}-${item.name}`} item={item} />
                         ))}
-                        {
-                            !Object.values((viewOrderDetails?.data || [])).find(obj => obj.status === ORDER_STATUS[0]) &&
-                            <div className='d-flex justify-content-between mt-4'>
+                        {!Object.values(viewOrderDetails?.data || []).find((obj) => obj.status === ORDER_STATUS[0]) && (
+                            <div className="d-flex justify-content-between mt-4">
                                 <strong>Total Price</strong>
                                 <strong>₹ {viewOrderDetails.totalPrice}</strong>
                             </div>
-                        }
+                        )}
                     </div>
-                )}
+                }
                 handleClose={() => {
                     dispatch(setViewOrderDetails({}));
                 }}

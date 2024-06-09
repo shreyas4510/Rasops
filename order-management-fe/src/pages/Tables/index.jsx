@@ -32,7 +32,7 @@ function Tables() {
     useEffect(() => {
         if (hotelId && selectedTable.value) {
             const token = CryptoJS.AES.encrypt(
-                JSON.stringify({tableId: selectedTable.value}),
+                JSON.stringify({ tableId: selectedTable.value }),
                 env.cryptoSecret
             ).toString();
 
