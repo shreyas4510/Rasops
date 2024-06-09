@@ -5,6 +5,7 @@ const router = Router();
 
 router.post('/customer', orderController.register);
 router.get('/table/:id', orderController.getTableDetails);
-router.get('/menu/:hotelId', orderController.getMenuDetails);
+router.get('/menu', orderController.getMenuDetails);
+router.post('/', orderController.placeOrder);
 
 export default router;

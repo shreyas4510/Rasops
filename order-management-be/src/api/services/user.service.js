@@ -100,7 +100,7 @@ const login = async (payload) => {
                 role
             },
             env.jwtSecret,
-            { expiresIn: '12h' }
+            { expiresIn: '18h' }
         );
 
         return { token, data };

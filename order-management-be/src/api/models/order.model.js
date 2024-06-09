@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
-const ORDER_STATUS = ['PENDING', 'SERVED', 'COMPLETED'];
+export const ORDER_STATUS = ['PENDING', 'SERVED', 'CANCELLED', 'COMPLETED'];
 const orderModel = (sequelize) =>
     sequelize.define(
         TABLES.ORDER,
@@ -39,6 +39,10 @@ const orderModel = (sequelize) =>
                 allowNull: false,
                 values: ORDER_STATUS,
                 defaultValue: ORDER_STATUS[0]
+            },
+            description: {
+                type: DataTypes.STRING,
+                allowNull: true
             },
             deletedAt: {
                 type: DataTypes.DATE,
