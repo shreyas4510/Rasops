@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
@@ -44,6 +45,10 @@ const getTableDetails = async (id) => {
                 {
                     model: db.customer,
                     attributes: ['id', 'name', 'phoneNumber']
+                },
+                {
+                    model: db.hotel,
+                    attributes: ['id', 'name']
                 }
             ]
         };
@@ -72,6 +77,7 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
         cover: [{ name, id }]
     };
 
+    const orders = {};
     categories.forEach(({ id: categoryId, name, menus }) => {
         if (!typeData.category) {
             typeData.category = [];
@@ -88,9 +94,18 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
             menuItemData.push({
                 name: item.name,
                 id: item.id,
-                price: item.price,
-                order: item.orders[0]
+                price: item.price
             });
+            if (item.orders[0]) {
+                const order = item.orders[0];
+                orders[item.id] = {
+                    id: item.id,
+                    name: item.name,
+                    price: order.price,
+                    quantity: order.quantity,
+                    status: order.status
+                };
+            }
         });
         typeData.menuData = {
             ...typeData.menuData,
@@ -103,6 +118,7 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
     data[page] = { type: types.cover, data: typeData.cover[0] };
     page++;
 
+    // Add categories in the menu card details page wise
     const categoriesPerPage = 12;
     const categoriesCount = Math.ceil(typeData.category.length / categoriesPerPage);
     for (let index = page; index < page + categoriesCount; index++) {
@@ -114,6 +130,7 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
     }
     page += categoriesCount;
 
+    // add menu items in the menu card details page wise
     const mapping = {};
     const menusPerPage = 10;
     Object.keys(typeData.menuData).forEach((key) => {
@@ -128,7 +145,7 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
         page += menuCount;
     });
 
-    return { data, mapping };
+    return { data, mapping, orders };
 };
 
 const getMenuDetails = async (hotelId, customerId) => {
@@ -152,7 +169,7 @@ const getMenuDetails = async (hotelId, customerId) => {
                                         status: ORDER_STATUS[0],
                                         customerId
                                     },
-                                    attributes: ['id', 'price', 'quantity'],
+                                    attributes: ['id', 'price', 'quantity', 'status'],
                                     required: false
                                 }
                             ]
@@ -165,14 +182,15 @@ const getMenuDetails = async (hotelId, customerId) => {
         logger('debug', 'Fetching hotels details');
 
         const res = await hotelRepo.find(options);
-        const { data: formatedData, mapping } = getMenuCardFormatData(res);
+        const { data: formatedData, mapping, orders } = getMenuCardFormatData(res);
 
         return {
             id: res.id,
             name: res.name,
             count: Object.keys(formatedData).length,
             data: formatedData,
-            mapping
+            mapping,
+            orders
         };
     } catch (error) {
         logger('error', 'Error while detching hotel details', { error });
@@ -220,12 +238,14 @@ const placeOrder = async (payload) => {
                         status: ORDER_STATUS[0],
                         description: `${order.description}#ADD:Added ${quantity - order.quantity} x ${menuName} to the order.`
                     });
-                } else {
+                }
+
+                if (order.quantity > quantity) {
                     const status = quantity <= 0 ? ORDER_STATUS[2] : ORDER_STATUS[0];
                     const description =
                         quantity <= 0
                             ? `REMOVE:${order.quantity - quantity} x ${menuName} has been cancelled.`
-                            : `REMOVE:Removed ${quantity} x ${menuName} from the order.`;
+                            : `REMOVE:Removed ${order.quantity - quantity} x ${menuName} from the order.`;
 
                     data.push({
                         id: order.id,
@@ -251,9 +271,35 @@ const placeOrder = async (payload) => {
     }
 };
 
+const getOrder = async (customerId) => {
+    try {
+        const options = {
+            where: {
+                customerId,
+                status: {
+                    [Op.in]: [ORDER_STATUS[0], ORDER_STATUS[1]]
+                }
+            },
+            attributes: ['id', 'price', 'quantity', 'status'],
+            include: [
+                {
+                    model: db.menu,
+                    attributes: ['id', 'name', 'price']
+                }
+            ]
+        };
+        logger('debug', `Get order details for customer ${customerId} with options`, options);
+        return await orderRepo.find(options);
+    } catch (error) {
+        logger('error', 'Error while get order details', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     register,
     getTableDetails,
     getMenuDetails,
-    placeOrder
+    placeOrder,
+    getOrder
 };
