@@ -171,7 +171,7 @@ function OrderPlacement() {
                         }}
                     />
                 ) : (
-                    <p className='m-0'>{item.quantity}</p>
+                    <p className="m-0">{item.quantity}</p>
                 )}
             </div>
             <p className="col-2 text-end m-0">
@@ -240,18 +240,24 @@ function OrderPlacement() {
                         {Object.values(viewOrderDetails.data || {}).map((item) => (
                             <OrderView key={`${item.id}-${item.name}`} item={item} />
                         ))}
-                        {!Object.values(viewOrderDetails?.data || []).find((obj) => obj.status === ORDER_STATUS[0]) && (
+                        {!Object.values(viewOrderDetails?.data || []).find((obj) => obj.status === ORDER_STATUS[0]) &&
                             [
-                                { title: 'SGST Price', value: (viewOrderDetails.totalPrice * (18 / 100)) },
-                                { title: 'CGST Price', value: (viewOrderDetails.totalPrice * (18 / 100)) },
-                                { title: 'Total Price', value: viewOrderDetails.totalPrice + (2*(viewOrderDetails.totalPrice * (18 / 100))) }
+                                { title: 'SGST Price', value: viewOrderDetails.totalPrice * (18 / 100) },
+                                { title: 'CGST Price', value: viewOrderDetails.totalPrice * (18 / 100) },
+                                {
+                                    title: 'Total Price',
+                                    value: viewOrderDetails.totalPrice + 2 * (viewOrderDetails.totalPrice * (18 / 100))
+                                }
                             ].map(({ title, value }, key) => (
                                 <div key={`${key}-${title}`} className="d-flex justify-content-between my-2">
-                                    <i className='fw-bold' style={{ color: '#570d0a' }}>{ title }</i>
-                                    <i className='fw-bold' style={{ color: '#570d0a' }}>₹ { value }</i>
+                                    <i className="fw-bold" style={{ color: '#570d0a' }}>
+                                        {title}
+                                    </i>
+                                    <i className="fw-bold" style={{ color: '#570d0a' }}>
+                                        ₹ {value}
+                                    </i>
                                 </div>
-                            ))
-                        )}
+                            ))}
                     </div>
                 }
                 handleClose={() => {
