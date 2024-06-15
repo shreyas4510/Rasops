@@ -171,14 +171,14 @@ function OrderPlacement() {
                         }}
                     />
                 ) : (
-                    <strong>{item.quantity}</strong>
+                    <p className='m-0'>{item.quantity}</p>
                 )}
             </div>
-            <strong className="col-2 text-end">
+            <p className="col-2 text-end m-0">
                 ₹{' '}
                 {item.menu.price *
                     (viewOrderDetails.updated[item.id] ? viewOrderDetails.updated[item.id].quantity : item.quantity)}
-            </strong>
+            </p>
         </div>
     );
 
@@ -241,10 +241,16 @@ function OrderPlacement() {
                             <OrderView key={`${item.id}-${item.name}`} item={item} />
                         ))}
                         {!Object.values(viewOrderDetails?.data || []).find((obj) => obj.status === ORDER_STATUS[0]) && (
-                            <div className="d-flex justify-content-between mt-4">
-                                <strong>Total Price</strong>
-                                <strong>₹ {viewOrderDetails.totalPrice}</strong>
-                            </div>
+                            [
+                                { title: 'SGST Price', value: (viewOrderDetails.totalPrice * (18 / 100)) },
+                                { title: 'CGST Price', value: (viewOrderDetails.totalPrice * (18 / 100)) },
+                                { title: 'Total Price', value: viewOrderDetails.totalPrice + (2*(viewOrderDetails.totalPrice * (18 / 100))) }
+                            ].map(({ title, value }, key) => (
+                                <div key={`${key}-${title}`} className="d-flex justify-content-between my-2">
+                                    <i className='fw-bold' style={{ color: '#570d0a' }}>{ title }</i>
+                                    <i className='fw-bold' style={{ color: '#570d0a' }}>₹ { value }</i>
+                                </div>
+                            ))
                         )}
                     </div>
                 }
