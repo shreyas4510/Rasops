@@ -70,25 +70,25 @@ const Settings = () => {
                     </Row>
                     <Row className="mb-3">
                         <Col xs={3}>
-                            <strong>Rasops ID : </strong>
+                            <strong className='setting-title'>Rasops ID : </strong>
                         </Col>
                         <Col xs={9}>{data?.id}</Col>
                     </Row>
                     <Row className="mb-3">
                         <Col xs={3}>
-                            <strong>First Name : </strong>
+                            <strong className='setting-title'>First Name : </strong>
                         </Col>
                         <Col xs={9}>{data?.firstName}</Col>
                     </Row>
                     <Row className="mb-3">
                         <Col xs={3}>
-                            <strong>Last Name : </strong>
+                            <strong className='setting-title'>Last Name : </strong>
                         </Col>
                         <Col xs={9}>{data?.lastName}</Col>
                     </Row>
                     <Row className="mb-3">
                         <Col xs={3}>
-                            <strong>E-mail : </strong>
+                            <strong className='setting-title'>E-mail : </strong>
                         </Col>
                         <Col xs={9}>
                             <span>{data.email}</span>
@@ -96,7 +96,7 @@ const Settings = () => {
                     </Row>
                     <Row className="mb-3">
                         <Col xs={3}>
-                            <strong>Phone Number : </strong>
+                            <strong className='setting-title'>Phone Number : </strong>
                         </Col>
                         <Col xs={9}>
                             <span>{data.phoneNumber}</span>
@@ -104,7 +104,7 @@ const Settings = () => {
                     </Row>
                     <Row className="mb-3">
                         <Col xs={3}>
-                            <strong>Role : </strong>
+                            <strong className='setting-title'>Role : </strong>
                         </Col>
                         <Col xs={9}>
                             <span>{data.role}</span>
@@ -112,7 +112,7 @@ const Settings = () => {
                     </Row>
                     <Row className="mb-3">
                         <Col xs={3}>
-                            <strong>Notification Preference:</strong>
+                            <strong className='setting-title'>Notification Preference:</strong>
                         </Col>
                         <Col xs={9}>
                             <Form.Check
@@ -124,7 +124,7 @@ const Settings = () => {
                     </Row>
                     <Row className="mb-3">
                         <Col xs={3}>
-                            <strong>Payment Gateway Preference:</strong>
+                            <strong className='setting-title'>Payment Gateway Preference:</strong>
                         </Col>
                         <Col xs={9}>
                             <Form.Check type="switch" checked={Boolean(data.preference?.payment)} disabled={true} />
