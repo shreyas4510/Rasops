@@ -24,4 +24,15 @@ const save = async (payload, options = {}) => {
     }
 };
 
-export default { find, save };
+const update = async (options, data) => {
+    try {
+        logger('debug', 'Updating order data options:', { options }, 'and data:', { data });
+        return await db.orders.update(data, options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', 'Error while updating order', { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { find, save, update };

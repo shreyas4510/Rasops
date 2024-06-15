@@ -13,6 +13,15 @@ const save = async (payload) => {
     }
 };
 
-export default {
-    save
+const update = async (options, data) => {
+    try {
+        logger('debug', 'Updating customer data options:', { options }, 'and data:', { data });
+        return await db.customer.update(data, options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', 'Error while updating customer', { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
 };
+
+export default { save, update };

@@ -296,10 +296,84 @@ const getOrder = async (customerId) => {
     }
 };
 
+const payment = async ({ customerId, manual }) => {
+    try {
+        const options = {
+            where: {
+                customerId,
+                status: ORDER_STATUS[1]
+            }
+        };
+        const orders = await orderRepo.find(options);
+        const price = orders.reduce((cur, next) => {
+            cur += next.price;
+            return cur;
+        }, 0);
+
+        // Include SGST
+        const sgst = price * (18 / 100);
+
+        // Include CGST
+        const cgst = price * (18 / 100);
+
+        const totalPrice = price + sgst + cgst;
+        logger('info', `total price for ${customerId} - ${totalPrice}`);
+        if (manual) {
+            // TODO: send notification to manager to accept the payment
+        } else {
+            // TODO: send payment through to Razorpay
+        }
+
+        return { message: 'Success' };
+    } catch (error) {
+        logger('error', 'Error while order payment ', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const paymentConfirmation = async (customerId) => {
+    try {
+        const orderOptions = {
+            options: { where: { customerId } },
+            data: { status: ORDER_STATUS[3] }
+        };
+        const orderRes = await orderRepo.update(orderOptions.options, orderOptions.data);
+        logger('debug', 'Order updated response', orderRes);
+
+        const tableOptions = {
+            options: { where: { customerId } },
+            data: { status: TABLE_STATUS[0], customerId: null }
+        };
+        const tableRes = await tableRepo.update(tableOptions.options, tableOptions.data);
+        logger('debug', 'Table details updated', tableRes);
+
+        return { message: 'Success' };
+    } catch (error) {
+        logger('error', 'Error while order payment confirmation', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const feedback = async ({ customerId, feedback, rating }) => {
+    try {
+        const options = { where: { id: customerId } };
+        const data = { feedback, rating };
+        logger('debug', 'options and data for customer feedback', { options, data });
+
+        return await customerRepo.update(options, data);
+    } catch (error) {
+        logger('error', 'Error while get order details', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     register,
     getTableDetails,
     getMenuDetails,
     placeOrder,
-    getOrder
+    getOrder,
+    payment,
+    paymentConfirmation,
+    feedback
 };
