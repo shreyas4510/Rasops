@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
-export const NOTIFICATION_STATUS = [ 'ACTIVE', 'INACTIVE' ]
+export const NOTIFICATION_STATUS = ['ACTIVE', 'INACTIVE'];
 const notificationModel = (sequelize) =>
     sequelize.define(
         TABLES.NOTIFICATION,
