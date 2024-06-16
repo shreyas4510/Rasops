@@ -4,7 +4,7 @@ import notificationController from '../controllers/notification.controller.js';
 
 const router = Router();
 
-router('/subscribe', authenticate, notificationController.subscribe);
-router('/unsubscribe/:userId', authenticate, notificationController.unsubscribe);
+router.post('/subscribe', authenticate, notificationController.subscribe);
+router.post('/unsubscribe/:userId', authenticate, notificationController.unsubscribe);
 
 export default router;

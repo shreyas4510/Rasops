@@ -1,10 +1,10 @@
-import { db } from "../../config/database";
-import logger from "../../config/logger";
-import pushSubscriptionRepo from "../repositories/pushSubscription.repository";
-import { CustomError } from "../utils/common";
+import { db } from "../../config/database.js";
+import logger from "../../config/logger.js";
+import pushSubscriptionRepo from "../repositories/pushSubscription.repository.js";
+import { CustomError } from "../utils/common.js";
 import webpush from "web-push";
 import { v4 as uuidv4 } from 'uuid';
-import notificationRepo from "../repositories/notification.repository";
+import notificationRepo from "../repositories/notification.repository.js";
 
 const subscribe = async (payload) => {
     try {
