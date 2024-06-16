@@ -29,7 +29,9 @@ export const TABLES = {
     MENU: 'menus',
     PREFERENCES: 'preferences',
     CUSTOMER: 'customers',
-    ORDER: 'orders'
+    ORDER: 'orders',
+    PUSH_SUBSCRIPTION: 'pushSubscriptions',
+    NOTIFICATION: 'notifications'
 };
 
 export const CustomError = (code = STATUS_CODE.INTERNAL_SERVER_ERROR, message = 'Something went wrong.') => {

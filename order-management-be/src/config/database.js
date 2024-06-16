@@ -13,6 +13,8 @@ import userModel from '../api/models/user.model.js';
 import { CustomError } from '../api/utils/common.js';
 import env from './env.js';
 import logger from './logger.js';
+import pushSubscriptionsModel from '../api/models/pushSubscriptions.model.js';
+import notificationModel from '../api/models/notification.model.js';
 
 const config = {
     host: env.db.host,
@@ -54,6 +56,8 @@ const defineModels = (sequelize) => {
     db.preferences = preferencesModel(sequelize);
     db.customer = customerModel(sequelize);
     db.orders = orderModel(sequelize);
+    db.pushSubscriptions = pushSubscriptionsModel(sequelize);
+    db.notifications = notificationModel(sequelize);
 };
 
 const initDb = async () => {
