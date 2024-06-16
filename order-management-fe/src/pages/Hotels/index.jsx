@@ -28,7 +28,6 @@ import CustomButton from '../../components/CustomButton';
 function Hotels() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
-    const managers = useSelector((state) => state.manager);
     const { hotelOptions, data, deleteHotelConfirm, formData } = useSelector((state) => state.hotel);
 
     const navigate = useNavigate();

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import env from '../config/env';
 import store from '../store';
-import { setIsLoading } from '../store/slice/loader.slice';
+import { logoutRequest } from '../store/slice';
+import { setIsLoading } from '../store/slice/app.slice';
 
 const instance = axios.create({
     baseURL: env.baseUrl,
@@ -34,7 +35,8 @@ instance.interceptors.response.use(
     },
     (error) => {
         if (error.response && STATUS_CODES.includes(error.response.status)) {
-            localStorage.clear();
+            const userId = store.getState().user.data?.id;
+            store.dispatch(logoutRequest(userId));
         }
         store.dispatch(setIsLoading(false));
         throw error;

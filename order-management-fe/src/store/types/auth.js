@@ -1,5 +1,6 @@
 export const USER = `USER`;
 export const LOGIN_USER_REQUEST = `${USER}/loginRequest`;
+export const LOGOUT_USER_REQUEST = `${USER}/logoutRequest`;
 export const REGISTER_USER_REQUEST = `${USER}/registerRequest`;
 export const VERIFY_USER_REQUEST = `${USER}/verifyRequest`;
 export const FORGOT_PASSWORD_REQUEST = `${USER}/forgotPasswordRequest`;

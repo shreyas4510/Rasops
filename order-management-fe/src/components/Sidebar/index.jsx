@@ -12,10 +12,11 @@ import '../../assets/styles/sidebar.css';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import env from '../../config/env';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../Loader';
 import { USER_ROLES } from '../../utils/constants';
 import NoHotel from '../NoHotel';
+import { logoutRequest } from '../../store/slice';
 
 function Sidebar() {
     const [compress, setCompress] = useState(false);
@@ -23,6 +24,7 @@ function Sidebar() {
     const globalHotelId = useSelector((state) => state.hotel?.globalHotelId);
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
 
     const ownertTabs = [
         {
@@ -104,7 +106,7 @@ function Sidebar() {
                 : [...managerTabs, ...commonTabs].sort((a, b) => a.order - b.order);
     } catch (error) {
         toast.error('Oops! Something went wrong. Please try logging in again.');
-        localStorage.clear();
+        dispatch(logoutRequest(user.id));
     }
 
     const render = () => {
