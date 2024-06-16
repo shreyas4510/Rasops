@@ -6,15 +6,15 @@ import hotelModel from '../api/models/hotel.model.js';
 import hotelUserRelationModel from '../api/models/hotelUserRelation.model.js';
 import inviteModel from '../api/models/invite.model.js';
 import menuModel from '../api/models/menu.model.js';
+import notificationModel from '../api/models/notification.model.js';
 import orderModel from '../api/models/order.model.js';
 import preferencesModel from '../api/models/preferences.model.js';
+import pushSubscriptionsModel from '../api/models/pushSubscriptions.model.js';
 import tableModel from '../api/models/table.model.js';
 import userModel from '../api/models/user.model.js';
 import { CustomError } from '../api/utils/common.js';
 import env from './env.js';
 import logger from './logger.js';
-import pushSubscriptionsModel from '../api/models/pushSubscriptions.model.js';
-import notificationModel from '../api/models/notification.model.js';
 
 const config = {
     host: env.db.host,

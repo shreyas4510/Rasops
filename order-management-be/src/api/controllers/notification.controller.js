@@ -6,6 +6,7 @@ import { subscribeValidation } from '../validations/notification.validation.js';
 const subscribe = async (req, res) => {
     try {
         const { body } = req;
+        const userId = req.user.id;
         logger('debug', `Subscribe user notification ${JSON.stringify(body)}`);
 
         // Validating the registration data
@@ -15,7 +16,7 @@ const subscribe = async (req, res) => {
             return res.status(STATUS_CODE.BAD_REQUEST).send({ message: validation.error.message });
         }
 
-        const result = await notificationService.subscribe(body);
+        const result = await notificationService.subscribe({ userId, ...body });
         logger('info', 'Notification subscription successful', { result });
 
         return res.status(STATUS_CODE.OK).send(result);
@@ -27,8 +28,8 @@ const subscribe = async (req, res) => {
 
 const unsubscribe = async (req, res) => {
     try {
-        const { userId } = req.params;
-        logger('debug', `Request to unsubscribe for user ${ userId }`);
+        const userId = req.user.id;
+        logger('debug', `Request to unsubscribe for user ${userId}`);
 
         const result = await notificationService.unsubscribe(userId);
         logger('info', 'Unsubscription successful', { result });

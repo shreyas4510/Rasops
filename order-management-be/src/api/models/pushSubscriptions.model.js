@@ -5,6 +5,10 @@ const pushSubscriptionsModel = (sequelize) =>
     sequelize.define(
         TABLES.PUSH_SUBSCRIPTION,
         {
+            id: {
+                type: DataTypes.STRING,
+                primaryKey: true
+            },
             userId: {
                 type: DataTypes.STRING,
                 allowNull: false,

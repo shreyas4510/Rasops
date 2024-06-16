@@ -5,7 +5,6 @@ import { CustomError } from '../utils/common.js';
 export const subscribeValidation = (payload) => {
     try {
         const schema = Joi.object({
-            userId: Joi.string().required(),
             endpoint: Joi.string().uri().required(),
             expirationTime: Joi.date().allow(null),
             keys: Joi.object({
