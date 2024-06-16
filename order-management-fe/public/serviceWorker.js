@@ -18,9 +18,7 @@ self.addEventListener('push', function (event) {
         }
     };
 
-    event.waitUntil(
-        self.registration.showNotification(title, options)
-    );
+    event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', function (event) {
@@ -28,7 +26,8 @@ self.addEventListener('notificationclick', function (event) {
     const notificationData = event.notification.data;
 
     event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+        // eslint-disable-next-line no-undef
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             // Check if the URL is already open
             for (const client of clientList) {
                 if (client.url === notificationData.url && 'focus' in client) {
@@ -36,7 +35,9 @@ self.addEventListener('notificationclick', function (event) {
                 }
             }
             // Open a new window if the URL is not already open
+            // eslint-disable-next-line no-undef
             if (clients.openWindow) {
+                // eslint-disable-next-line no-undef
                 return clients.openWindow(notificationData.url);
             }
         })
