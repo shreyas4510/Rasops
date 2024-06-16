@@ -2,6 +2,7 @@ import initDb from './config/database.js';
 import env from './config/env.js';
 import app from './config/express.js';
 import logger from './config/logger.js';
+import { initNotifications } from './config/notification.js';
 
 const startServer = async () => {
     try {
@@ -9,6 +10,9 @@ const startServer = async () => {
 
         logger('info', '🔗 Establishing database connection...');
         await initDb();
+
+        logger('info', '🔗 Establishing Notification connection...');
+        await initNotifications();
 
         logger('info', `🌐 Server running on port ${env.app.port}...`);
         app.listen(env.app.port, () => {

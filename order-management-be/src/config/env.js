@@ -24,7 +24,12 @@ const env = {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
-    cryptoSecret: process.env.CRYPTO_SECRET_KEY
+    cryptoSecret: process.env.CRYPTO_SECRET_KEY,
+    notification: {
+        publicKey: process.env.NOTIFICATION_PUBLIC_KEY,
+        privateKey: process.env.NOTIFICATION_PRIVATE_KEY,
+        email: process.env.NOTIFICATION_USER
+    }
 };
 
 export default env;

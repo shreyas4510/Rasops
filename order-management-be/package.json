@@ -43,6 +43,7 @@
         "sequelize": "^6.37.1",
         "swagger-ui-express": "^5.0.0",
         "uuid": "^9.0.1",
+        "web-push": "^3.6.7",
         "winston": "^3.13.0"
     }
 }
