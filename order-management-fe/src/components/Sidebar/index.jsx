@@ -128,8 +128,9 @@ function Sidebar() {
                     <div
                         className={`d-flex align-items-center justify-content-center w-100 ${compress ? 'order-2' : 'order-1'}`}
                     >
-                        <img src={Logo} height={60} className={compress ? 'mt-2' : 'mx-2'} />
-                        <h3 className={`text-white m-0 ${compress && 'd-none'}`}>Rasops</h3>
+                        <h3 className={`text-white m-0 ${compress && 'd-none'}`}>Ras</h3>
+                        <img src={Logo} height={40} className={compress ? 'mt-2' : 'mx-1'} />
+                        <h3 className={`text-white m-0 ${compress && 'd-none'}`}>ps</h3>
                     </div>
                     <div
                         className={`arrow ${compress ? 'arrow-compress order-1' : 'arrow-full order-2'}`}

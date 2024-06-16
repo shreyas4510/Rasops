@@ -1,5 +1,5 @@
-import { db } from "../../config/database";
-import logger from "../../config/logger";
+import { db } from "../../config/database.js";
+import logger from "../../config/logger.js";
 
 const save = async (payload) => {
     try {
