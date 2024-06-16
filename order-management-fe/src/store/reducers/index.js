@@ -2,7 +2,7 @@ import {
     authReducer,
     hotelReducer,
     inviteReducer,
-    loaderReducer,
+    appReducer,
     managerReducer,
     menuReducer,
     orderPlacementReducer,
@@ -10,7 +10,7 @@ import {
 } from '../slice';
 
 const rootReducers = {
-    loader: loaderReducer,
+    app: appReducer,
     user: authReducer,
     invite: inviteReducer,
     manager: managerReducer,

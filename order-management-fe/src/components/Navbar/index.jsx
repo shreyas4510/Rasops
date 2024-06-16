@@ -8,7 +8,7 @@ import '../../assets/styles/navbar.css';
 import CustomButton from '../CustomButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { getUserRequest, setGlobalHotelId } from '../../store/slice';
+import { getUserRequest, logoutRequest, setGlobalHotelId } from '../../store/slice';
 import CryptoJS from 'crypto-js';
 import env from '../../config/env';
 import { IoCaretBack } from 'react-icons/io5';
@@ -22,8 +22,7 @@ function Navbars() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.clear();
-        navigate('/');
+        dispatch(logoutRequest(user.id));
     };
 
     const viewData = JSON.parse(

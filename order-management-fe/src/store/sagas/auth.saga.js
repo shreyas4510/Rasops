@@ -1,14 +1,16 @@
 import CryptoJS from 'crypto-js';
 import { toast } from 'react-toastify';
-import { all, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 import env from '../../config/env';
 import * as service from '../../services/auth.service';
+import * as notificationService from '../../services/notification.service';
 import { USER_ROLES } from '../../utils/constants';
 import { getUserRequest, getUserSuccess, setGlobalHotelId, setSettingsFormData } from '../slice';
 import {
     FORGOT_PASSWORD_REQUEST,
     GET_USER_REQUEST,
     LOGIN_USER_REQUEST,
+    LOGOUT_USER_REQUEST,
     REGISTER_USER_REQUEST,
     RESET_PASSWORD_REQUEST,
     UPDATE_USER_REQUEST,
@@ -25,6 +27,7 @@ function* loginUserRequestSaga(action) {
 
         toast.success('Login successfully');
         yield put(getUserRequest({ navigate }));
+        yield registerNotification();
     } catch (error) {
         toast.error(`Failed to login: ${error?.message}`);
     }
@@ -51,8 +54,25 @@ function* verifyUserRequestSaga(action) {
 
         toast.success('Verified successfully');
         yield put(getUserRequest({ navigate }));
+        yield registerNotification();
     } catch (error) {
         toast.error(`Failed to verify email: ${error?.message}`);
+    }
+}
+
+function* registerNotification() {
+    try {
+        const registration = yield navigator.serviceWorker.register('/serviceWorker.js');
+        yield navigator.serviceWorker.ready;
+
+        const subscription = yield registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: env.notificationKey
+        });
+
+        yield call(notificationService.subscribe, subscription);
+    } catch (error) {
+        console.error(`Failed to register notification : ${error?.message}`);
     }
 }
 
@@ -83,6 +103,7 @@ function* getUserRequestSaga(action) {
         const navigate = action.payload?.navigate;
         const res = yield service.getUser();
         yield put(getUserSuccess(res));
+
         if (navigate) {
             const viewData = JSON.parse(
                 CryptoJS.AES.decrypt(localStorage.getItem('data'), env.cryptoSecret).toString(CryptoJS.enc.Utf8)
@@ -113,9 +134,30 @@ function* updateUserRequestSaga(action) {
     }
 }
 
+function* logoutUserRequestSaga(action) {
+    try {
+        const userId = action.payload;
+        yield notificationService.unsubscribe(userId);
+
+        if ('serviceWorker' in navigator) {
+            const registrations = yield navigator.serviceWorker.getRegistrations();
+            for (const registration of registrations) {
+                yield registration.unregister();
+            }
+        }
+
+        localStorage.clear();
+        window.location.replace('/');
+    } catch (error) {
+        console.error(`Failed to logout user: ${error?.message}`);
+        toast.error('Failed to logout user');
+    }
+}
+
 export default function* authSaga() {
     yield all([
         takeLatest(LOGIN_USER_REQUEST, loginUserRequestSaga),
+        takeLatest(LOGOUT_USER_REQUEST, logoutUserRequestSaga),
         takeLatest(REGISTER_USER_REQUEST, registerUserRequestSaga),
         takeLatest(VERIFY_USER_REQUEST, verifyUserRequestSaga),
         takeLatest(FORGOT_PASSWORD_REQUEST, forgotPasswordRequestSaga),

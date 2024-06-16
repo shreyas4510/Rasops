@@ -28,6 +28,7 @@ const authSlice = createSlice({
     },
     reducers: {
         loginRequest() {},
+        logoutRequest() {},
         registerRequest() {},
         verifyRequest() {},
         forgotPasswordRequest() {},
@@ -45,6 +46,7 @@ const authSlice = createSlice({
 
 export const {
     loginRequest,
+    logoutRequest,
     registerRequest,
     verifyRequest,
     forgotPasswordRequest,
