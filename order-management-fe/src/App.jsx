@@ -14,14 +14,12 @@ function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        (
-            async () => {
-                const permission = await Notification.requestPermission()
-                if (permission === 'denied' && localStorage.getItem('token')) {
-                    dispatch(setNotification(true));
-                }
+        (async () => {
+            const permission = await Notification.requestPermission();
+            if (permission === 'denied' && localStorage.getItem('token')) {
+                dispatch(setNotification(true));
             }
-        )();
+        })();
     }, []);
 
     return (
@@ -44,14 +42,18 @@ function App() {
             <OMTModal
                 show={notification}
                 title={'Notification Alert'}
-                description={(
+                description={
                     <div>
-                        <p className='text-center'>Stay informed about every detail. Receive instant notifications for critical activities.</p>
-                        <p className='text-center'>Please turn on notifications to stay updated effortlessly.</p>
+                        <p className="text-center">
+                            Stay informed about every detail. Receive instant notifications for critical activities.
+                        </p>
+                        <p className="text-center">Please turn on notifications to stay updated effortlessly.</p>
                     </div>
-                )}
+                }
                 closeText={'Close'}
-                handleClose={() => { dispatch(setNotification(false)) }}
+                handleClose={() => {
+                    dispatch(setNotification(false));
+                }}
             />
         </>
     );
