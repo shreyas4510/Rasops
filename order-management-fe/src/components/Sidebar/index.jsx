@@ -117,8 +117,7 @@ function Sidebar() {
                 return <NoHotel />;
             } else if ([...managerTabs, ...commonTabs].find((obj) => obj.path === location.pathname)) {
                 return <Outlet />;
-            }
-            else {
+            } else {
                 <Loader />;
             }
         }
