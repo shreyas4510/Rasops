@@ -1,0 +1,10 @@
+.subscription-card {
+    border-color: #49ac60;
+    border-width: 1px;
+    border-radius: 20px;
+    height: 100%;
+}
+
+.text-primary-color {
+    color: #49ac60;
+}
