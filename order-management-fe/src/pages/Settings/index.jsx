@@ -53,7 +53,7 @@ const Settings = () => {
                     name: 'notification',
                     type: 'switch',
                     label: 'Notification Preference',
-                    className: fieldClass
+                    className: 'col-6 my-2'
                 }
             };
             if ([PAYMENT_PREFERENCE.on, PAYMENT_PREFERENCE.off].includes(preference?.payment)) {
@@ -61,7 +61,7 @@ const Settings = () => {
                     name: 'payment',
                     type: 'switch',
                     label: 'Payment Preference',
-                    className: fieldClass
+                    className: 'col-6 my-2'
                 };
             }
             dispatch(setUpdateModalOptions({ ...updateOptions, ...options }));

@@ -16,6 +16,8 @@ import {
     saveBusinessDetailsRequest,
     saveStakeholderDetailsRequest
 } from '../../store/slice/paymentActivation.slice';
+import env from '../../config/env';
+import CryptoJS from 'crypto-js';
 
 const PaymentActivation = () => {
     const state = useSelector((state) => state.paymentActivation);
@@ -353,7 +355,11 @@ const PaymentActivation = () => {
                 dispatch(saveStakeholderDetailsRequest({ step, payload }));
                 break;
             case 3:
-                dispatch(saveBankDetailsRequest({ payload }));
+                const token = CryptoJS.AES.encrypt(
+                    JSON.stringify(payload),
+                    env.cryptoSecret
+                ).toString();
+                dispatch(saveBankDetailsRequest({ token }));
                 break;
             default:
                 break;
