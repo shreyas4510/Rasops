@@ -355,10 +355,7 @@ const PaymentActivation = () => {
                 dispatch(saveStakeholderDetailsRequest({ step, payload }));
                 break;
             case 3:
-                const token = CryptoJS.AES.encrypt(
-                    JSON.stringify(payload),
-                    env.cryptoSecret
-                ).toString();
+                const token = CryptoJS.AES.encrypt(JSON.stringify(payload), env.cryptoSecret).toString();
                 dispatch(saveBankDetailsRequest({ token }));
                 break;
             default:

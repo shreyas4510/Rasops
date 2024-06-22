@@ -34,7 +34,7 @@ function* saveBankDetailsSaga(action) {
         yield service.saveBankDetails(payload);
 
         toast.success('Account activated successfully');
-        
+
         yield put(getUserRequest());
         yield put(setPaymentActivate(false));
         yield put(setCurrentStep(1));
