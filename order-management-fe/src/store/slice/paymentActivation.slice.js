@@ -10,9 +10,9 @@ const paymentActivationSlice = createSlice({
         setPaymentActivate(state, action) {
             state.activate = action.payload;
         },
-        saveBusinessDetailsRequest() { },
-        saveStakeholderDetailsRequest() { },
-        saveBankDetailsRequest() { }
+        saveBusinessDetailsRequest() {},
+        saveStakeholderDetailsRequest() {},
+        saveBankDetailsRequest() {}
     },
     initialState: {
         businessDetailInitialValues: {

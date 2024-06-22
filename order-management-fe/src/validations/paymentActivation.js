@@ -1,14 +1,11 @@
 import * as Yup from 'yup';
 
 export const businessDetailsSchema = Yup.object().shape({
-    email: Yup.string()
-        .email('Invalid email address')
-        .required('Email is required'),
+    email: Yup.string().email('Invalid email address').required('Email is required'),
     phone: Yup.string()
         .matches(/^[0-9]{10}$/, 'Phone number is invalid')
         .required('Phone number is required'),
-    legalBusinessName: Yup.string()
-        .required('Legal Business Name is required'),
+    legalBusinessName: Yup.string().required('Legal Business Name is required'),
     businessType: Yup.object().shape({
         label: Yup.string().required('Business Type is required'),
         value: Yup.string().required('Business Type is required')
@@ -40,7 +37,9 @@ export const stakeholderDetailsSchema = Yup.object().shape({
     name: Yup.string().required(),
     email: Yup.string().email().required(),
     kyc: Yup.object().shape({
-        pan: Yup.string().matches(/^[a-zA-Z]{5}\d{4}[a-zA-Z]{1}$/).required()
+        pan: Yup.string()
+            .matches(/^[a-zA-Z]{5}\d{4}[a-zA-Z]{1}$/)
+            .required()
     }),
     addresses: Yup.object().shape({
         residential: Yup.object().shape({

@@ -7,7 +7,7 @@ const CustomButton = React.forwardRef((props, ref) => {
         label = '',
         type = 'button',
         className = '',
-        onClick = () => { },
+        onClick = () => {},
         defaultClass = true
     } = props;
 
@@ -22,6 +22,6 @@ const CustomButton = React.forwardRef((props, ref) => {
             {label}
         </Button>
     );
-})
+});
 
 export default CustomButton;
