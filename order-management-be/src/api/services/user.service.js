@@ -13,6 +13,7 @@ import preferencesRepo from '../repositories/preferences.repository.js';
 import userRepo from '../repositories/user.repository.js';
 import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
 import { sendEmail } from './email.service.js';
+import { NOTIFICATION_PREFERENCE, PAYMENT_PREFERENCE } from '../models/preferences.model.js';
 
 const create = async (payload) => {
     try {
@@ -42,8 +43,8 @@ const create = async (payload) => {
         const preferences = {
             id: uuidv4(),
             userId: user.id,
-            notification: false,
-            payment: false
+            notification: NOTIFICATION_PREFERENCE[0],
+            payment: PAYMENT_PREFERENCE[0]
         };
         await preferencesRepo.save(preferences);
         logger('info', 'User preferences saved successfully:', data);
