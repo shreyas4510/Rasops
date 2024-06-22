@@ -1,7 +1,11 @@
 import logger from '../../config/logger.js';
-import { STATUS_CODE } from '../utils/common.js';
-import { accountDetailsValidation, businessDetailsValidation, stakeholderDetailsValidation } from '../validations/checkout.validations.js';
 import checkoutService from '../services/checkout.service.js';
+import { STATUS_CODE } from '../utils/common.js';
+import {
+    accountDetailsValidation,
+    businessDetailsValidation,
+    stakeholderDetailsValidation
+} from '../validations/checkout.validations.js';
 
 const business = async (req, res) => {
     try {
@@ -41,7 +45,7 @@ const stakeholder = async (req, res) => {
         logger('error', 'Error occurred during stakeholder registration', { error });
         return res.status(error.code).send({ message: error.message });
     }
-}
+};
 
 const account = async (req, res) => {
     try {
@@ -61,7 +65,7 @@ const account = async (req, res) => {
         logger('error', 'Error occurred during bank registration', { error });
         return res.status(error.code).send({ message: error.message });
     }
-}
+};
 
 export default {
     business,
