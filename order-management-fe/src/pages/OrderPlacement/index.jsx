@@ -265,7 +265,9 @@ function OrderPlacement() {
                 }}
                 isFooter={true}
                 size={'lg'}
-                submitText={ tableDetails.hotel.payment === PAYMENT_PREFERENCE.on  ? viewOrderDetails.submitText : undefined }
+                submitText={
+                    tableDetails.hotel.payment === PAYMENT_PREFERENCE.on ? viewOrderDetails.submitText : undefined
+                }
                 closeText={viewOrderDetails.closeText}
             />
         </>

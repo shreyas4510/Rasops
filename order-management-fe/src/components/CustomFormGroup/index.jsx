@@ -26,7 +26,8 @@ function CustomFormGroup({
         <FormGroup className={className} key={`${formKey}`}>
             {label && !['button', 'strong'].includes(type) && (
                 <FormLabel htmlFor={name} className="small text-muted m-0 d-flex">
-                    {label}{ required && <div className='text-danger ms-1'>*</div> }
+                    {label}
+                    {required && <div className="text-danger ms-1">*</div>}
                 </FormLabel>
             )}
             {type === 'select' ? (
