@@ -7,13 +7,13 @@ import { db } from '../../config/database.js';
 import env from '../../config/env.js';
 import logger from '../../config/logger.js';
 import { INVITE_STATUS } from '../models/invite.model.js';
+import { NOTIFICATION_PREFERENCE, PAYMENT_PREFERENCE } from '../models/preferences.model.js';
 import { USER_ROLES, USER_STATUS } from '../models/user.model.js';
 import inviteRepo from '../repositories/invite.repository.js';
 import preferencesRepo from '../repositories/preferences.repository.js';
 import userRepo from '../repositories/user.repository.js';
 import { EMAIL_ACTIONS, CustomError, STATUS_CODE } from '../utils/common.js';
 import { sendEmail } from './email.service.js';
-import { NOTIFICATION_PREFERENCE, PAYMENT_PREFERENCE } from '../models/preferences.model.js';
 
 const create = async (payload) => {
     try {

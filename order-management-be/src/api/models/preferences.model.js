@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
-export const PAYMENT_PREFERENCE = [ 'BUSINESS', 'STAKEHOLDER', 'BANK', 'ON', 'OFF' ];
-export const NOTIFICATION_PREFERENCE = [ 'ON', 'OFF' ];
+export const PAYMENT_PREFERENCE = ['BUSINESS', 'STAKEHOLDER', 'BANK', 'ON', 'OFF'];
+export const NOTIFICATION_PREFERENCE = ['ON', 'OFF'];
 
 const preferencesModel = (sequelize) =>
     sequelize.define(
