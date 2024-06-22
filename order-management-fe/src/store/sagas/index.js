@@ -5,6 +5,7 @@ import inviteSaga from './invite.saga';
 import managerSaga from './manager.saga';
 import menuSaga from './menu.saga';
 import orderPlacementSaga from './orderPlacement.saga';
+import paymentActivationSaga from './paymentActivation.saga';
 import tablesSaga from './tables.saga';
 
 export default function* () {
@@ -15,6 +16,7 @@ export default function* () {
         fork(inviteSaga),
         fork(menuSaga),
         fork(tablesSaga),
-        fork(orderPlacementSaga)
+        fork(orderPlacementSaga),
+        fork(paymentActivationSaga)
     ]);
 }

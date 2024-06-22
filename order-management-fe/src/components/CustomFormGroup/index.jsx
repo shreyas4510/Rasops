@@ -19,13 +19,14 @@ function CustomFormGroup({
     icon: Icon = <></>,
     getValues = false,
     values = {},
-    setFormValues // specific for the cross button
+    setFormValues,
+    required = false
 }) {
     return (
         <FormGroup className={className} key={`${formKey}`}>
             {label && !['button', 'strong'].includes(type) && (
-                <FormLabel htmlFor={name} className="small text-muted m-0">
-                    {label}
+                <FormLabel htmlFor={name} className="small text-muted m-0 d-flex">
+                    {label}{ required && <div className='text-danger ms-1'>*</div> }
                 </FormLabel>
             )}
             {type === 'select' ? (

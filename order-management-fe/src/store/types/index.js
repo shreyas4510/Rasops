@@ -6,3 +6,4 @@ export * from './tables.js';
 export * from './loader.js';
 export * from './menu.js';
 export * from './orderPlacement.js';
+export * from './paymentActivation.js';

@@ -15,14 +15,7 @@ const authSlice = createSlice({
                 type: 'password',
                 label: 'Confirm Password',
                 className: fieldClass
-            },
-            notification: {
-                name: 'notification',
-                type: 'switch',
-                label: 'Notification Preference',
-                className: fieldClass
-            },
-            payment: { name: 'payment', type: 'switch', label: 'Payment Preference', className: fieldClass }
+            }
         },
         formData: false
     },
@@ -40,6 +33,9 @@ const authSlice = createSlice({
         updateUserRequest() {},
         setSettingsFormData(state, action) {
             state.formData = action.payload;
+        },
+        setUpdateModalOptions(state, action) {
+            state.updateOptions = action.payload;
         }
     }
 });
@@ -54,7 +50,8 @@ export const {
     getUserRequest,
     getUserSuccess,
     updateUserRequest,
-    setSettingsFormData
+    setSettingsFormData,
+    setUpdateModalOptions
 } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

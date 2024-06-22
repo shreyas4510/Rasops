@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CATEGORY } from '../types/menu';
+import { CATEGORY } from '../types';
 
 const menuSlice = createSlice({
     name: CATEGORY,

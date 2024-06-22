@@ -2,6 +2,7 @@ import { Form, Formik } from 'formik';
 import { Modal } from 'react-bootstrap';
 import CustomFormGroup from '../CustomFormGroup';
 import CustomButton from '../CustomButton';
+import { Fragment } from 'react';
 
 function OMTModal({
     title,
@@ -33,9 +34,8 @@ function OMTModal({
                                     ? true
                                     : property.disabled;
                             return (
-                                <>
+                                <Fragment key={`${key}-${index}`}>
                                     <CustomFormGroup
-                                        key={`${key}-${index}`}
                                         className={property.className}
                                         name={property.name}
                                         type={property.type}
@@ -51,7 +51,7 @@ function OMTModal({
                                         // specific for the cross button
                                         setFormValues={setValues}
                                     />
-                                </>
+                                </Fragment>
                             );
                         })}
                     </div>

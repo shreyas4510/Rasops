@@ -106,7 +106,7 @@ function Sidebar() {
                 : [...managerTabs, ...commonTabs].sort((a, b) => a.order - b.order);
     } catch (error) {
         toast.error('Oops! Something went wrong. Please try logging in again.');
-        dispatch(logoutRequest(user.id));
+        dispatch(logoutRequest());
     }
 
     const render = () => {

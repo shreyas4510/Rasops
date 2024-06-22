@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ORDER_STATUS } from '../../utils/constants';
-import { ORDER_PLACEMENT } from '../types/orderPlacement';
+import { ORDER_PLACEMENT } from '../types';
 
 const orderPlacementSlice = createSlice({
     name: ORDER_PLACEMENT,

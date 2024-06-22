@@ -22,7 +22,7 @@ import { customerRegistrationSchema } from '../../validations/orderPlacement';
 import MenuCard from '../../components/MenuCard';
 import Loader from '../../components/Loader';
 import OMTModal from '../../components/Modal';
-import { ORDER_STATUS, TABLE_STATUS } from '../../utils/constants';
+import { ORDER_STATUS, PAYMENT_PREFERENCE, TABLE_STATUS } from '../../utils/constants';
 
 function OrderPlacement() {
     const { token } = useParams();
@@ -265,7 +265,7 @@ function OrderPlacement() {
                 }}
                 isFooter={true}
                 size={'lg'}
-                submitText={viewOrderDetails.submitText}
+                submitText={ tableDetails.hotel.payment === PAYMENT_PREFERENCE.on  ? viewOrderDetails.submitText : undefined }
                 closeText={viewOrderDetails.closeText}
             />
         </>
