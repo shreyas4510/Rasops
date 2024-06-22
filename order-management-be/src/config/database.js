@@ -12,6 +12,7 @@ import preferencesModel from '../api/models/preferences.model.js';
 import pushSubscriptionsModel from '../api/models/pushSubscriptions.model.js';
 import tableModel from '../api/models/table.model.js';
 import userModel from '../api/models/user.model.js';
+import paymentGatewayEntitiesModel from '../api/models/paymentGatewayEntities.js';
 import { CustomError } from '../api/utils/common.js';
 import env from './env.js';
 import logger from './logger.js';
@@ -58,6 +59,7 @@ const defineModels = (sequelize) => {
     db.orders = orderModel(sequelize);
     db.pushSubscriptions = pushSubscriptionsModel(sequelize);
     db.notifications = notificationModel(sequelize);
+    db.paymentGatewayEntities = paymentGatewayEntitiesModel(sequelize);
 };
 
 const initDb = async () => {

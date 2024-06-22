@@ -6,6 +6,7 @@ import notificationRoutes from './notification.routes.js';
 import orderRoutes from './order.routes.js';
 import tableRoutes from './tables.routes.js';
 import userRoutes from './user.routes.js';
+import checkoutRoutes from './checkout.routes.js';
 
 const router = Router();
 router.use('/user', userRoutes);
@@ -15,5 +16,6 @@ router.use('/table', tableRoutes);
 router.use('/menu', menuRoutes);
 router.use('/order', orderRoutes);
 router.use('/notification', notificationRoutes);
+router.use('/checkout', checkoutRoutes);
 
 export default router;

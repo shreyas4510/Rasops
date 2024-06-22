@@ -40,6 +40,7 @@
         "mustache": "^4.2.0",
         "mysql2": "^3.9.1",
         "nodemailer": "^6.9.11",
+        "razorpay": "^2.9.4",
         "sequelize": "^6.37.1",
         "swagger-ui-express": "^5.0.0",
         "uuid": "^9.0.1",

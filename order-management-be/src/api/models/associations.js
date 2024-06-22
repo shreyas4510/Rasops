@@ -12,7 +12,8 @@ function defineAssociations(db) {
         customer,
         orders,
         pushSubscriptions,
-        notifications
+        notifications,
+        paymentGatewayEntities
     } = db;
 
     // user and invite associations
@@ -68,6 +69,10 @@ function defineAssociations(db) {
     // notification and user relation
     users.hasOne(notifications, { foreignKey: 'userId' });
     notifications.belongsTo(users, { foreignKey: 'userId' });
+
+    // paymentGatewayEntities and user relation
+    users.hasOne(paymentGatewayEntities, { foreignKey: 'userId' });
+    paymentGatewayEntities.belongsTo(users, { foreignKey: 'userId' });
 }
 
 export default defineAssociations;
