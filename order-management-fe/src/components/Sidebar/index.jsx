@@ -113,9 +113,14 @@ function Sidebar() {
         if (Object.keys(user).length && user.role.toUpperCase() === USER_ROLES[0]) {
             return <Outlet />;
         } else if (Object.keys(user).length && user.role.toUpperCase() === USER_ROLES[1]) {
-            if (!globalHotelId && [...managerTabs].find((obj) => obj.path === location.pathname)) return <NoHotel />;
-            else if ([...managerTabs, ...commonTabs].find((obj) => obj.path === location.pathname)) return <Outlet />;
-            else <Loader />;
+            if (!globalHotelId && [...managerTabs].find((obj) => obj.path === location.pathname)) {
+                return <NoHotel />;
+            } else if ([...managerTabs, ...commonTabs].find((obj) => obj.path === location.pathname)) {
+                return <Outlet />;
+            }
+            else {
+                <Loader />;
+            }
         }
         return <></>;
     };

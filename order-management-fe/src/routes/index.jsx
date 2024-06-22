@@ -15,6 +15,8 @@ import Menu from '../pages/Menu';
 import Orders from '../pages/Orders';
 import Tables from '../pages/Tables';
 import OrderPlacement from '../pages/OrderPlacement';
+import Subscription from '../pages/Subscription';
+import FullRoutes from './FullRoutes';
 
 export default function Routes() {
     return (
@@ -28,6 +30,9 @@ export default function Routes() {
                     <Route path="verify" element={<VerifyUser />} />
                     <Route path="reset" element={<ResetPassword />} />
                     <Route path="place/:token" element={<OrderPlacement />} />
+                </Route>
+                <Route path="/" element={<FullRoutes />}>
+                    <Route path="subscription/:hotelId" element={<Subscription />} />
                 </Route>
                 <Route path="/" element={<AuthRoutes />}>
                     <Route path="dashboard" element={<Dashboard />} />
