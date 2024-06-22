@@ -1,9 +1,13 @@
-import Razorpay from "razorpay";
-import { CustomError } from "../utils/common.js";
-import env from "../../config/env.js";
+import Razorpay from 'razorpay';
+import env from '../../config/env.js';
+import logger from '../../config/logger.js';
+import { CustomError } from '../utils/common.js';
 
 const razorpay = new Razorpay({
+    // eslint-disable-next-line camelcase
     key_id: env.razorpay.keyId,
+
+    // eslint-disable-next-line camelcase
     key_secret: env.razorpay.keySecret
 });
 
@@ -15,7 +19,7 @@ const createLinkedAccount = async (payload) => {
         logger('error', 'Error while creating linked account', { error });
         throw CustomError(error.code, error.message);
     }
-}
+};
 
 const createStakeholder = async (accountId, payload) => {
     try {
@@ -25,27 +29,27 @@ const createStakeholder = async (accountId, payload) => {
         logger('error', 'Error while creating stakeholder', { error });
         throw CustomError(error.code, error.message);
     }
-}
+};
 
 const requestProduct = async (accountId, payload) => {
     try {
-        const product = await razorpay.products.requestProductConfiguration(accountId, payload)
+        const product = await razorpay.products.requestProductConfiguration(accountId, payload);
         return product;
     } catch (error) {
         logger('error', 'Error while requesting product', { error });
         throw CustomError(error.code, error.message);
     }
-}
+};
 
-const updateProduct = async ( accountId, productId, payload ) => {
+const updateProduct = async (accountId, productId, payload) => {
     try {
-        const product = await razorpay.products.edit(accountId, productId, payload)
+        const product = await razorpay.products.edit(accountId, productId, payload);
         return product;
     } catch (error) {
         logger('error', 'Error while updating product', { error });
         throw CustomError(error.code, error.message);
     }
-}
+};
 
 export default {
     createLinkedAccount,
