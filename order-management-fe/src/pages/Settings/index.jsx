@@ -3,21 +3,29 @@ import '../../assets/styles/settings.css';
 import { Card, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaUserEdit } from 'react-icons/fa';
-import { setSettingsFormData, updateUserRequest } from '../../store/slice';
+import { setCurrentStep, setPaymentActivate, setSettingsFormData, setUpdateModalOptions, updateUserRequest } from '../../store/slice';
 import OMTModal from '../../components/Modal';
 import { settingsSchema } from '../../validations/auth';
 import env from '../../config/env';
 import CryptoJS from 'crypto-js';
+import CustomButton from '../../components/CustomButton';
+import PaymentActivation from '../PaymentActivation';
+import { NOTIFICATION_PREFERENCE, PAYMENT_PREFERENCE, USER_ROLES } from '../../utils/constants';
 
 const Settings = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
+    const paymentActivate = useSelector((state) => state.paymentActivation.activate);
+
     const { data, updateOptions, formData } = user;
 
     const handleSubmit = async (values, { setSubmitting }) => {
         setSubmitting(true);
         const { notification, payment, ...rest } = values;
-        const preferences = { notification, payment };
+        const preferences = {
+            notification: notification ? NOTIFICATION_PREFERENCE.on : NOTIFICATION_PREFERENCE.off,
+            payment: payment ? PAYMENT_PREFERENCE.on : PAYMENT_PREFERENCE.off
+        };
         const payload = { ...rest, preferences };
 
         if (payload.newPassword) {
@@ -33,6 +41,21 @@ const Settings = () => {
 
     const setUpdateOptions = () => {
         const { firstName, lastName, preference } = data;
+        if (data.role === USER_ROLES[0]) {
+            const options = {
+                notification: {
+                    name: 'notification',
+                    type: 'switch',
+                    label: 'Notification Preference',
+                    className: fieldClass
+                }
+            }
+            if ([PAYMENT_PREFERENCE.on, PAYMENT_PREFERENCE.off].includes(preference?.payment)) {
+                options.payment = { name: 'payment', type: 'switch', label: 'Payment Preference', className: fieldClass }
+            }
+            dispatch(setUpdateModalOptions({ ...updateOptions, ...options }))
+        }
+
         return {
             title: 'Update User',
             initialValues: {
@@ -40,8 +63,8 @@ const Settings = () => {
                 lastName,
                 newPassword: '',
                 confirmPassword: '',
-                notification: preference?.notification,
-                payment: preference?.payment
+                notification: NOTIFICATION_PREFERENCE.on === preference?.notification,
+                payment: (PAYMENT_PREFERENCE.on === preference?.payment)
             },
             submitText: 'Update',
             closeText: 'Close'
@@ -117,18 +140,51 @@ const Settings = () => {
                         <Col xs={9}>
                             <Form.Check
                                 type="switch"
-                                checked={Boolean(data.preference?.notification)}
+                                checked={NOTIFICATION_PREFERENCE.on === data.preference?.notification}
                                 disabled={true}
                             />
                         </Col>
                     </Row>
                     <Row className="mb-3">
-                        <Col xs={3}>
-                            <strong className="setting-title">Payment Gateway Preference:</strong>
-                        </Col>
-                        <Col xs={9}>
-                            <Form.Check type="switch" checked={Boolean(data.preference?.payment)} disabled={true} />
-                        </Col>
+                        {
+                            [PAYMENT_PREFERENCE.on, PAYMENT_PREFERENCE.off].includes(data.preference?.payment) ? (
+                                <>
+                                    <Col xs={3}>
+                                        <strong className="setting-title">Payment Gateway Preference:</strong>
+                                    </Col>
+                                    <Col xs={9}>
+                                        <Form.Check type="switch" checked={(data.preference?.payment) === PAYMENT_PREFERENCE.on} disabled={true} />
+                                    </Col>
+                                </>
+                            ) : (
+                                <>
+                                    <Col xs={3}>
+                                        <strong className="setting-title">Activate Payment Gateway:</strong>
+                                    </Col>
+                                    <Col xs={9}>
+                                        <CustomButton
+                                            label='Activate'
+                                            disabled={data.role !== USER_ROLES[0]}
+                                            onClick={() => {
+                                                switch (data.preference?.payment) {
+                                                    case PAYMENT_PREFERENCE.stakeholder:
+                                                        dispatch(setCurrentStep(2));
+                                                        break;
+                                                    case PAYMENT_PREFERENCE.bank:
+                                                        dispatch(setCurrentStep(3));
+                                                        break;
+                                                    case PAYMENT_PREFERENCE.business:
+                                                    default:
+                                                        dispatch(setCurrentStep(1));
+                                                        break;
+                                                }
+                                                dispatch(setPaymentActivate(true))
+                                            }}
+                                        />
+                                    </Col>
+                                </>
+                            )
+                        }
                     </Row>
                 </Card.Body>
             </Card>
@@ -147,6 +203,16 @@ const Settings = () => {
                 size={'lg'}
                 submitText={formData.submitText}
                 closeText={formData.closeText}
+            />
+            <OMTModal
+                show={paymentActivate}
+                title={'Payment Activation'}
+                description={<PaymentActivation />}
+                isFooter={false}
+                size={'lg'}
+                handleClose={() => {
+                    dispatch(setPaymentActivate(false))
+                }}
             />
         </>
     );

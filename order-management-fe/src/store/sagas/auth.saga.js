@@ -134,11 +134,9 @@ function* updateUserRequestSaga(action) {
     }
 }
 
-function* logoutUserRequestSaga(action) {
+function* logoutUserRequestSaga() {
     try {
-        const userId = action.payload;
-        yield notificationService.unsubscribe(userId);
-
+        yield notificationService.unsubscribe();
         if ('serviceWorker' in navigator) {
             const registrations = yield navigator.serviceWorker.getRegistrations();
             for (const registration of registrations) {

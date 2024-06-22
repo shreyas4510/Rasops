@@ -55,6 +55,6 @@ export const settingsSchema = Yup.object().shape({
                 .oneOf([Yup.ref('newPassword'), null], 'Must match new password.'),
         otherwise: () => Yup.string()
     }),
-    notification: Yup.boolean().required(),
-    payment: Yup.boolean().required()
+    notification: Yup.string().required(),
+    payment: Yup.string().required()
 });

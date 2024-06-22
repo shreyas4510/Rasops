@@ -22,7 +22,7 @@ import {
 import { createColumnHelper } from '@tanstack/react-table';
 import Table from '../../components/Table';
 import ActionDropdown from '../../components/ActionDropdown';
-import { getHotelUpdateDifference } from '../../utils/hotel.js';
+import { getHotelUpdateDifference } from '../../utils/helpers.js';
 import CustomButton from '../../components/CustomButton';
 
 function Hotels() {

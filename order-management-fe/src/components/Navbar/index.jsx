@@ -22,7 +22,7 @@ function Navbars() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        dispatch(logoutRequest(user.id));
+        dispatch(logoutRequest());
     };
 
     const viewData = JSON.parse(

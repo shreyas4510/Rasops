@@ -1,0 +1,42 @@
+.circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 30px !important;
+    min-width: 30px !important;
+    height: 30px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    background-color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.circle.active {
+    background-color: #49ac60;
+    color: #fff;
+    border-color: #49ac60;
+}
+
+.connector {
+    height: 2px;
+    width: 100%;
+    background-color: #ccc;
+}
+
+.connector.active {
+    background-color: #49ac60;
+}
+
+.button-container {
+    display: flex;
+}
+
+.content-view {
+    height: 50vh;
+    max-height: 50vh;
+    overflow-y: auto;
+}
