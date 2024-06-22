@@ -31,7 +31,8 @@ export const TABLES = {
     CUSTOMER: 'customers',
     ORDER: 'orders',
     PUSH_SUBSCRIPTION: 'pushSubscriptions',
-    NOTIFICATION: 'notifications'
+    NOTIFICATION: 'notifications',
+    PAYMENT_GATEWAY_ENTITIES: 'paymentGatewayEntities'
 };
 
 export const CustomError = (code = STATUS_CODE.INTERNAL_SERVER_ERROR, message = 'Something went wrong.') => {

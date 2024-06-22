@@ -29,6 +29,10 @@ const env = {
         publicKey: process.env.NOTIFICATION_PUBLIC_KEY,
         privateKey: process.env.NOTIFICATION_PRIVATE_KEY,
         email: process.env.NOTIFICATION_USER
+    },
+    razorpay: {
+        keyId: process.env.RAZORPAY_KEY_ID,
+        keySecret: process.env.RAZORPAY_KEY_SECRET
     }
 };
 
