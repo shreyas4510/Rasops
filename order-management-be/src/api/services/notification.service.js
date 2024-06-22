@@ -18,6 +18,9 @@ const subscribe = async (payload) => {
         };
         logger('debug', 'Data for subscribing notification', data);
 
+        await unsubscribe(payload.userId);
+        logger('debug', `Removing all previous records for user : ${ payload.userId }`);
+
         const res = await pushSubscriptionRepo.save(data);
         logger('info', `Notification subscription successful for user: ${payload.userId}`, res);
 

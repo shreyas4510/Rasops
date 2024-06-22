@@ -10,6 +10,7 @@ import hotelRepo from '../repositories/hotel.repository.js';
 import orderRepo from '../repositories/order.repository.js';
 import tableRepo from '../repositories/table.repository.js';
 import { CustomError, STATUS_CODE } from '../utils/common.js';
+import { USER_ROLES } from '../models/user.model.js';
 
 const register = async (payload) => {
     try {
@@ -48,7 +49,20 @@ const getTableDetails = async (id) => {
                 },
                 {
                     model: db.hotel,
-                    attributes: ['id', 'name']
+                    attributes: ['id', 'name'],
+                    include: [{
+                        model: db.hotelUserRelation,
+                        attributes: ['userId'],
+                        include: [{
+                            model: db.users,
+                            where: { role: USER_ROLES[0] },
+                            attributes: ['id'],
+                            include: [{
+                                model: db.preferences,
+                                attributes: ['payment'],
+                            }]
+                        }]
+                    }]
                 }
             ]
         };
@@ -59,7 +73,19 @@ const getTableDetails = async (id) => {
             throw CustomError(STATUS_CODE.NOT_FOUND, `Table not found for id ${id}`);
         }
 
-        return table;
+        const result = {
+            customer: table.customer,
+            id: table.id,
+            status: table.status,
+            tableNumber: table.tableNumber,
+            hotel: {
+                id: table.hotel?.id,
+                name: table.hotel?.name,
+                payment: (table.hotel?.hotelUserRelations[0]?.user?.preference?.payment)       
+            }
+        }
+        logger('debug', `table details ${JSON.stringify(result)}`);
+        return result;
     } catch (error) {
         logger('error', `Error while fetching table by id ${JSON.stringify(error)}`);
         throw CustomError(error.code, error.message);

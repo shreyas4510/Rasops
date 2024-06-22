@@ -86,8 +86,8 @@ export const updateValidation = (payload) => {
                 .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
                 .optional(),
             preferences: Joi.object({
-                notification: Joi.boolean().optional(),
-                payment: Joi.boolean().optional()
+                notification: Joi.string().optional(),
+                payment: Joi.string().optional()
             })
         }).or('firstName', 'lastName', 'password', 'preferences');
 
