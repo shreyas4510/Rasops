@@ -1,13 +1,13 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
-import * as service from '../../services/paymentActivation.service';
-import { setCurrentStep, setPaymentActivate } from '../slice';
+import * as service from '../../services/checkout.service';
+import { getUserRequest, setCurrentStep, setPaymentActivate } from '../slice';
 import { SAVE_BANK_DETAILS_REQUEST, SAVE_BUSINESS_DETAILS_REQUEST, SAVE_STAKEHOLDER_DETAILS_REQUEST } from '../types';
 
 function* saveBusinessDetailsSaga(action) {
     try {
         const { step, payload } = action.payload;
-        yield service.saveBusinessDetail(payload);
+        yield service.saveBusinessDetails(payload);
         toast.success('Business details saved successfully');
         yield put(setCurrentStep(step));
     } catch (error) {
@@ -19,7 +19,7 @@ function* saveBusinessDetailsSaga(action) {
 function* saveStakeholderDetailsSaga(action) {
     try {
         const { step, payload } = action.payload;
-        yield service.saveStakeholderDetail(payload);
+        yield service.saveStakeholderDetails(payload);
         toast.success('Stakeholder details saved successfully');
         yield put(setCurrentStep(step));
     } catch (error) {
@@ -30,9 +30,12 @@ function* saveStakeholderDetailsSaga(action) {
 
 function* saveBankDetailsSaga(action) {
     try {
-        const { payload } = action.payload;
-        yield service.saveStakeholderDetail(payload);
+        const payload = action.payload;
+        yield service.saveBankDetails(payload);
+
         toast.success('Account activated successfully');
+        
+        yield put(getUserRequest());
         yield put(setPaymentActivate(false));
         yield put(setCurrentStep(1));
     } catch (error) {
