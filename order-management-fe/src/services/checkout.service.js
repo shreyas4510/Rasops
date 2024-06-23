@@ -26,3 +26,21 @@ export const saveBankDetails = async (payload) => {
         throw error;
     }
 };
+
+export const subscribe = async (payload) => {
+    try {
+        return await api(method.POST, `/checkout/subscribe`, payload);
+    } catch (error) {
+        console.error(`Error while hotel subscription ${error}`);
+        throw error;
+    }
+};
+
+export const subscriptionSuccess = async (payload) => {
+    try {
+        return await api(method.POST, `/checkout/success`, payload);
+    } catch (error) {
+        console.error(`Error while hotel subscription success ${error}`);
+        throw error;
+    }
+};

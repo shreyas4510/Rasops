@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
 import { IoRocket } from 'react-icons/io5';
 import { FaCircleCheck } from 'react-icons/fa6';
@@ -6,8 +6,23 @@ import CustomButton from '../../components/CustomButton';
 import { GiQueenCrown } from 'react-icons/gi';
 import { RiCustomerService2Fill } from 'react-icons/ri';
 import '../../assets/styles/subscription.css';
+import Razorpay, { ACTIONS } from '../../components/Razporpay';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { setConfirmation, setHotelDetails, subscriptionRequest } from '../../store/slice';
+import OMTModal from '../../components/Modal';
 
 function Subscription() {
+    const { state } = useLocation();
+    const { subscriptionData, confirmation, hotelDetails } = useSelector((state) => state.checkout);
+    const user = useSelector((state) => state.user.data);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(setHotelDetails(state));
+        window.history.replaceState({}, '');
+    }, []);
+
     const features = [
         'Online menu order',
         'Order management with live notification to manage / cook / waiter',
@@ -95,7 +110,7 @@ function Subscription() {
                                                 disabled={false}
                                                 className="mt-auto mx-auto mb-3 fw-bold"
                                                 onClick={() => {
-                                                    console.log('Plan  Monthly');
+                                                    dispatch(setConfirmation(`${title}-monthly`.toUpperCase()));
                                                 }}
                                             />
                                             <CustomButton
@@ -109,7 +124,7 @@ function Subscription() {
                                                 disabled={false}
                                                 className="mt-auto mx-auto mb-3 fw-bold"
                                                 onClick={() => {
-                                                    console.log('Plan  Monthly');
+                                                    dispatch(setConfirmation(`${title}-yearly`.toUpperCase()));
                                                 }}
                                             />
                                         </>
@@ -119,7 +134,7 @@ function Subscription() {
                                             disabled={false}
                                             className="mt-auto mx-auto mb-3 fw-bold py-3"
                                             onClick={() => {
-                                                console.log('Plan  Monthly');
+                                                dispatch(setConfirmation(`${title}`.toUpperCase()));
                                             }}
                                         />
                                     )}
@@ -129,6 +144,44 @@ function Subscription() {
                     </Col>
                 ))}
             </Row>
+            {subscriptionData && (
+                <Razorpay
+                    action={ACTIONS.SUBSCRIPTION}
+                    email={user.email}
+                    name={`${user.firstName} ${user.lastName}`}
+                    phoneNumber={user.phoneNumber}
+                    subscriptionId={subscriptionData.id}
+                    hotelName={hotelDetails.name}
+                />
+            )}
+            <OMTModal
+                show={confirmation}
+                title={'Confirm Plan'}
+                size="md"
+                description={
+                    <div className="text-center">
+                        <h5 className="my-2">{confirmation}</h5>
+                        <p className="my-4">
+                            Excited to dive into premium content? 🌟
+                            <br />
+                            Confirm your subscription and enjoy the ride!
+                        </p>
+                    </div>
+                }
+                handleSubmit={() => {
+                    dispatch(
+                        subscriptionRequest({
+                            hotelId: hotelDetails.id,
+                            plan: confirmation
+                        })
+                    );
+                }}
+                handleClose={() => {
+                    dispatch(setConfirmation(false));
+                }}
+                submitText={'Yes'}
+                closeText={'No'}
+            />
         </>
     );
 }
