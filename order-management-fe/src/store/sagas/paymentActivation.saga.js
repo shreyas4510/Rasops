@@ -12,7 +12,7 @@ function* saveBusinessDetailsSaga(action) {
         yield put(setCurrentStep(step));
     } catch (error) {
         console.error('Failed to add business details', error);
-        toast.error('Failed to add business details ', error.message);
+        toast.error(`Failed to add business details ${error.message}`);
     }
 }
 
@@ -24,7 +24,7 @@ function* saveStakeholderDetailsSaga(action) {
         yield put(setCurrentStep(step));
     } catch (error) {
         console.error('Failed to add stakeholder details', error);
-        toast.error('Failed to add stakeholder details ', error.message);
+        toast.error(`Failed to add stakeholder details ${error.message}`);
     }
 }
 
@@ -40,7 +40,7 @@ function* saveBankDetailsSaga(action) {
         yield put(setCurrentStep(1));
     } catch (error) {
         console.error('Failed to activate details', error);
-        toast.error('Failed to activate details ', error.message);
+        toast.error(`Failed to activate details ${error.message}`);
     }
 }
 

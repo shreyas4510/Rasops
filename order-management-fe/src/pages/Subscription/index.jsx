@@ -6,7 +6,6 @@ import CustomButton from '../../components/CustomButton';
 import { GiQueenCrown } from 'react-icons/gi';
 import { RiCustomerService2Fill } from 'react-icons/ri';
 import '../../assets/styles/subscription.css';
-t;
 
 function Subscription() {
     const features = [

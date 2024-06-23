@@ -20,7 +20,7 @@ function* updateManagerRequestSaga(action) {
         yield put(getManagersRequest());
         yield put(setFormInfo(false));
     } catch (error) {
-        toast.error('Failed to update manager', error.message);
+        toast.error(`Failed to update manager ${error.message}`);
         yield put(setFormInfo(false));
     }
 }
@@ -32,7 +32,7 @@ function* removeManagerRequestSaga(action) {
         yield put(setSelectedRow(false));
         yield put(getManagersRequest());
     } catch (error) {
-        toast.error('Failed to remove manager', error.message);
+        toast.error(`Failed to remove manager ${error.message}`);
         yield put(setSelectedRow(false));
     }
 }

@@ -24,6 +24,7 @@ import Table from '../../components/Table';
 import ActionDropdown from '../../components/ActionDropdown';
 import { getHotelUpdateDifference } from '../../utils/helpers.js';
 import CustomButton from '../../components/CustomButton';
+import moment from 'moment';
 
 function Hotels() {
     const dispatch = useDispatch();
@@ -122,16 +123,23 @@ function Hotels() {
                                     label: 'Check-In',
                                     icon: FaHandPointRight,
                                     onClick: () => {
-                                        const details = CryptoJS.AES.encrypt(
-                                            JSON.stringify({
-                                                role: user.data.role,
-                                                hotelId: row.original.id
-                                            }),
-                                            env.cryptoSecret
-                                        ).toString();
-                                        dispatch(setGlobalHotelId(row.original.id));
-                                        localStorage.setItem('data', details);
-                                        navigate('/dashboard');
+                                        if (
+                                            row.original.subscriptions &&
+                                            moment().diff(row.original.subscriptions.endDate) <= 0
+                                        ) {
+                                            const details = CryptoJS.AES.encrypt(
+                                                JSON.stringify({
+                                                    role: user.data.role,
+                                                    hotelId: row.original.id
+                                                }),
+                                                env.cryptoSecret
+                                            ).toString();
+                                            dispatch(setGlobalHotelId(row.original.id));
+                                            localStorage.setItem('data', details);
+                                            navigate('/dashboard');
+                                        } else {
+                                            navigate(`/subscription/${row.original.id}`);
+                                        }
                                     }
                                 },
                                 {
