@@ -32,7 +32,7 @@ export default function Routes() {
                     <Route path="place/:token" element={<OrderPlacement />} />
                 </Route>
                 <Route path="/" element={<FullRoutes />}>
-                    <Route path="subscription/:hotelId" element={<Subscription />} />
+                    <Route path="subscription" element={<Subscription />} />
                 </Route>
                 <Route path="/" element={<AuthRoutes />}>
                     <Route path="dashboard" element={<Dashboard />} />

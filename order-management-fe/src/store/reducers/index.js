@@ -7,7 +7,8 @@ import {
     menuReducer,
     orderPlacementReducer,
     tablesReducer,
-    paymentActivationReducer
+    paymentActivationReducer,
+    checkoutReducer
 } from '../slice';
 
 const rootReducers = {
@@ -19,7 +20,8 @@ const rootReducers = {
     menu: menuReducer,
     table: tablesReducer,
     orderPlacement: orderPlacementReducer,
-    paymentActivation: paymentActivationReducer
+    paymentActivation: paymentActivationReducer,
+    checkout: checkoutReducer
 };
 
 export default rootReducers;

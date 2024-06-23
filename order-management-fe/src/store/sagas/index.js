@@ -1,5 +1,6 @@
 import { all, fork } from 'redux-saga/effects';
 import authSaga from './auth.saga';
+import checkoutSaga from './checkout.saga';
 import hotelSaga from './hotel.saga';
 import inviteSaga from './invite.saga';
 import managerSaga from './manager.saga';
@@ -17,6 +18,7 @@ export default function* () {
         fork(menuSaga),
         fork(tablesSaga),
         fork(orderPlacementSaga),
-        fork(paymentActivationSaga)
+        fork(paymentActivationSaga),
+        fork(checkoutSaga)
     ]);
 }

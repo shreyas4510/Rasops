@@ -7,3 +7,4 @@ export * from './menu.slice';
 export * from './table.slice';
 export * from './orderPlacement.slice';
 export * from './paymentActivation.slice';
+export * from './checkout.slice';

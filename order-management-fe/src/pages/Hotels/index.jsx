@@ -32,7 +32,6 @@ function Hotels() {
     const { hotelOptions, data, deleteHotelConfirm, formData } = useSelector((state) => state.hotel);
 
     const navigate = useNavigate();
-
     const createOptions = {
         action: 'create',
         title: 'Create New Hotel',
@@ -138,7 +137,12 @@ function Hotels() {
                                             localStorage.setItem('data', details);
                                             navigate('/dashboard');
                                         } else {
-                                            navigate(`/subscription/${row.original.id}`);
+                                            navigate('/subscription', {
+                                                state: {
+                                                    id: row.original.id,
+                                                    name: row.original.name
+                                                }
+                                            });
                                         }
                                     }
                                 },
