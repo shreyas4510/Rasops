@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../config/database.js';
@@ -67,6 +68,9 @@ const getTableDetails = async (id) => {
                                     ]
                                 }
                             ]
+                        },
+                        {
+                            model: db.subscriptions
                         }
                     ]
                 }
@@ -77,6 +81,12 @@ const getTableDetails = async (id) => {
         if (!table) {
             logger('error', `Table not found for id ${id}`);
             throw CustomError(STATUS_CODE.NOT_FOUND, `Table not found for id ${id}`);
+        }
+
+        const subscription = table?.hotel?.subscription;
+        if (!subscription || moment().diff(subscription.endDate) > 0) {
+            logger('error', 'Hotel Subscription expired.');
+            throw CustomError(STATUS_CODE.FORBIDDEN, 'Hotel Subscription expired');
         }
 
         const result = {

@@ -9,6 +9,7 @@ import logger from '../../config/logger.js';
 import { INVITE_STATUS } from '../models/invite.model.js';
 import { NOTIFICATION_PREFERENCE, PAYMENT_PREFERENCE } from '../models/preferences.model.js';
 import { USER_ROLES, USER_STATUS } from '../models/user.model.js';
+import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
 import inviteRepo from '../repositories/invite.repository.js';
 import preferencesRepo from '../repositories/preferences.repository.js';
 import userRepo from '../repositories/user.repository.js';
@@ -90,6 +91,29 @@ const login = async (payload) => {
         }
 
         const { id, firstName, lastName, phoneNumber, role } = user;
+        if (user.role === USER_ROLES[1]) {
+            const checkHotelSubscription = {
+                where: { userId: id },
+                include: [
+                    {
+                        model: db.hotel,
+                        attributes: ['id'],
+                        include: [
+                            {
+                                model: db.subscriptions
+                            }
+                        ]
+                    }
+                ]
+            };
+            const { rows } = await hotelUserRelationRepo.find(checkHotelSubscription);
+            const subscription = rows[0]?.hotel?.subscription;
+            if (!subscription || moment().diff(subscription.endDate) > 0) {
+                logger('error', 'Hotel Subscription expired.');
+                throw CustomError(STATUS_CODE.FORBIDDEN, 'Hotel Subscription expired');
+            }
+        }
+
         const data = CryptoJS.AES.encrypt(JSON.stringify({ role }), env.cryptoSecret).toString();
         const token = jwt.sign(
             {
