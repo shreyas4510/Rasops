@@ -33,7 +33,7 @@ function* getHotelsRequestSaga() {
         const res = yield service.fetch();
         yield put(getHotelSuccess(res));
     } catch (error) {
-        toast.error('Failed to fetch hotels', error.message);
+        toast.error(`Failed to fetch hotels ${error.message}`);
     }
 }
 
@@ -44,7 +44,7 @@ function* removeHotelsRequestSaga(action) {
         toast.success(res.message);
         yield put(removeHotelSuccess(id));
     } catch (error) {
-        toast.error('Failed to remove hotels', error.message);
+        toast.error(`Failed to remove hotels ${error.message}`);
     }
 }
 
@@ -55,7 +55,7 @@ function* updateHotelsRequestSaga(action) {
         yield put(getHotelRequest());
         yield put(setHotelFormData(false));
     } catch (error) {
-        toast.error('Failed to update hotels', error.message);
+        toast.error(`Failed to update hotels ${error.message}`);
         yield put(setHotelFormData(false));
     }
 }
@@ -71,7 +71,7 @@ function* getAssignableManagerSaga() {
             )
         );
     } catch (error) {
-        toast.error('Failed to fetch hotels', error.message);
+        toast.error(`Failed to fetch hotels ${error.message}`);
     }
 }
 

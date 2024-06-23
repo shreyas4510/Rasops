@@ -11,7 +11,7 @@ const instance = axios.create({
     }
 });
 
-const STATUS_CODES = [401, 403];
+const ERROR_MESSAGE = ['TOKEN_NOT_FOUND', 'TOKEN_VERIFICATION_FAILED'];
 
 instance.interceptors.request.use(
     (config) => {
@@ -33,7 +33,7 @@ instance.interceptors.response.use(
         return response;
     },
     (error) => {
-        if (error.response && STATUS_CODES.includes(error.response.status)) {
+        if (error.response && ERROR_MESSAGE.includes(error.response.data?.message)) {
             localStorage.clear();
             window.location.replace('/');
         }

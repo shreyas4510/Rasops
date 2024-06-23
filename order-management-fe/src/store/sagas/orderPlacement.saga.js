@@ -25,6 +25,7 @@ function* getTablesDetailsRequestSaga(action) {
         yield put(getTableDetailsSuccess(res));
     } catch (error) {
         console.error('Failed to get table by id ', error);
+        toast.error(`Failed to get table details ${error.message}`);
     }
 }
 
@@ -35,7 +36,7 @@ function* registerCustomerRequestSaga(action) {
         yield put(getTableDetailsRequest(payload.tableId));
     } catch (error) {
         console.error('Failed to register user', error);
-        toast.error('Failed to register customer ', error.message);
+        toast.error(`Failed to register customer ${error.message}`);
     }
 }
 
@@ -46,7 +47,7 @@ function* getMenuDetailsRequestSaga(action) {
         yield put(getMenuDetailsSuccess(res));
     } catch (error) {
         console.error('Failed to fetch menu card details', error);
-        toast.error('Failed to fetch menu card details', error.message);
+        toast.error(`Failed to fetch menu card details ${error.message}`);
     }
 }
 
@@ -60,7 +61,7 @@ function* placeOrderRequestSaga(action) {
         toast.success('Order received! Your delicious meal is on the way. Thank you for your patience!');
     } catch (error) {
         console.error('Failed to place order', error);
-        toast.error('Failed to fetch menu card details', error.message);
+        toast.error(`Failed to fetch menu card details ${error.message}`);
     }
 }
 
@@ -75,7 +76,7 @@ function* getOrderDetailsRequestSaga(action) {
         }
     } catch (error) {
         console.error('Failed to fetch order details', error);
-        toast.error('Failed to fetch order details', error.message);
+        toast.error(`Failed to fetch order details ${error.message}`);
     }
 }
 
