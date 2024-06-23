@@ -70,7 +70,8 @@ const getTableDetails = async (id) => {
                             ]
                         },
                         {
-                            model: db.subscriptions
+                            model: db.subscriptions,
+                            attributes: ['subscriptionId', 'endDate']
                         }
                     ]
                 }

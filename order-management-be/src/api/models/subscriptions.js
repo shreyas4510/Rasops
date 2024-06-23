@@ -25,12 +25,24 @@ const subscriptionModel = (sequelize) =>
                 type: DataTypes.STRING,
                 allowNull: false
             },
+            customerId: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            paymentId: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
             startDate: {
                 type: DataTypes.DATE,
                 allowNull: true
             },
             endDate: {
                 type: DataTypes.DATE,
+                allowNull: true
+            },
+            tables: {
+                type: DataTypes.INTEGER,
                 allowNull: true
             },
             deletedAt: {

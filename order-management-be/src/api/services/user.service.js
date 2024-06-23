@@ -100,7 +100,8 @@ const login = async (payload) => {
                         attributes: ['id'],
                         include: [
                             {
-                                model: db.subscriptions
+                                model: db.subscriptions,
+                                attributes: ['subscriptionId', 'endDate']
                             }
                         ]
                     }
