@@ -121,6 +121,10 @@ const list = async (userId) => {
                                 }
                             ],
                             separate: true
+                        },
+                        {
+                            model: db.subscriptions,
+                            attributes: ['subscriptionId', 'endDate']
                         }
                     ]
                 }
@@ -141,7 +145,8 @@ const list = async (userId) => {
                 careNumber: hotel.careNumber,
                 rating: hotel.rating,
                 createdAt: hotel.createdAt,
-                managers: {}
+                managers: {},
+                subscriptions: hotel.subscription
             };
 
             if (hotel.hotelUserRelations && hotel.hotelUserRelations.length) {

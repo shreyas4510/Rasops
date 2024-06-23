@@ -8,12 +8,12 @@ const authenticate = (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1];
     if (!token) {
         logger('error', { message: 'Unauthorized access attempted' });
-        return res.status(STATUS_CODE.UNAUTHORIZED).json({ message: 'Unauthorized' });
+        return res.status(STATUS_CODE.UNAUTHORIZED).json({ message: 'TOKEN_NOT_FOUND' });
     }
 
     jwt.verify(token, env.jwtSecret, (err, user) => {
         if (err) {
-            logger('error', { message: 'Failed to authenticate token' });
+            logger('error', { message: 'TOKEN_VERIFICATION_FAILED' });
             return res.status(STATUS_CODE.FORBIDDEN).json({ message: 'Forbidden' });
         }
         req.user = user;
