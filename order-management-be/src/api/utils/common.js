@@ -16,7 +16,8 @@ export const STATUS_CODE = {
 export const EMAIL_ACTIONS = {
     VERIFY_USER: 'verify-user',
     FORGOT_PASSWORD: 'forgot-password',
-    INVITE_MANAGER: 'invite-manager'
+    INVITE_MANAGER: 'invite-manager',
+    CUSTOM_SUBSCRIPTION: 'custom-subscription'
 };
 
 export const TABLES = {
@@ -40,4 +41,12 @@ export const CustomError = (code = STATUS_CODE.INTERNAL_SERVER_ERROR, message = 
     const error = new Error(message);
     error.code = code;
     return error;
+};
+
+export const PLANS = {
+    BASIC_MONTHLY: 'BASIC-MONTHLY',
+    BASIC_YEARLY: 'BASIC-YEARLY',
+    STANDARD_MONTHLY: 'STANDARD-MONTHLY',
+    STANDARD_YEARLY: 'STANDARD-YEARLY',
+    CUSTOM: 'CUSTOM'
 };

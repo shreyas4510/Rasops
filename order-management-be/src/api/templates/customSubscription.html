@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Customer Request: Custom Plan</title>
+        <style>
+            /* Global reset */
+            body,
+            html {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f8f9fa;
+            }
+
+            /* Container */
+            .container {
+                max-width: 600px;
+                margin: 20px auto;
+                background-color: #ffffff;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Header */
+            .header {
+                background-color: #49ac60;
+                color: #ffffff;
+                text-align: center;
+                padding: 20px 0;
+            }
+
+            .header h2 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            /* Content */
+            .content {
+                padding: 30px;
+            }
+
+            .content p {
+                color: #333333;
+                line-height: 1.6;
+                margin-bottom: 15px;
+            }
+
+            .details {
+                background-color: #f0f0f0;
+                padding: 20px;
+                border-radius: 6px;
+                border: 1px solid #dddddd;
+                margin-top: 20px;
+            }
+
+            .details p {
+                margin: 10px 0;
+            }
+
+            /* Footer */
+            .footer {
+                text-align: center;
+                padding: 10px 0;
+                background-color: #49ac60;
+                color: #ffffff;
+                font-size: 14px;
+            }
+
+            .footer a {
+                color: #ffffff;
+                text-decoration: none;
+            }
+
+            .footer a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h2>Customer Request: Custom Plan</h2>
+            </div>
+            <div class="content">
+                <p>The following customer has requested a custom plan. Please reach out to them:</p>
+                <div class="details">
+                    <p><strong>Name:</strong> {{name}}</p>
+                    <p><strong>Phone Number:</strong> {{phoneNumber}}</p>
+                    <p><strong>Hotel Name:</strong> {{hotelName}}</p>
+                    <p><strong>Email:</strong> {{email}}</p>
+                </div>
+            </div>
+            <div class="footer">
+                <p>Please assist the customer promptly. Thank you.</p>
+            </div>
+        </div>
+    </body>
+</html>

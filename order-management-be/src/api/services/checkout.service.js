@@ -1,11 +1,18 @@
 import CryptoJS from 'crypto-js';
+import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
+import { db } from '../../config/database.js';
 import env from '../../config/env.js';
 import logger from '../../config/logger.js';
 import { PAYMENT_PREFERENCE } from '../models/preferences.model.js';
+import { USER_ROLES } from '../models/user.model.js';
+import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
 import paymentGatewayEntitiesRepo from '../repositories/paymentGatewayEntities.repository.js';
 import preferencesRepo from '../repositories/preferences.repository.js';
-import { CustomError } from '../utils/common.js';
+import subscriptionRepo from '../repositories/subscription.repository.js';
+import notificationService from '../services/notification.service.js';
+import { CustomError, EMAIL_ACTIONS, PLANS, STATUS_CODE } from '../utils/common.js';
+import { sendEmail } from './email.service.js';
 import razorpayService from './razorpay.service.js';
 
 const business = async (userId, payload) => {
@@ -169,8 +176,124 @@ const account = async (userId, token) => {
     }
 };
 
+const getPlanId = (planId) => {
+    switch (planId) {
+        case PLANS.BASIC_MONTHLY:
+            return {
+                planId: env.plans.basicMonthly,
+                tables: 50
+            };
+        case PLANS.BASIC_YEARLY:
+            return {
+                planId: env.plans.basicYearly,
+                tables: 50
+            };
+        case PLANS.STANDARD_MONTHLY:
+            return {
+                planId: env.plans.standardMonthly,
+                tables: 100
+            };
+        case PLANS.STANDARD_YEARLY:
+            return {
+                planId: env.plans.standardYearly,
+                tables: 100
+            };
+        default:
+            throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid Plan id');
+    }
+};
+
+const subscribe = async (payload) => {
+    try {
+        if (payload.plan === PLANS.CUSTOM) {
+            const hotelOptions = {
+                where: {
+                    hotelId: payload.hotelId
+                },
+                attributes: ['userId', 'hotelId'],
+                include: [
+                    {
+                        model: db.users,
+                        where: { role: USER_ROLES[0] },
+                        attributes: ['firstName', 'lastName', 'email', 'phoneNumber']
+                    },
+                    {
+                        model: db.hotel,
+                        attributes: ['name']
+                    }
+                ]
+            };
+
+            const { rows } = await hotelUserRelationRepo.find(hotelOptions);
+            const { user, hotel } = rows[0];
+            const emailData = {
+                name: `${user.firstName} ${user.lastName}`,
+                phoneNumber: `${user.phoneNumber}`,
+                hotelName: `${hotel.name}`,
+                email: `${user.email}`
+            };
+            logger('debug', 'payload to send email to support', emailData);
+            await sendEmail(emailData, env.supportEmail, EMAIL_ACTIONS.CUSTOM_SUBSCRIPTION);
+            return {
+                message:
+                    'Thank you for contacting us! We have received your request for a custom plan. Our team will assist you shortly.'
+            };
+        }
+
+        const { planId, tables } = getPlanId(payload.plan);
+
+        // eslint-disable-next-line camelcase
+        const data = { plan_id: planId, total_count: 1 };
+        logger('debug', `Request to create subscription data`, data);
+        const subscription = await razorpayService.subscribe(data);
+
+        const options = {
+            id: uuidv4(),
+            hotelId: payload.hotelId,
+            subscriptionId: subscription.id,
+            planId: payload.plan,
+            tables
+        };
+        logger('debug', `Options to store in table`, options);
+        await subscriptionRepo.save(options);
+
+        return { id: subscription.id };
+    } catch (error) {
+        logger('error', 'Error while creating subscription', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const success = async (userId, payload) => {
+    try {
+        const subscription = await razorpayService.fetch(payload.subscriptionId);
+        logger('debug', `Subscription details`, subscription);
+
+        const options = { where: { subscriptionId: payload.subscriptionId } };
+        const data = {
+            customerId: subscription.customer_id,
+            paymentId: payload.paymentId,
+            startDate: moment(subscription.current_start).toISOString(),
+            endDate: moment(subscription.current_end).toISOString()
+        };
+        logger('debug', `Update subscription on success`, { options, data });
+        await subscriptionRepo.update(options, data);
+
+        await notificationService.sendNotification(userId, {
+            title: 'Subscription Done',
+            message: `You have successfully subscribed to plan - ${subscription.plan_id}`
+        });
+        return { message: 'Success' };
+    } catch (error) {
+        logger('error', 'Error in subscription success', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     business,
     stakeholder,
-    account
+    account,
+    subscribe,
+    success
 };

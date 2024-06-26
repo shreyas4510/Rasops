@@ -51,9 +51,31 @@ const updateProduct = async (accountId, productId, payload) => {
     }
 };
 
+const subscribe = async (payload) => {
+    try {
+        const subscription = await razorpay.subscriptions.create(payload);
+        return subscription;
+    } catch (error) {
+        logger('error', 'Error while creating subscription product', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const fetch = async (subscriptionId) => {
+    try {
+        const subscription = await razorpay.subscriptions.fetch(subscriptionId);
+        return subscription;
+    } catch (error) {
+        logger('error', 'Error while fetching subscription product', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     createLinkedAccount,
     createStakeholder,
     requestProduct,
-    updateProduct
+    updateProduct,
+    subscribe,
+    fetch
 };

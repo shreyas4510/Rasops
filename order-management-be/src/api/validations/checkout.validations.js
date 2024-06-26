@@ -82,3 +82,29 @@ export const accountDetailsValidation = (payload) => {
         throw CustomError(error.code, error.message);
     }
 };
+
+export const subscribeValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            plan: Joi.string().required(),
+            hotelId: Joi.string().required()
+        });
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', 'Error in subscription validation', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+export const subscribeSuccessValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            subscriptionId: Joi.string().required(),
+            paymentId: Joi.string().required()
+        });
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', 'Error in subscription success validation', { error });
+        throw CustomError(error.code, error.message);
+    }
+};

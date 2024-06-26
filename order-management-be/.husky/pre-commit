@@ -1,6 +1,7 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 cd order-management-be
+npm run prepare
 npm run lint:fix
 npm run prettier:write
-# git add .
+git add .
