@@ -8,7 +8,7 @@ import { RiCustomerService2Fill } from 'react-icons/ri';
 import '../../assets/styles/subscription.css';
 import Razorpay, { ACTIONS } from '../../components/Razporpay';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { setConfirmation, setHotelDetails, subscriptionRequest } from '../../store/slice';
 import OMTModal from '../../components/Modal';
 
@@ -17,6 +17,7 @@ function Subscription() {
     const { subscriptionData, confirmation, hotelDetails } = useSelector((state) => state.checkout);
     const user = useSelector((state) => state.user.data);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(setHotelDetails(state));
@@ -172,7 +173,8 @@ function Subscription() {
                     dispatch(
                         subscriptionRequest({
                             hotelId: hotelDetails.id,
-                            plan: confirmation
+                            plan: confirmation,
+                            navigate
                         })
                     );
                 }}

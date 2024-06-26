@@ -6,9 +6,15 @@ import { SUBSCRIPTION_REQUEST, SUBSCRIPTION_SUCCESS_REQUEST } from '../types';
 
 function* subscriptionRequestSaga(action) {
     try {
-        const payload = action.payload;
+        const { navigate, ...payload } = action.payload;
         const res = yield service.subscribe(payload);
         yield put(setConfirmation(false));
+
+        if (payload.plan === 'CUSTOM') {
+            toast.success(res.message);
+            navigate('/hotels');
+            return;
+        }
         yield put(setSubscriptionData(res));
     } catch (error) {
         toast.error(`Failed to subcribe hotels ${error.message}`);
