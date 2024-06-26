@@ -40,6 +40,14 @@ const getEmailData = (action, payload) => {
                     ownerName: payload.name
                 })
             };
+        case EMAIL_ACTIONS.CUSTOM_SUBSCRIPTION:
+            path = `${process.cwd()}/src/api/templates/customSubscription.html`;
+            template = readFileSync(path, 'utf8');
+
+            return {
+                subject: 'Re: Custom Subscription Request',
+                template: Mustache.render(template, { ...payload })
+            };
         default:
             break;
     }
