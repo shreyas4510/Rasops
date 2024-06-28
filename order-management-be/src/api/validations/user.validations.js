@@ -87,7 +87,8 @@ export const updateValidation = (payload) => {
                 .optional(),
             preferences: Joi.object({
                 notification: Joi.string().optional(),
-                payment: Joi.string().optional()
+                payment: Joi.string().optional(),
+                orders: Joi.string().optional()
             })
         }).or('firstName', 'lastName', 'password', 'preferences');
 

@@ -379,7 +379,7 @@ const getUser = async (user) => {
             include: [
                 {
                     model: db.preferences,
-                    attributes: ['notification', 'payment']
+                    attributes: ['notification', 'payment', 'orders']
                 },
                 {
                     model: db.hotelUserRelation,
@@ -421,7 +421,7 @@ const update = async (id, payload) => {
             include: [
                 {
                     model: db.preferences,
-                    attributes: ['notification', 'payment']
+                    attributes: ['notification', 'payment', 'orders']
                 }
             ]
         };

@@ -14,7 +14,7 @@ const authenticate = (req, res, next) => {
     jwt.verify(token, env.jwtSecret, (err, user) => {
         if (err) {
             logger('error', { message: 'TOKEN_VERIFICATION_FAILED' });
-            return res.status(STATUS_CODE.FORBIDDEN).json({ message: 'Forbidden' });
+            return res.status(STATUS_CODE.FORBIDDEN).json({ message: 'TOKEN_VERIFICATION_FAILED' });
         }
         req.user = user;
         logger('info', 'User authenticated successfully', { user });
