@@ -1,12 +1,18 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import * as service from '../../services/tables.service';
-import { getTablesRequest, getTablesSuccess, setTableModalData } from '../slice';
+import {
+    getActiveOrderRequest,
+    getCompletedOrdersRequest,
+    getTablesRequest,
+    getTablesSuccess,
+    setTableModalData
+} from '../slice';
 import { ADD_TABLE_REQUEST, GET_TABLE_REQUEST, REMOVE_TABLE_REQUEST } from '../types';
 
 function* getTablesRequestSaga(action) {
     try {
-        const { hotelId, filter } = action.payload;
+        const { hotelId, filter, location } = action.payload;
         const res = yield service.fetch(hotelId, filter);
 
         const data = res.rows?.reduce((cur, next) => {
@@ -15,6 +21,11 @@ function* getTablesRequestSaga(action) {
         }, []);
 
         yield put(getTablesSuccess({ data, count: res.count }));
+
+        if (location === 'orders') {
+            yield put(getActiveOrderRequest(data[0].value));
+            yield put(getCompletedOrdersRequest(data[0].value));
+        }
     } catch (error) {
         console.error('Failed to fetch tables ', error);
         toast.error(`Failed to fetch tables ${error.message}`);
