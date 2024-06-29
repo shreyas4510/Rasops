@@ -490,17 +490,15 @@ const active = async (tableId) => {
         );
 
         if (data.bill) {
-            data.billDetails.id = activeOrders.customer.id;
-
             const { cgst, sgst, totalPrice } = calculateBill(data.billDetails.price);
             data.billDetails.sgst = sgst;
             data.billDetails.cgst = cgst;
             data.billDetails.totalPrice = totalPrice;
             data.billDetails.paymentId = orders[0].razorpayPaymentId;
-        } else {
-            data.billDetails = {};
         }
+        data.billDetails.id = activeOrders.customer.id;
         logger('debug', `Active order details for table ${tableId}`, data);
+
         return data;
     } catch (error) {
         logger('error', 'Error while fetching active orders', { error });
@@ -508,7 +506,7 @@ const active = async (tableId) => {
     }
 };
 
-const updatePending = async (orders) => {
+const updatePending = async (orders, customerId) => {
     try {
         const options = {
             where: {
@@ -517,6 +515,17 @@ const updatePending = async (orders) => {
         };
         const data = { status: ORDER_STATUS[1] };
         logger('debug', 'options and data for updating pending orders', { options, data });
+        await notificationService.sendNotification(
+            undefined,
+            {
+                title: `Order Served`,
+                message: `Order Served !!! Please enjoy the meal.`,
+                meta: {
+                    action: NOTIFICATION_ACTIONS.ORDER_SERVED
+                }
+            },
+            customerId
+        );
 
         return await orderRepo.update(options, data);
     } catch (error) {
