@@ -1,7 +1,9 @@
+import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import webpush from 'web-push';
 import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
+import { NOTIFICATION_PREFERENCE } from '../models/preferences.model.js';
 import notificationRepo from '../repositories/notification.repository.js';
 import pushSubscriptionRepo from '../repositories/pushSubscription.repository.js';
 import { CustomError } from '../utils/common.js';
@@ -46,10 +48,12 @@ const unsubscribe = async (userId) => {
     }
 };
 
-const sendNotification = async (userId, data) => {
+const sendNotification = async (userIds, data) => {
     try {
         const options = {
-            where: { userId },
+            where: {
+                userId: { [Op.in]: userIds }
+            },
             include: [
                 {
                     model: db.users,
@@ -57,6 +61,9 @@ const sendNotification = async (userId, data) => {
                     include: [
                         {
                             model: db.preferences,
+                            where: {
+                                notification: NOTIFICATION_PREFERENCE[0]
+                            },
                             attributes: ['notification']
                         }
                     ]
@@ -65,35 +72,42 @@ const sendNotification = async (userId, data) => {
         };
         logger('debug', 'Options to fetch push subscription data', options);
 
-        const subscriptionData = await pushSubscriptionRepo.find(options);
-        logger('debug', 'Subscription data received', subscriptionData);
+        const { rows: subscriptions } = await pushSubscriptionRepo.find(options);
+        logger('debug', 'Subscription data received', subscriptions);
 
-        const preference = subscriptionData.user?.preference?.notification;
-        logger('debug', `Notification preference for user: ${userId} preference: ${preference}`);
+        await Promise.all(
+            subscriptions.map(async (subscriptionData) => {
+                const preference = subscriptionData.user?.preference?.notification;
+                logger(
+                    'debug',
+                    `Notification preference for user: ${subscriptionData.userId} preference: ${preference}`
+                );
 
-        if (preference) {
-            await webpush.sendNotification(
-                {
-                    endpoint: subscriptionData.endpoint,
-                    expirationTime: subscriptionData.expiration,
-                    keys: {
-                        p256dh: subscriptionData.p256dh,
-                        auth: subscriptionData.auth
-                    }
-                },
-                JSON.stringify(data)
-            );
+                if (preference) {
+                    await webpush.sendNotification(
+                        {
+                            endpoint: subscriptionData.endpoint,
+                            expirationTime: subscriptionData.expiration,
+                            keys: {
+                                p256dh: subscriptionData.p256dh,
+                                auth: subscriptionData.auth
+                            }
+                        },
+                        JSON.stringify(data)
+                    );
 
-            const notificationData = {
-                id: uuidv4(),
-                userId,
-                title: data.title || '',
-                message: data.message || '',
-                path: data.path
-            };
-            logger('debug', 'storing notification details', notificationData);
-            await notificationRepo.save(notificationData);
-        }
+                    const notificationData = {
+                        id: uuidv4(),
+                        userId: subscriptionData.userId,
+                        title: data.title || '',
+                        message: data.message || '',
+                        path: data.path
+                    };
+                    logger('debug', 'storing notification details', notificationData);
+                    await notificationRepo.save(notificationData);
+                }
+            })
+        );
     } catch (error) {
         logger('error', 'Error while sending notification', { error });
         throw CustomError(error.code, error.message);

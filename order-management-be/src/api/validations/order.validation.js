@@ -15,7 +15,8 @@ export const customerRegistrationValidation = (payload) => {
                 tlds: { allow: ['com', 'net'] }
             }),
             hotelId: Joi.string().required(),
-            tableId: Joi.string().required()
+            tableId: Joi.string().required(),
+            tableNumber: Joi.number().required()
         });
         return schema.validate(payload);
     } catch (error) {
@@ -28,6 +29,9 @@ export const orderPlacementValidation = (payload) => {
     try {
         const schema = Joi.object({
             customerId: Joi.string().required(),
+            hotelId: Joi.string().required(),
+            tableId: Joi.string().required(),
+            tableNumber: Joi.number().required(),
             menus: Joi.array().items(
                 Joi.object({
                     menuId: Joi.string().required(),

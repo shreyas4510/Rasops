@@ -9,9 +9,22 @@ import { TABLE_STATUS } from '../models/table.model.js';
 import { USER_ROLES } from '../models/user.model.js';
 import customerRepo from '../repositories/customer.repository.js';
 import hotelRepo from '../repositories/hotel.repository.js';
+import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
 import orderRepo from '../repositories/order.repository.js';
 import tableRepo from '../repositories/table.repository.js';
-import { CustomError, STATUS_CODE, calculateBill } from '../utils/common.js';
+import { CustomError, NOTIFICATION_ACTIONS, STATUS_CODE, calculateBill } from '../utils/common.js';
+import notificationService from './notification.service.js';
+
+const getNotificationUserIds = async (hotelId) => {
+    const notificationOptions = {
+        where: { hotelId }
+    };
+    const { rows } = await hotelUserRelationRepo.find(notificationOptions);
+    const userIds = rows.map(({ userId }) => userId);
+    logger('debug', 'user ids for notification', userIds);
+
+    return userIds;
+};
 
 const register = async (payload) => {
     try {
@@ -30,6 +43,17 @@ const register = async (payload) => {
         };
         logger('debug', `Updating table status with `, tableOptions);
         await tableRepo.update(tableOptions.options, tableOptions.data);
+
+        const userIds = await getNotificationUserIds(payload.hotelId);
+        await notificationService.sendNotification(userIds, {
+            title: `Table-${payload.tableNumber} Booked`,
+            message: `Table-${payload.tableNumber} is booked. Please assist the customer accordingly.`,
+            path: 'orders',
+            meta: {
+                action: NOTIFICATION_ACTIONS.CUSTOMER_REGISTERATION,
+                hotelId: payload.hotelId
+            }
+        });
 
         return data;
     } catch (error) {
@@ -243,21 +267,26 @@ const getMenuDetails = async (hotelId, customerId) => {
 
 const placeOrder = async (payload) => {
     try {
-        const { customerId, menus } = payload;
+        const { customerId, menus, hotelId } = payload;
 
         // Find all orders in pending state
         const previousOrders = {
             where: {
                 customerId,
-                status: ORDER_STATUS[0]
+                status: {
+                    [Op.ne]: ORDER_STATUS[3]
+                }
             }
         };
         const { rows: orders } = await orderRepo.find(previousOrders);
         let edited = 0;
-        const existingOrderIds = orders.map((item) => {
-            edited = Math.max(edited, item.edited);
-            return item.menuId;
-        });
+        const existingOrderIds = orders.reduce((cur, next) => {
+            edited = Math.max(edited, next.edited);
+            if (next.status === ORDER_STATUS[0]) {
+                cur.push(next.menuId);
+            }
+            return cur;
+        }, []);
         edited++;
 
         // add new fresh orders and update existing ones
@@ -314,6 +343,17 @@ const placeOrder = async (payload) => {
         const options = { updateOnDuplicate: ['price', 'quantity', 'description', 'status', 'edited'] };
         const res = await orderRepo.save(data, options);
         logger('info', 'order operations successful', res);
+
+        const userIds = await getNotificationUserIds(hotelId);
+        await notificationService.sendNotification(userIds, {
+            title: `Order Updates`,
+            message: `Table-${payload.tableNumber} order is placed / updated.`,
+            path: 'orders',
+            meta: {
+                action: NOTIFICATION_ACTIONS.ORDER_PLACEMENT,
+                tableId: payload.tableId
+            }
+        });
 
         return res;
     } catch (error) {
