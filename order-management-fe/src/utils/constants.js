@@ -25,5 +25,6 @@ export const ORDER_PREFERENCE = {
 
 export const NOTIFICATION_ACTIONS = {
     CUSTOMER_REGISTERATION: 'customer-registeration',
-    ORDER_PLACEMENT: 'order-placement'
+    ORDER_PLACEMENT: 'order-placement',
+    ORDER_SERVED: 'order-served'
 };

@@ -282,24 +282,30 @@ function Orders() {
                                                 </Col>
                                             </Row>
                                         ))}
-                                        <IoCheckmarkDoneCircle
-                                            color="#08182d"
-                                            className="active-order-done-icon"
-                                            size={60}
-                                            role="button"
-                                            onClick={() => {
-                                                dispatch(
-                                                    updatePendingOrderRequest({
-                                                        orders: Object.keys(activeOrder.pendingOrder),
-                                                        tableId: selectedTable.value
-                                                    })
-                                                );
-                                            }}
-                                        />
                                     </>
                                 ) : (
                                     <BillingView order={activeOrder.billDetails} />
                                 )}
+
+                                <IoCheckmarkDoneCircle
+                                    color="#08182d"
+                                    className="active-order-done-icon"
+                                    size={60}
+                                    role="button"
+                                    onClick={() => {
+                                        if (activeOrder.bill) {
+                                            console.log('Active Bill');
+                                        } else {
+                                            dispatch(
+                                                updatePendingOrderRequest({
+                                                    orders: Object.keys(activeOrder.pendingOrder),
+                                                    tableId: selectedTable.value,
+                                                    customerId: activeOrder.billDetails.id
+                                                })
+                                            );
+                                        }
+                                    }}
+                                />
                             </div>
                         </Container>
                     )}
