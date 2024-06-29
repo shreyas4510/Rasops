@@ -9,9 +9,18 @@ export const getActiveOrders = async (tableId) => {
     }
 };
 
-export const getCompletedOrders = async (tableId) => {
+export const getCompletedOrders = async ({
+    hotelId,
+    skip = 0,
+    limit = 10,
+    sortKey = '',
+    sortOrder = '',
+    filterKey = '',
+    filterValue = ''
+}) => {
     try {
-        return await api(method.GET, `/order/completed/${tableId}`);
+        const query = `skip=${skip}&limit=${limit}&sortKey=${sortKey}&sortOrder=${sortOrder}&filterKey=${filterKey}&filterValue=${filterValue}`;
+        return await api(method.GET, `/order/completed/${hotelId}?${query}`);
     } catch (error) {
         console.error(`Error while getting completed order details ${error}`);
         throw error;

@@ -7,7 +7,13 @@ import { GET_ACTIVE_ORDER_REQUEST, GET_COMPLETED_ORDER_REQUEST, UPDATE_PENDING_O
 function* getActiveOrdersRequestSaga(action) {
     try {
         const tableId = action.payload;
-        const result = yield service.getActiveOrders(tableId);
+        let result = yield service.getActiveOrders(tableId);
+        result.description = (result.description || []).reverse();
+
+        if ('message' in result) {
+            toast.warn('No Active orders at the moment');
+            result = {};
+        }
         yield put(getActiveOrderSuccess(result));
     } catch (error) {
         console.error('Failed to get table active orders', error);
@@ -17,8 +23,8 @@ function* getActiveOrdersRequestSaga(action) {
 
 function* getCompletedOrdersRequestSaga(action) {
     try {
-        const tableId = action.payload;
-        const result = yield service.getCompletedOrders(tableId);
+        const { hotelId, params } = action.payload;
+        const result = yield service.getCompletedOrders({ hotelId, ...params });
         yield put(getCompletedOrdersSuccess(result));
     } catch (error) {
         console.error('Failed to get table completed orders', error);

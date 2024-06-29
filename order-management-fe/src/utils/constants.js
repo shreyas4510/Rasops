@@ -1,6 +1,6 @@
 export const USER_ROLES = ['OWNER', 'MANAGER'];
 export const MENU_STATUS = ['AVAILABLE', 'UNAVAILABLE'];
-export const ORDER_STATUS = ['PENDING', 'SERVED'];
+export const ORDER_STATUS = ['PENDING', 'CANCELLED', 'SERVED'];
 export const TABLE_STATUS = ['OPEN', 'BOOKED'];
 export const BUSINESS_TYPES = ['public_limited', 'private_limited'];
 export const BUSINESS_CATEGORIES = ['food'];

@@ -6,14 +6,15 @@ import {
     getCompletedOrdersRequest,
     getTablesRequest,
     getTablesSuccess,
+    setOrderSelectedTable,
     setTableModalData
 } from '../slice';
 import { ADD_TABLE_REQUEST, GET_TABLE_REQUEST, REMOVE_TABLE_REQUEST } from '../types';
 
 function* getTablesRequestSaga(action) {
     try {
-        const { hotelId, filter, location } = action.payload;
-        const res = yield service.fetch(hotelId, filter);
+        const { hotelId, filter, location, active } = action.payload;
+        const res = yield service.fetch(hotelId, filter, active);
 
         const data = res.rows?.reduce((cur, next) => {
             cur.push({ label: `Table-${next.tableNumber}`, value: next.id });
@@ -23,8 +24,12 @@ function* getTablesRequestSaga(action) {
         yield put(getTablesSuccess({ data, count: res.count }));
 
         if (location === 'orders') {
-            yield put(getActiveOrderRequest(data[0].value));
-            yield put(getCompletedOrdersRequest(data[0].value));
+            if (active) {
+                yield put(setOrderSelectedTable(data[0]));
+                yield put(getActiveOrderRequest(data[0].value));
+            } else {
+                yield put(getCompletedOrdersRequest(hotelId));
+            }
         }
     } catch (error) {
         console.error('Failed to fetch tables ', error);
