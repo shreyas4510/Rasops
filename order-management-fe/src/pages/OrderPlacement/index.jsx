@@ -22,7 +22,7 @@ import { customerRegistrationSchema } from '../../validations/orderPlacement';
 import MenuCard from '../../components/MenuCard';
 import Loader from '../../components/Loader';
 import OMTModal from '../../components/Modal';
-import { ORDER_STATUS, PAYMENT_PREFERENCE, TABLE_STATUS } from '../../utils/constants';
+import { NOTIFICATION_ACTIONS, ORDER_STATUS, PAYMENT_PREFERENCE, TABLE_STATUS } from '../../utils/constants';
 import { toast } from 'react-toastify';
 
 function OrderPlacement() {
@@ -63,6 +63,25 @@ function OrderPlacement() {
             updateRefs.current[viewOrderDetails.updated.last].focus();
         }
     });
+
+    useEffect(() => {
+        const handleServiceWorkerMessage = (event) => {
+            const { meta } = event.data;
+            if (NOTIFICATION_ACTIONS.ORDER_SERVED === meta.action) {
+                dispatch(
+                    getMenuDetailsRequest({
+                        hotelId: tableDetails.hotel.id,
+                        customerId: tableDetails.customer.id
+                    })
+                );
+            }
+        };
+
+        navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+        return () => {
+            navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
+        };
+    }, []);
 
     const handleOrderSubmit = () => {
         const { last, ...updatedData } = viewOrderDetails.updated;

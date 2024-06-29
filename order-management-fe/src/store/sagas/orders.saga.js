@@ -34,8 +34,8 @@ function* getCompletedOrdersRequestSaga(action) {
 
 function* updatePendingOrdersRequestSaga(action) {
     try {
-        const { orders, tableId } = action.payload;
-        yield service.updatePendingOrders({ orders });
+        const { orders, tableId, customerId } = action.payload;
+        yield service.updatePendingOrders({ orders, customerId });
         yield put(getActiveOrderRequest(tableId));
     } catch (error) {
         console.error('Failed to update table orders', error);
