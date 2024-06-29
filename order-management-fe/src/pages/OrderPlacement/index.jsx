@@ -23,6 +23,7 @@ import MenuCard from '../../components/MenuCard';
 import Loader from '../../components/Loader';
 import OMTModal from '../../components/Modal';
 import { ORDER_STATUS, PAYMENT_PREFERENCE, TABLE_STATUS } from '../../utils/constants';
+import { toast } from 'react-toastify';
 
 function OrderPlacement() {
     const { token } = useParams();
@@ -68,6 +69,8 @@ function OrderPlacement() {
         const payload = {
             hotelId: tableDetails.hotel.id,
             customerId: tableDetails.customer.id,
+            tableId: tableDetails.id,
+            tableNumber: tableDetails.tableNumber,
             menus: Object.values(updatedData)
         };
         dispatch(placeOrderRequest(payload));
@@ -93,11 +96,17 @@ function OrderPlacement() {
                 break;
             case 'place':
                 const menus = { ...orderDetails };
+                if (!Object.values(menus).length) {
+                    toast.warn('Order is empty please add menu items.');
+                    break;
+                }
                 delete menus.lastUpdated;
                 dispatch(
                     placeOrderRequest({
                         hotelId: tableDetails.hotel.id,
                         customerId: tableDetails.customer.id,
+                        tableId: tableDetails.id,
+                        tableNumber: tableDetails.tableNumber,
                         menus: Object.values(menus)
                     })
                 );
@@ -127,11 +136,13 @@ function OrderPlacement() {
         setSubmitting(true);
         const hotelId = tableDetails.hotel.id;
         const tableId = tableDetails.id;
+        const tableNumber = tableDetails.tableNumber;
 
         const payload = {
             ...values,
             hotelId,
-            tableId
+            tableId,
+            tableNumber
         };
 
         delete payload.confirmation;
@@ -266,7 +277,9 @@ function OrderPlacement() {
                 isFooter={true}
                 size={'lg'}
                 submitText={
-                    tableDetails.hotel.payment === PAYMENT_PREFERENCE.on ? viewOrderDetails.submitText : undefined
+                    !(viewOrderDetails.submitText === 'Pay' && tableDetails.hotel.payment !== PAYMENT_PREFERENCE.on)
+                        ? viewOrderDetails.submitText
+                        : undefined
                 }
                 closeText={viewOrderDetails.closeText}
             />

@@ -21,7 +21,7 @@ import { BsInfoCircleFill } from 'react-icons/bs';
 import { IoCheckmarkDoneCircle } from 'react-icons/io5';
 import OMTModal from '../../components/Modal';
 import '../../assets/styles/orders.css';
-import { ORDER_PREFERENCE, ORDER_STATUS } from '../../utils/constants';
+import { NOTIFICATION_ACTIONS, ORDER_PREFERENCE, ORDER_STATUS } from '../../utils/constants';
 import NoData from '../../components/NoData';
 
 function Orders() {
@@ -43,15 +43,34 @@ function Orders() {
     useEffect(() => {
         if (userData.preference?.orders === ORDER_PREFERENCE.on) {
             if (!tablesData.length) {
-                dispatch(
-                    getTablesRequest({
-                        hotelId,
-                        location: 'orders',
-                        active: true
-                    })
-                );
+                dispatch(getTablesRequest({ hotelId, location: 'orders', active: true }));
             }
         }
+    }, []);
+
+    useEffect(() => {
+        const handleServiceWorkerMessage = (event) => {
+            const { meta } = event.data;
+            switch (meta.action) {
+                case NOTIFICATION_ACTIONS.CUSTOMER_REGISTERATION:
+                    if (userData.preference?.orders !== ORDER_PREFERENCE.on) {
+                        debounceSetPreference(ORDER_PREFERENCE.on);
+                    }
+                    dispatch(getTablesRequest({ hotelId: meta.hotelId, location: 'orders', active: true }));
+                    break;
+                case NOTIFICATION_ACTIONS.ORDER_PLACEMENT:
+                    if (selectedTable.value === meta.tableId) {
+                        dispatch(getActiveOrderRequest(meta.tableId));
+                    }
+                default:
+                    break;
+            }
+        };
+
+        navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+        return () => {
+            navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
+        };
     }, []);
 
     useEffect(() => {
