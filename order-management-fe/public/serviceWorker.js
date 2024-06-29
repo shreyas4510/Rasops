@@ -18,6 +18,12 @@ self.addEventListener('push', function (event) {
         }
     };
 
+    // eslint-disable-next-line no-undef
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+        clients.forEach((client) => {
+            client.postMessage({ meta: data.meta });
+        });
+    });
     event.waitUntil(self.registration.showNotification(title, options));
 });
 

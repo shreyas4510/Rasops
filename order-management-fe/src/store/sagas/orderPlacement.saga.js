@@ -53,11 +53,11 @@ function* getMenuDetailsRequestSaga(action) {
 
 function* placeOrderRequestSaga(action) {
     try {
-        const { hotelId, ...payload } = action.payload;
+        const payload = action.payload;
         yield service.placeOrder(payload);
         yield put(setOrderDetails({}));
         yield put(setViewOrderDetails({}));
-        yield put(getMenuDetailsRequest({ hotelId, customerId: payload.customerId }));
+        yield put(getMenuDetailsRequest({ hotelId: payload.hotelId, customerId: payload.customerId }));
         toast.success('Order received! Your delicious meal is on the way. Thank you for your patience!');
     } catch (error) {
         console.error('Failed to place order', error);

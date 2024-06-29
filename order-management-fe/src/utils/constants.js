@@ -12,11 +12,18 @@ export const PAYMENT_PREFERENCE = {
     on: 'ON',
     off: 'OFF'
 };
+
 export const NOTIFICATION_PREFERENCE = {
     on: 'ON',
     off: 'OFF'
 };
+
 export const ORDER_PREFERENCE = {
     on: 'ON',
     off: 'OFF'
+};
+
+export const NOTIFICATION_ACTIONS = {
+    CUSTOMER_REGISTERATION: 'customer-registeration',
+    ORDER_PLACEMENT: 'order-placement'
 };
