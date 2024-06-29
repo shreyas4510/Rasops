@@ -50,3 +50,11 @@ export const PLANS = {
     STANDARD_YEARLY: 'STANDARD-YEARLY',
     CUSTOM: 'CUSTOM'
 };
+
+export const calculateBill = (price) => {
+    const sgst = price * (18 / 100);
+    const cgst = price * (18 / 100);
+    const totalPrice = price + sgst + cgst;
+
+    return { sgst, cgst, totalPrice };
+};

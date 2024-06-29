@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import logger from '../../config/logger.js';
+import { TABLE_STATUS } from '../models/table.model.js';
 import subscriptionRepo from '../repositories/subscription.repository.js';
 import tableRepo from '../repositories/table.repository.js';
 import { CustomError, STATUS_CODE } from '../utils/common.js';
@@ -57,7 +58,7 @@ const create = async (hotelId, payload) => {
 
 const fetch = async (payload) => {
     try {
-        const { filter, hotelId } = payload;
+        const { filter, hotelId, active } = payload;
         const limit = 50;
 
         const options = {
@@ -68,6 +69,10 @@ const fetch = async (payload) => {
             attributes: ['id', 'tableNumber'],
             limit
         };
+
+        if (active) {
+            options.where.status = TABLE_STATUS[1];
+        }
 
         if (filter) {
             const condition = { tableNumber: { [Op.like]: `%${filter}%` } };

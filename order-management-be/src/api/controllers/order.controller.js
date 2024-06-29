@@ -149,6 +149,52 @@ const feedback = async (req, res) => {
     }
 };
 
+const active = async (req, res) => {
+    try {
+        const { tableId } = req.params;
+        logger('debug', `Request for fetching active orders for ${tableId}`);
+
+        const result = await orderService.active(tableId);
+        logger('debug', `Active orders response`, result);
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during fetching active orders ${JSON.stringify(error)}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
+const updatePending = async (req, res) => {
+    try {
+        const { orders } = req.body;
+        logger('debug', `Request for updating pending orders`, orders);
+
+        const result = await orderService.updatePending(orders);
+        logger('debug', `Updated orders successfully`, orders);
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during updating pending orders ${JSON.stringify(error)}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
+const completed = async (req, res) => {
+    try {
+        const { hotelId } = req.params;
+        logger('debug', `Request for fetching completed orders ${hotelId}`);
+
+        const filters = req.query;
+        const result = await orderService.completed(hotelId, filters);
+        logger('debug', `Completed orders fetched successfully`, result);
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', `Error occurred during fetching completed orders ${JSON.stringify(error)}`);
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     register,
     getTableDetails,
@@ -157,5 +203,8 @@ export default {
     getOrder,
     payment,
     paymentConfirmation,
-    feedback
+    feedback,
+    active,
+    updatePending,
+    completed
 };

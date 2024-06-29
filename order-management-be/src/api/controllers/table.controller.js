@@ -26,11 +26,12 @@ const create = async (req, res) => {
 const fetch = async (req, res) => {
     try {
         const { hotelId } = req.params;
-        const { filter } = req.query;
+        const { filter, active } = req.query;
 
         logger('debug', `Fetch table for hotel ${hotelId}`);
         const payload = {
             filter,
+            active,
             hotelId
         };
         const result = await tableService.fetch(payload);
