@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
+import env from '../../config/env';
 import * as service from '../../services/orderPlacement.service';
 import {
     getMenuDetailsRequest,
@@ -32,6 +33,14 @@ function* getTablesDetailsRequestSaga(action) {
 function* registerCustomerRequestSaga(action) {
     try {
         const payload = action.payload;
+        const registration = yield navigator.serviceWorker.register('/serviceWorker.js');
+        yield navigator.serviceWorker.ready;
+
+        const subscription = yield registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: env.notificationKey
+        });
+        payload.subscription = subscription;
         yield service.registerCustomer(payload);
         yield put(getTableDetailsRequest(payload.tableId));
     } catch (error) {
