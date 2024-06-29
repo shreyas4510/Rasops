@@ -12,16 +12,24 @@ const subscribe = async (payload) => {
     try {
         const data = {
             id: uuidv4(),
-            userId: payload.userId,
             endpoint: payload.endpoint,
             expirationTime: payload.expirationTime,
             p256dh: payload.keys.p256dh,
             auth: payload.keys.auth
         };
-        logger('debug', 'Data for subscribing notification', data);
 
-        await unsubscribe(payload.userId);
-        logger('debug', `Removing all previous records for user : ${payload.userId}`);
+        if (payload.userId) {
+            data.userId = payload.userId;
+            await unsubscribe(payload.userId);
+            logger('debug', `Removing all previous records for userId : ${payload.userId}`);
+        }
+
+        if (payload.customerId) {
+            data.customerId = payload.customerId;
+            await unsubscribe(undefined, payload.customerId);
+            logger('debug', `Removing all previous records for customer : ${payload.customerId}`);
+        }
+        logger('debug', 'Data for subscribing notification', data);
 
         const res = await pushSubscriptionRepo.save(data);
         logger('info', `Notification subscription successful for user: ${payload.userId}`, res);
@@ -33,9 +41,16 @@ const subscribe = async (payload) => {
     }
 };
 
-const unsubscribe = async (userId) => {
+const unsubscribe = async (userId, customerId) => {
     try {
         const options = { where: { userId } };
+        if (userId) {
+            options.where = { userId };
+        }
+
+        if (customerId) {
+            options.where = { customerId };
+        }
         logger('debug', 'Data for un-subscribing notification', options);
 
         const res = await pushSubscriptionRepo.remove(options);

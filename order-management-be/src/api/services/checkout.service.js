@@ -4,14 +4,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../config/database.js';
 import env from '../../config/env.js';
 import logger from '../../config/logger.js';
+import { ORDER_STATUS } from '../models/order.model.js';
 import { PAYMENT_PREFERENCE } from '../models/preferences.model.js';
+import { TABLE_STATUS } from '../models/table.model.js';
 import { USER_ROLES } from '../models/user.model.js';
 import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
+import orderRepo from '../repositories/order.repository.js';
 import paymentGatewayEntitiesRepo from '../repositories/paymentGatewayEntities.repository.js';
 import preferencesRepo from '../repositories/preferences.repository.js';
 import subscriptionRepo from '../repositories/subscription.repository.js';
+import tableRepo from '../repositories/table.repository.js';
 import notificationService from '../services/notification.service.js';
-import { CustomError, EMAIL_ACTIONS, PLANS, STATUS_CODE } from '../utils/common.js';
+import { CustomError, EMAIL_ACTIONS, PLANS, STATUS_CODE, calculateBill } from '../utils/common.js';
 import { sendEmail } from './email.service.js';
 import razorpayService from './razorpay.service.js';
 
@@ -290,10 +294,64 @@ const success = async (userId, payload) => {
     }
 };
 
+const payment = async ({ customerId, manual }) => {
+    try {
+        const options = {
+            where: {
+                customerId,
+                status: ORDER_STATUS[1]
+            }
+        };
+        const orders = await orderRepo.find(options);
+        const price = orders.reduce((cur, next) => {
+            cur += next.price;
+            return cur;
+        }, 0);
+
+        const { totalPrice } = calculateBill(price);
+        logger('info', `total price for ${customerId} - ${totalPrice}`);
+        if (manual) {
+            // TODO: send notification to manager to accept the payment
+        } else {
+            // TODO: send payment through to Razorpay
+        }
+
+        return { message: 'Success' };
+    } catch (error) {
+        logger('error', 'Error while order payment ', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const paymentConfirmation = async (customerId) => {
+    try {
+        const orderOptions = {
+            options: { where: { customerId } },
+            data: { status: ORDER_STATUS[3] }
+        };
+        const orderRes = await orderRepo.update(orderOptions.options, orderOptions.data);
+        logger('debug', 'Order updated response', orderRes);
+
+        const tableOptions = {
+            options: { where: { customerId } },
+            data: { status: TABLE_STATUS[0], customerId: null }
+        };
+        const tableRes = await tableRepo.update(tableOptions.options, tableOptions.data);
+        logger('debug', 'Table details updated', tableRes);
+
+        return { message: 'Success' };
+    } catch (error) {
+        logger('error', 'Error while order payment confirmation', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     business,
     stakeholder,
     account,
     subscribe,
-    success
+    success,
+    payment,
+    paymentConfirmation
 };

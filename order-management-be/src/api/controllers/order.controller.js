@@ -4,8 +4,7 @@ import { STATUS_CODE } from '../utils/common.js';
 import {
     customerRegistrationValidation,
     feedbackValidation,
-    orderPlacementValidation,
-    paymentValidation
+    orderPlacementValidation
 } from '../validations/order.validation.js';
 
 const register = async (req, res) => {
@@ -92,42 +91,6 @@ const getOrder = async (req, res) => {
     }
 };
 
-const payment = async (req, res) => {
-    try {
-        const payload = req.body;
-        logger('debug', `Request for payment for`, payload);
-
-        const valid = paymentValidation(payload);
-        if (valid.error) {
-            logger('error', `Order payment validation failed`, valid.error);
-            return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
-        }
-
-        const result = await orderService.payment(payload);
-        logger('debug', `Payment response order details response`, result);
-
-        return res.status(STATUS_CODE.OK).send(result);
-    } catch (error) {
-        logger('error', `Error occurred during payment ${JSON.stringify(error)}`);
-        return res.status(error.code).send({ message: error.message });
-    }
-};
-
-const paymentConfirmation = async (req, res) => {
-    try {
-        const { customerId } = req.params;
-        logger('debug', `Request for payment confirmation for customer ${customerId}`);
-
-        const result = await orderService.paymentConfirmation(customerId);
-        logger('debug', `Response for order payment confirmation`, result);
-
-        return res.status(STATUS_CODE.OK).send(result);
-    } catch (error) {
-        logger('error', `Error occurred during payment confirmation ${JSON.stringify(error)}`);
-        return res.status(error.code).send({ message: error.message });
-    }
-};
-
 const feedback = async (req, res) => {
     try {
         const payload = req.body;
@@ -201,8 +164,6 @@ export default {
     getMenuDetails,
     placeOrder,
     getOrder,
-    payment,
-    paymentConfirmation,
     feedback,
     active,
     updatePending,

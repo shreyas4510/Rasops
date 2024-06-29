@@ -16,7 +16,15 @@ export const customerRegistrationValidation = (payload) => {
             }),
             hotelId: Joi.string().required(),
             tableId: Joi.string().required(),
-            tableNumber: Joi.number().required()
+            tableNumber: Joi.number().required(),
+            subscription: Joi.object({
+                endpoint: Joi.string().uri().required(),
+                expirationTime: Joi.date().allow(null),
+                keys: Joi.object({
+                    p256dh: Joi.string().required(),
+                    auth: Joi.string().required()
+                }).required()
+            })
         });
         return schema.validate(payload);
     } catch (error) {
@@ -44,33 +52,6 @@ export const orderPlacementValidation = (payload) => {
         return schema.validate(payload);
     } catch (error) {
         logger('error', `Error in order placement validation ${error}`);
-        throw CustomError(error.code, error.message);
-    }
-};
-
-export const paymentValidation = (payload) => {
-    try {
-        const schema = Joi.object({
-            customerId: Joi.string().required(),
-            menual: Joi.boolean().required()
-        });
-        return schema.validate(payload);
-    } catch (error) {
-        logger('error', `Error in payment validation ${error}`);
-        throw CustomError(error.code, error.message);
-    }
-};
-
-export const feedbackValidation = (payload) => {
-    try {
-        const schema = Joi.object({
-            customerId: Joi.string().required(),
-            feedback: Joi.string().optional(),
-            rating: Joi.string().optional()
-        });
-        return schema.validate(payload);
-    } catch (error) {
-        logger('error', `Error in feedback validation ${error}`);
         throw CustomError(error.code, error.message);
     }
 };

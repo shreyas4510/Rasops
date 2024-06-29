@@ -11,9 +11,17 @@ const pushSubscriptionsModel = (sequelize) =>
             },
             userId: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,
                 references: {
                     model: TABLES.USERS,
+                    key: 'id'
+                }
+            },
+            customerId: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                references: {
+                    model: TABLES.CUSTOMER,
                     key: 'id'
                 }
             },
