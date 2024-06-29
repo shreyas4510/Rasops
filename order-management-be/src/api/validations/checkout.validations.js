@@ -121,17 +121,3 @@ export const paymentValidation = (payload) => {
         throw CustomError(error.code, error.message);
     }
 };
-
-export const feedbackValidation = (payload) => {
-    try {
-        const schema = Joi.object({
-            customerId: Joi.string().required(),
-            feedback: Joi.string().optional(),
-            rating: Joi.string().optional()
-        });
-        return schema.validate(payload);
-    } catch (error) {
-        logger('error', `Error in feedback validation ${error}`);
-        throw CustomError(error.code, error.message);
-    }
-};

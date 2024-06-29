@@ -129,10 +129,10 @@ const active = async (req, res) => {
 
 const updatePending = async (req, res) => {
     try {
-        const { orders } = req.body;
+        const { orders, customerId } = req.body;
         logger('debug', `Request for updating pending orders`, orders);
 
-        const result = await orderService.updatePending(orders);
+        const result = await orderService.updatePending(orders, customerId);
         logger('debug', `Updated orders successfully`, orders);
 
         return res.status(STATUS_CODE.OK).send(result);

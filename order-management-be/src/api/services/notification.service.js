@@ -63,28 +63,38 @@ const unsubscribe = async (userId, customerId) => {
     }
 };
 
-const sendNotification = async (userIds, data) => {
+const sendNotification = async (userIds, data, customerId = undefined) => {
     try {
-        const options = {
-            where: {
-                userId: { [Op.in]: userIds }
-            },
-            include: [
-                {
-                    model: db.users,
-                    attributes: ['id'],
-                    include: [
-                        {
-                            model: db.preferences,
-                            where: {
-                                notification: NOTIFICATION_PREFERENCE[0]
-                            },
-                            attributes: ['notification']
-                        }
-                    ]
-                }
-            ]
-        };
+        let options = {};
+        if (userIds?.length) {
+            options = {
+                where: {
+                    userId: { [Op.in]: userIds }
+                },
+                include: [
+                    {
+                        model: db.users,
+                        attributes: ['id'],
+                        include: [
+                            {
+                                model: db.preferences,
+                                where: {
+                                    notification: NOTIFICATION_PREFERENCE[0]
+                                },
+                                attributes: ['notification']
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+
+        if (customerId) {
+            options = {
+                where: { customerId }
+            };
+        }
+
         logger('debug', 'Options to fetch push subscription data', options);
 
         const { rows: subscriptions } = await pushSubscriptionRepo.find(options);
@@ -92,7 +102,7 @@ const sendNotification = async (userIds, data) => {
 
         await Promise.all(
             subscriptions.map(async (subscriptionData) => {
-                const preference = subscriptionData.user?.preference?.notification;
+                const preference = customerId ? true : subscriptionData.user?.preference?.notification;
                 logger(
                     'debug',
                     `Notification preference for user: ${subscriptionData.userId} preference: ${preference}`
@@ -111,15 +121,17 @@ const sendNotification = async (userIds, data) => {
                         JSON.stringify(data)
                     );
 
-                    const notificationData = {
-                        id: uuidv4(),
-                        userId: subscriptionData.userId,
-                        title: data.title || '',
-                        message: data.message || '',
-                        path: data.path
-                    };
-                    logger('debug', 'storing notification details', notificationData);
-                    await notificationRepo.save(notificationData);
+                    if (!customerId) {
+                        const notificationData = {
+                            id: uuidv4(),
+                            userId: subscriptionData.userId,
+                            title: data.title || '',
+                            message: data.message || '',
+                            path: data.path
+                        };
+                        logger('debug', 'storing notification details', notificationData);
+                        await notificationRepo.save(notificationData);
+                    }
                 }
             })
         );
