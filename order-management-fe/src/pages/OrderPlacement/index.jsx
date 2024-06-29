@@ -247,17 +247,19 @@ function OrderPlacement() {
                 title={viewOrderDetails?.title}
                 handleSubmit={handleOrderSubmit}
                 description={
-                    <div>
+                    <div className="px-3" style={{ overflowY: 'auto', maxHeight: '480px' }}>
                         {Object.values(viewOrderDetails.data || {}).map((item) => (
                             <OrderView key={`${item.id}-${item.name}`} item={item} />
                         ))}
                         {!Object.values(viewOrderDetails?.data || []).find((obj) => obj.status === ORDER_STATUS[0]) &&
                             [
-                                { title: 'SGST Price', value: viewOrderDetails.totalPrice * (18 / 100) },
-                                { title: 'CGST Price', value: viewOrderDetails.totalPrice * (18 / 100) },
+                                { title: 'SGST Price', value: Math.round(viewOrderDetails.totalPrice * (18 / 100)) },
+                                { title: 'CGST Price', value: Math.round(viewOrderDetails.totalPrice * (18 / 100)) },
                                 {
                                     title: 'Total Price',
-                                    value: viewOrderDetails.totalPrice + 2 * (viewOrderDetails.totalPrice * (18 / 100))
+                                    value:
+                                        viewOrderDetails.totalPrice +
+                                        2 * Math.round(viewOrderDetails.totalPrice * (18 / 100))
                                 }
                             ].map(({ title, value }, key) => (
                                 <div key={`${key}-${title}`} className="d-flex justify-content-between my-2">
