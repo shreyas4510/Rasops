@@ -1,8 +1,8 @@
 import { api, method } from '../api/apiClient';
 
-export const fetch = async (hotelId, filter = '') => {
+export const fetch = async (hotelId, filter = '', active = '') => {
     try {
-        return await api(method.GET, `/table/${hotelId}?filter=${filter}`);
+        return await api(method.GET, `/table/${hotelId}?filter=${filter}&active=${active}`);
     } catch (error) {
         console.error(`Error while fetching tables ${error}`);
         throw error;

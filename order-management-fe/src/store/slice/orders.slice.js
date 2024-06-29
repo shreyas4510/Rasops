@@ -34,13 +34,32 @@ const ordersSlice = createSlice({
                 state.selectedOrder = data;
             }
         },
-        updatePendingOrderRequest() {}
+        updatePendingOrderRequest() {},
+        setOrderSelectedTable(state, action) {
+            state.selectedTable = action.payload;
+        },
+        setOrderSorting(state, action) {
+            state.sorting = action.payload;
+        },
+        setOrderFiltering(state, action) {
+            state.filtering = action.payload;
+        },
+        setOrderPagination(state, action) {
+            state.pagination = action.payload;
+        }
     },
     initialState: {
         activeOrder: {},
         completedOrders: [],
         selectedOrder: false,
-        completedCount: 0
+        completedCount: 0,
+        selectedTable: '',
+        sorting: [],
+        filtering: {},
+        pagination: {
+            pageIndex: 0,
+            pageSize: 10
+        }
     }
 });
 export const {
@@ -49,7 +68,11 @@ export const {
     getCompletedOrdersRequest,
     getCompletedOrdersSuccess,
     setSelectedOrder,
-    updatePendingOrderRequest
+    updatePendingOrderRequest,
+    setOrderSelectedTable,
+    setOrderSorting,
+    setOrderFiltering,
+    setOrderPagination
 } = ordersSlice.actions;
 
 export const ordersReducer = ordersSlice.reducer;
