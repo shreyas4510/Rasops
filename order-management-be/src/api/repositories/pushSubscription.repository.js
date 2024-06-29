@@ -27,7 +27,7 @@ const remove = async (options) => {
 const find = async (options) => {
     try {
         logger('debug', 'Fetching push subscription', options);
-        return await db.pushSubscriptions.findOne(options);
+        return await db.pushSubscriptions.findAndCountAll(options);
     } catch (error) {
         const err = error?.errors ? error?.errors[0]?.message : undefined;
         logger('error', `Error occurred while fetching push subscription: ${err || error.message}`);

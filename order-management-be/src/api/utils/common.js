@@ -58,3 +58,8 @@ export const calculateBill = (price) => {
 
     return { sgst, cgst, totalPrice };
 };
+
+export const NOTIFICATION_ACTIONS = {
+    CUSTOMER_REGISTERATION: 'customer-registeration',
+    ORDER_PLACEMENT: 'order-placement'
+};
