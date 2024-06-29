@@ -11,7 +11,7 @@ import customerRepo from '../repositories/customer.repository.js';
 import hotelRepo from '../repositories/hotel.repository.js';
 import orderRepo from '../repositories/order.repository.js';
 import tableRepo from '../repositories/table.repository.js';
-import { CustomError, STATUS_CODE } from '../utils/common.js';
+import { CustomError, STATUS_CODE, calculateBill } from '../utils/common.js';
 
 const register = async (payload) => {
     try {
@@ -253,7 +253,12 @@ const placeOrder = async (payload) => {
             }
         };
         const { rows: orders } = await orderRepo.find(previousOrders);
-        const existingOrderIds = orders.map((item) => item.menuId);
+        let edited = 0;
+        const existingOrderIds = orders.map((item) => {
+            edited = Math.max(edited, item.edited);
+            return item.menuId;
+        });
+        edited++;
 
         // add new fresh orders and update existing ones
         const data = [];
@@ -267,7 +272,8 @@ const placeOrder = async (payload) => {
                     price: price * quantity,
                     quantity,
                     status: ORDER_STATUS[0],
-                    description: `ADD:Incoming order: ${quantity} x ${menuName}. Let's get cooking!`
+                    description: `${edited}-ADD:Incoming order: ${quantity} x ${menuName}. Let's get cooking!`,
+                    edited
                 });
             } else {
                 const order = orders.find((item) => item.menuId === menuId);
@@ -279,7 +285,8 @@ const placeOrder = async (payload) => {
                         price: price * quantity,
                         quantity,
                         status: ORDER_STATUS[0],
-                        description: `${order.description}#ADD:Added ${quantity - order.quantity} x ${menuName} to the order.`
+                        description: `${order.description}#${edited}-ADD:Added ${quantity - order.quantity} x ${menuName} to the order.`,
+                        edited
                     });
                 }
 
@@ -287,8 +294,8 @@ const placeOrder = async (payload) => {
                     const status = quantity <= 0 ? ORDER_STATUS[2] : ORDER_STATUS[0];
                     const description =
                         quantity <= 0
-                            ? `REMOVE:${order.quantity - quantity} x ${menuName} has been cancelled.`
-                            : `REMOVE:Removed ${order.quantity - quantity} x ${menuName} from the order.`;
+                            ? `${edited}-REMOVE:${order.quantity - quantity} x ${menuName} has been cancelled.`
+                            : `${edited}-REMOVE:Removed ${order.quantity - quantity} x ${menuName} from the order.`;
 
                     data.push({
                         id: order.id,
@@ -297,13 +304,14 @@ const placeOrder = async (payload) => {
                         price: price * quantity,
                         quantity,
                         status,
-                        description: `${order.description}#${description}`
+                        description: `${order.description}#${description}`,
+                        edited
                     });
                 }
             }
         });
 
-        const options = { updateOnDuplicate: ['price', 'quantity', 'description', 'status'] };
+        const options = { updateOnDuplicate: ['price', 'quantity', 'description', 'status', 'edited'] };
         const res = await orderRepo.save(data, options);
         logger('info', 'order operations successful', res);
 
@@ -353,13 +361,7 @@ const payment = async ({ customerId, manual }) => {
             return cur;
         }, 0);
 
-        // Include SGST
-        const sgst = price * (18 / 100);
-
-        // Include CGST
-        const cgst = price * (18 / 100);
-
-        const totalPrice = price + sgst + cgst;
+        const { totalPrice } = calculateBill(price);
         logger('info', `total price for ${customerId} - ${totalPrice}`);
         if (manual) {
             // TODO: send notification to manager to accept the payment
@@ -410,6 +412,207 @@ const feedback = async ({ customerId, feedback, rating }) => {
     }
 };
 
+const active = async (tableId) => {
+    try {
+        const options = {
+            where: { id: tableId },
+            attributes: ['id', 'customerId'],
+            include: [
+                {
+                    model: db.customer,
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: db.orders,
+                            where: {
+                                status: {
+                                    [Op.notIn]: [ORDER_STATUS[3]]
+                                }
+                            },
+                            include: [
+                                {
+                                    model: db.menu
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+        const activeOrders = await tableRepo.findOne(options);
+        logger('debug', `active orders for table ${tableId}`, activeOrders);
+
+        if (!activeOrders.customer) {
+            logger('info', `No active orders for table ${tableId}`);
+            return { message: 'No active orders' };
+        }
+
+        const orders = activeOrders.customer?.orders;
+        if (!orders.length) {
+            logger('info', `Customer has not ordered yet for table ${tableId}`);
+            return { message: 'No active orders' };
+        }
+
+        const data = orders.reduce(
+            (cur, next) => {
+                if (next.status === ORDER_STATUS[0]) {
+                    cur.bill = false;
+                }
+
+                if (next.status === ORDER_STATUS[0]) {
+                    cur.pendingOrder[next.id] = { name: next.menu.name, quantity: next.quantity };
+                }
+
+                if (next.status === ORDER_STATUS[1]) {
+                    cur.billDetails.menu.push({
+                        name: next.menu.name,
+                        quantity: next.quantity,
+                        price: next.price
+                    });
+                    cur.billDetails.price += next.price;
+                }
+
+                const descriptions = next.description.split('#');
+                descriptions.forEach((des) => {
+                    const i = Number(des[0]) - 1;
+                    if (!cur.description[i]) cur.description[i] = [];
+                    cur.description[i].push({
+                        description: des.substring(des.indexOf('-') + 1).trim(),
+                        status: next.status
+                    });
+                });
+                return cur;
+            },
+            {
+                bill: true,
+                pendingOrder: {},
+                billDetails: { menu: [], price: 0 },
+                description: []
+            }
+        );
+
+        if (data.bill) {
+            data.billDetails.id = activeOrders.customer.id;
+
+            const { cgst, sgst, totalPrice } = calculateBill(data.billDetails.price);
+            data.billDetails.sgst = sgst;
+            data.billDetails.cgst = cgst;
+            data.billDetails.totalPrice = totalPrice;
+            data.billDetails.paymentId = orders[0].razorpayPaymentId;
+        } else {
+            data.billDetails = {};
+        }
+        logger('debug', `Active order details for table ${tableId}`, data);
+        return data;
+    } catch (error) {
+        logger('error', 'Error while fetching active orders', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const updatePending = async (orders) => {
+    try {
+        const options = {
+            where: {
+                id: { [Op.in]: orders }
+            }
+        };
+        const data = { status: ORDER_STATUS[1] };
+        logger('debug', 'options and data for updating pending orders', { options, data });
+
+        return await orderRepo.update(options, data);
+    } catch (error) {
+        logger('error', 'Error while get order details', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const completed = async (hotelId, filters) => {
+    try {
+        const { limit, skip, sortKey, sortOrder, filterKey, filterValue } = filters;
+        const defaults = {
+            sortKey: 'updatedAt',
+            sortOrder: 'DESC',
+            limit: 10,
+            offset: 0
+        };
+
+        const options = {
+            where: { hotelId },
+            distinct: true,
+            attributes: ['id', 'name', 'email', 'phoneNumber', 'feedback', 'rating'],
+            include: [
+                {
+                    model: db.orders,
+                    where: {
+                        status: ORDER_STATUS[3],
+                        quantity: { [Op.gt]: 0 }
+                    },
+                    attributes: ['price', 'quantity', 'razorpayPaymentId'],
+                    include: [
+                        {
+                            model: db.menu,
+                            attributes: ['name']
+                        }
+                    ]
+                }
+            ],
+            limit: Number(limit) || defaults.limit,
+            offset: Number(skip) || defaults.offset
+        };
+
+        if (filterKey && filterValue) {
+            options.where = {
+                [filterKey]: {
+                    [Op.like]: `%${filterValue}%`
+                }
+            };
+        }
+
+        if (sortKey && sortOrder) {
+            options.order = [[sortKey || defaults.sortKey, sortOrder || defaults.sortOrder]];
+        }
+        logger('debug', 'Options to fetch completed orders', options);
+        const customers = await customerRepo.find(options);
+
+        const data = [];
+        customers.rows.forEach((item) => {
+            const { orders } = item;
+            const obj = {
+                id: item.id,
+                name: item.name,
+                email: item.email,
+                phoneNumber: item.phoneNumber,
+                feedback: item.feedback,
+                rating: item.rating,
+                menu: []
+            };
+
+            let price = 0;
+            orders.forEach((menuItem) => {
+                obj.menu.push({
+                    name: menuItem.menu.name,
+                    price: menuItem.price,
+                    quantity: menuItem.quantity
+                });
+                price += menuItem.price;
+            });
+
+            obj.price = price;
+            const { cgst, sgst, totalPrice } = calculateBill(price);
+            obj.sgst = sgst;
+            obj.cgst = cgst;
+            obj.totalPrice = totalPrice;
+            obj.paymentId = item.razorpayPaymentId;
+            data.push(obj);
+        });
+        return { data, count: customers.count };
+    } catch (error) {
+        logger('error', 'Error while get completed order details', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     register,
     getTableDetails,
@@ -418,5 +621,8 @@ export default {
     getOrder,
     payment,
     paymentConfirmation,
-    feedback
+    feedback,
+    active,
+    updatePending,
+    completed
 };

@@ -44,6 +44,19 @@ const orderModel = (sequelize) =>
                 type: DataTypes.STRING,
                 allowNull: true
             },
+            edited: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: 0
+            },
+            razorpayOrderId: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            razorpayPaymentId: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
             deletedAt: {
                 type: DataTypes.DATE,
                 allowNull: true

@@ -24,4 +24,15 @@ const update = async (options, data) => {
     }
 };
 
-export default { save, update };
+const find = async (options) => {
+    try {
+        logger('info', `fetching customer with options`, options);
+        return await db.customer.findAndCountAll(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while fetching customers`, { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, update, find };
