@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import env from '../../config/env';
@@ -7,9 +7,14 @@ import {
     getMenuDetailsRequest,
     getOrderDetailsRequest,
     getTableDetailsRequest,
+    payOrderRequest,
+    paymentConfirmationRequest,
     placeOrderRequest,
     registerCustomerRequest,
+    sendFeedbackRequest,
     setCurrentPage,
+    setFeedback,
+    setFeedbackDetails,
     setOrderDetails,
     setUpdatedOrderDetails,
     setViewOrderDetails
@@ -24,13 +29,23 @@ import Loader from '../../components/Loader';
 import OMTModal from '../../components/Modal';
 import { NOTIFICATION_ACTIONS, ORDER_STATUS, PAYMENT_PREFERENCE, TABLE_STATUS } from '../../utils/constants';
 import { toast } from 'react-toastify';
+import Razorpay, { ACTIONS } from '../../components/Razporpay';
+import { Card, FormControl } from 'react-bootstrap';
+import Rating from '../../components/Rating';
 
 function OrderPlacement() {
     const { token } = useParams();
     const dispatch = useDispatch();
-    const { menuCard, currentPage, tableDetails, orderDetails, viewOrderDetails } = useSelector(
-        (state) => state.orderPlacement
-    );
+    const {
+        menuCard,
+        currentPage,
+        tableDetails,
+        orderDetails,
+        viewOrderDetails,
+        orderPaymentData,
+        feedback,
+        feedbackDetails
+    } = useSelector((state) => state.orderPlacement);
     const updateRefs = useRef({});
 
     const initialValues = {
@@ -75,8 +90,13 @@ function OrderPlacement() {
                     })
                 );
             }
-        };
 
+            if (NOTIFICATION_ACTIONS.MANUAL_PAYMENT_CONFIRMED === meta.action) {
+                toast.info(`🥂 Payment confirmed, thank you for choosing us! 🌟 Your feedback means the world to us.`);
+                dispatch(setViewOrderDetails({}));
+                dispatch(setFeedback(true));
+            }
+        };
         navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
         return () => {
             navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
@@ -84,6 +104,16 @@ function OrderPlacement() {
     }, []);
 
     const handleOrderSubmit = () => {
+        if (viewOrderDetails.submitText === 'Pay') {
+            dispatch(
+                payOrderRequest({
+                    hotelId: tableDetails.hotel.id,
+                    customerId: tableDetails.customer.id,
+                    manual: false
+                })
+            );
+            return;
+        }
         const { last, ...updatedData } = viewOrderDetails.updated;
         const payload = {
             hotelId: tableDetails.hotel.id,
@@ -93,6 +123,22 @@ function OrderPlacement() {
             menus: Object.values(updatedData)
         };
         dispatch(placeOrderRequest(payload));
+    };
+
+    const handleOrderClose = (value) => {
+        if (value === 'payment') {
+            if (viewOrderDetails.closeText === 'Pay Manually') {
+                dispatch(
+                    payOrderRequest({
+                        hotelId: tableDetails.hotel.id,
+                        customerId: tableDetails.customer.id,
+                        manual: true
+                    })
+                );
+                return;
+            }
+        }
+        dispatch(setViewOrderDetails({}));
     };
 
     const handleClick = ({ action, id = '' }) => {
@@ -169,6 +215,20 @@ function OrderPlacement() {
         setSubmitting(false);
     };
 
+    const handlePaymentSuccess = (payload) => {
+        dispatch(
+            paymentConfirmationRequest({
+                manual: false,
+                customerId: tableDetails.customer.id,
+                hotelId: tableDetails.hotel.id,
+                tableNumber: tableDetails.tableNumber,
+                amount: orderPaymentData.amount,
+                orderId: payload.orderId,
+                paymentId: payload.paymentId
+            })
+        );
+    };
+
     const OrderView = ({ item }) => (
         <div className="d-flex align-items-center my-2">
             <p className="m-0 col-8">{item.menu.name}</p>
@@ -214,6 +274,54 @@ function OrderPlacement() {
 
     if (!Object.keys(tableDetails).length) {
         return <Loader />;
+    }
+
+    if (feedback) {
+        return (
+            <div className="d-flex h-100">
+                <Card className="m-auto d-flex menu-container">
+                    <Card.Body className="d-flex flex-column align-items-center justify-content-center py-5 position-relative">
+                        <div>
+                            <h6 className="text-center" style={{ color: '#FDFD96' }}>
+                                Feedback
+                            </h6>
+                            <FormControl
+                                as="textarea"
+                                rows={5}
+                                style={{ background: '#FDFD96', border: 'none' }}
+                                placeholder="Your feedback helps us improve! Share your thoughts here..."
+                                onChange={(e) => {
+                                    dispatch(setFeedbackDetails({ ...feedbackDetails, feedback: e.target.value }));
+                                }}
+                            />
+                        </div>
+                        <div className="my-5">
+                            <h6 className="text-center" style={{ color: '#FDFD96' }}>
+                                Rating
+                            </h6>
+                            <Rating
+                                handleClick={(rating) => {
+                                    dispatch(setFeedbackDetails({ ...feedbackDetails, rating }));
+                                }}
+                            />
+                        </div>
+                        <div
+                            className="pb-5 text-center view-order"
+                            onClick={() => {
+                                dispatch(
+                                    sendFeedbackRequest({
+                                        ...feedbackDetails,
+                                        customerId: tableDetails.customer.id
+                                    })
+                                );
+                            }}
+                        >
+                            <h6 role="button">Submit</h6>
+                        </div>
+                    </Card.Body>
+                </Card>
+            </div>
+        );
     }
 
     return tableDetails.status === TABLE_STATUS[0] ? (
@@ -264,7 +372,6 @@ function OrderPlacement() {
             <OMTModal
                 show={viewOrderDetails.count}
                 title={viewOrderDetails?.title}
-                handleSubmit={handleOrderSubmit}
                 description={
                     <div className="px-3" style={{ overflowY: 'auto', maxHeight: '480px' }}>
                         {Object.values(viewOrderDetails.data || {}).map((item) => (
@@ -292,9 +399,8 @@ function OrderPlacement() {
                             ))}
                     </div>
                 }
-                handleClose={() => {
-                    dispatch(setViewOrderDetails({}));
-                }}
+                handleSubmit={handleOrderSubmit}
+                handleClose={handleOrderClose}
                 isFooter={true}
                 size={'lg'}
                 submitText={
@@ -304,6 +410,18 @@ function OrderPlacement() {
                 }
                 closeText={viewOrderDetails.closeText}
             />
+            {orderPaymentData && (
+                <Razorpay
+                    action={ACTIONS.ORDERS}
+                    email={orderPaymentData.email}
+                    name={orderPaymentData.name}
+                    phoneNumber={orderPaymentData.phoneNumber}
+                    hotelName={tableDetails.hotel.name}
+                    orderId={orderPaymentData.orderId}
+                    amount={orderPaymentData.amount}
+                    handleSuccess={handlePaymentSuccess}
+                />
+            )}
         </>
     );
 }

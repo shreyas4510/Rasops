@@ -44,3 +44,21 @@ export const subscriptionSuccess = async (payload) => {
         throw error;
     }
 };
+
+export const paymentRequest = async (payload) => {
+    try {
+        return await api(method.POST, `/checkout/payment`, payload);
+    } catch (error) {
+        console.error(`Error while order payment request ${error}`);
+        throw error;
+    }
+};
+
+export const paymentConfirmation = async (payload) => {
+    try {
+        return await api(method.POST, `/checkout/confirm`, payload);
+    } catch (error) {
+        console.error(`Error while confirming payment request ${error}`);
+        throw error;
+    }
+};

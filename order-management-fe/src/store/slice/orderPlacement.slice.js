@@ -39,6 +39,18 @@ const orderPlacementSlice = createSlice({
         },
         setUpdatedOrderDetails(state, action) {
             state.viewOrderDetails.updated = action.payload;
+        },
+        payOrderRequest() {},
+        setOrderPaymentData(state, action) {
+            state.orderPaymentData = action.payload;
+        },
+        paymentConfirmationRequest() {},
+        setFeedback(state, action) {
+            state.feedback = action.payload;
+        },
+        sendFeedbackRequest() {},
+        setFeedbackDetails(state, action) {
+            state.feedbackDetails = action.payload;
         }
     },
     initialState: {
@@ -46,7 +58,10 @@ const orderPlacementSlice = createSlice({
         tableDetails: {},
         menuCard: {},
         orderDetails: {},
-        viewOrderDetails: {}
+        viewOrderDetails: {},
+        orderPaymentData: false,
+        feedback: false,
+        feedbackDetails: {}
     }
 });
 export const {
@@ -60,7 +75,13 @@ export const {
     placeOrderRequest,
     setViewOrderDetails,
     getOrderDetailsRequest,
-    setUpdatedOrderDetails
+    setUpdatedOrderDetails,
+    payOrderRequest,
+    setOrderPaymentData,
+    paymentConfirmationRequest,
+    setFeedback,
+    sendFeedbackRequest,
+    setFeedbackDetails
 } = orderPlacementSlice.actions;
 
 export const orderPlacementReducer = orderPlacementSlice.reducer;

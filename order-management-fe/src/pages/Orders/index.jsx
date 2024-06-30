@@ -5,10 +5,12 @@ import {
     getActiveOrderRequest,
     getCompletedOrdersRequest,
     getTablesRequest,
+    paymentConfirmationRequest,
     setOrderFiltering,
     setOrderPagination,
     setOrderSelectedTable,
     setOrderSorting,
+    setPaymentRequest,
     setSelectedOrder,
     updatePendingOrderRequest,
     updateUserRequest
@@ -37,7 +39,8 @@ function Orders() {
         selectedTable,
         sorting,
         filtering,
-        pagination
+        pagination,
+        paymentRequest
     } = useSelector((state) => state.orders);
 
     useEffect(() => {
@@ -58,10 +61,23 @@ function Orders() {
                     }
                     dispatch(getTablesRequest({ hotelId: meta.hotelId, location: 'orders', active: true }));
                     break;
+                case NOTIFICATION_ACTIONS.ONLINE_PAYMENT_CONFIRMED:
+                    dispatch(getTablesRequest({ hotelId: meta.hotelId, location: 'orders', active: true }));
+                    break;
                 case NOTIFICATION_ACTIONS.ORDER_PLACEMENT:
                     if (selectedTable.value === meta.tableId) {
                         dispatch(getActiveOrderRequest(meta.tableId));
                     }
+                case NOTIFICATION_ACTIONS.PAYMENT_REQUEST:
+                    dispatch(
+                        setPaymentRequest({
+                            title: 'Payment Request',
+                            message: `Payment request for Table-${meta.tableNumber} of amount ${meta.totalPrice}. Please approve once the payment is done.`,
+                            submitText: 'Apporve',
+                            tableId: meta.tableId,
+                            customerId: meta.customerId
+                        })
+                    );
                 default:
                     break;
             }
@@ -294,12 +310,19 @@ function Orders() {
                                     role="button"
                                     onClick={() => {
                                         if (activeOrder.bill) {
-                                            console.log('Active Bill');
+                                            dispatch(
+                                                paymentConfirmationRequest({
+                                                    manual: true,
+                                                    hotelId,
+                                                    customerId: activeOrder.billDetails.id
+                                                })
+                                            );
                                         } else {
                                             dispatch(
                                                 updatePendingOrderRequest({
                                                     orders: Object.keys(activeOrder.pendingOrder),
                                                     tableId: selectedTable.value,
+                                                    hotelId,
                                                     customerId: activeOrder.billDetails.id
                                                 })
                                             );
@@ -309,7 +332,7 @@ function Orders() {
                             </div>
                         </Container>
                     )}
-                    {activeOrder.description && (
+                    {activeOrder.description?.length ? (
                         <Container className="my-4">
                             <h6>Order Updates Description</h6>
                             <Carousel
@@ -339,6 +362,8 @@ function Orders() {
                                 ))}
                             </Carousel>
                         </Container>
+                    ) : (
+                        <></>
                     )}
                 </>
             ) : (
@@ -377,6 +402,24 @@ function Orders() {
                         />
                     )}
                 </>
+            )}
+            {paymentRequest && (
+                <OMTModal
+                    show={paymentRequest}
+                    title={`${paymentRequest?.title}`}
+                    description={<p>{paymentRequest.message}</p>}
+                    handleSubmit={() => {
+                        dispatch(
+                            paymentConfirmationRequest({
+                                manual: true,
+                                hotelId,
+                                customerId: paymentRequest.customerId
+                            })
+                        );
+                    }}
+                    size={'md'}
+                    submitText={paymentRequest?.submitText}
+                />
             )}
         </div>
     );
