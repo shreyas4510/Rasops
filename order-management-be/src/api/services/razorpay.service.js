@@ -71,11 +71,22 @@ const fetch = async (subscriptionId) => {
     }
 };
 
+const order = async (data) => {
+    try {
+        const order = await razorpay.orders.create(data);
+        return order;
+    } catch (error) {
+        logger('error', 'Error while creating order', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     createLinkedAccount,
     createStakeholder,
     requestProduct,
     updateProduct,
     subscribe,
-    fetch
+    fetch,
+    order
 };

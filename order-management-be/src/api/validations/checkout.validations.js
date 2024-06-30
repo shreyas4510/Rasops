@@ -113,7 +113,26 @@ export const paymentValidation = (payload) => {
     try {
         const schema = Joi.object({
             customerId: Joi.string().required(),
-            menual: Joi.boolean().required()
+            hotelId: Joi.string().required(),
+            manual: Joi.boolean().required()
+        });
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', `Error in payment validation ${error}`);
+        throw CustomError(error.code, error.message);
+    }
+};
+
+export const paymentConfirmationValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            customerId: Joi.string().required(),
+            manual: Joi.boolean().required(),
+            hotelId: Joi.string().optional(),
+            tableNumber: Joi.number().optional(),
+            amount: Joi.number().optional(),
+            orderId: Joi.string().optional(),
+            paymentId: Joi.string().optional()
         });
         return schema.validate(payload);
     } catch (error) {

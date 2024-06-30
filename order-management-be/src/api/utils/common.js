@@ -62,5 +62,8 @@ export const calculateBill = (price) => {
 export const NOTIFICATION_ACTIONS = {
     CUSTOMER_REGISTERATION: 'customer-registeration',
     ORDER_PLACEMENT: 'order-placement',
-    ORDER_SERVED: 'order-served'
+    ORDER_SERVED: 'order-served',
+    PAYMENT_REQUEST: 'payment-request',
+    MANUAL_PAYMENT_CONFIRMED: 'manual-payment-confirmed',
+    ONLINE_PAYMENT_CONFIRMED: 'online-payment-confirmed'
 };

@@ -629,5 +629,6 @@ export default {
     feedback,
     active,
     updatePending,
-    completed
+    completed,
+    getNotificationUserIds
 };

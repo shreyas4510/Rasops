@@ -4,6 +4,7 @@ import { STATUS_CODE } from '../utils/common.js';
 import {
     accountDetailsValidation,
     businessDetailsValidation,
+    paymentConfirmationValidation,
     paymentValidation,
     stakeholderDetailsValidation,
     subscribeSuccessValidation,
@@ -131,10 +132,16 @@ const payment = async (req, res) => {
 
 const paymentConfirmation = async (req, res) => {
     try {
-        const { customerId } = req.params;
-        logger('debug', `Request for payment confirmation for customer ${customerId}`);
+        const payload = req.body;
+        logger('debug', `Request for payment confirmation for customer`, payload);
 
-        const result = await checkoutService.paymentConfirmation(customerId);
+        const valid = paymentConfirmationValidation(payload);
+        if (valid.error) {
+            logger('error', `Order payment confirmation validation failed`, valid.error);
+            return res.status(STATUS_CODE.BAD_REQUEST).send({ message: valid.error.message });
+        }
+
+        const result = await checkoutService.paymentConfirmation(payload);
         logger('debug', `Response for order payment confirmation`, result);
 
         return res.status(STATUS_CODE.OK).send(result);
