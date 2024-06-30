@@ -8,6 +8,7 @@ import { ORDER_STATUS } from '../models/order.model.js';
 import { PAYMENT_PREFERENCE } from '../models/preferences.model.js';
 import { TABLE_STATUS } from '../models/table.model.js';
 import { USER_ROLES } from '../models/user.model.js';
+import customerRepo from '../repositories/customer.repository.js';
 import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
 import orderRepo from '../repositories/order.repository.js';
 import paymentGatewayEntitiesRepo from '../repositories/paymentGatewayEntities.repository.js';
@@ -15,8 +16,16 @@ import preferencesRepo from '../repositories/preferences.repository.js';
 import subscriptionRepo from '../repositories/subscription.repository.js';
 import tableRepo from '../repositories/table.repository.js';
 import notificationService from '../services/notification.service.js';
-import { CustomError, EMAIL_ACTIONS, PLANS, STATUS_CODE, calculateBill } from '../utils/common.js';
+import {
+    CustomError,
+    EMAIL_ACTIONS,
+    NOTIFICATION_ACTIONS,
+    PLANS,
+    STATUS_CODE,
+    calculateBill
+} from '../utils/common.js';
 import { sendEmail } from './email.service.js';
+import orderService from './order.service.js';
 import razorpayService from './razorpay.service.js';
 
 const business = async (userId, payload) => {
@@ -294,7 +303,7 @@ const success = async (userId, payload) => {
     }
 };
 
-const payment = async ({ customerId, manual }) => {
+const payment = async ({ customerId, hotelId, manual }) => {
     try {
         const options = {
             where: {
@@ -302,7 +311,14 @@ const payment = async ({ customerId, manual }) => {
                 status: ORDER_STATUS[1]
             }
         };
-        const orders = await orderRepo.find(options);
+        const { rows: orders } = await orderRepo.find(options);
+        const { rows } = await customerRepo.find({
+            where: { id: customerId },
+            include: [{ model: db.tables }]
+        });
+        const customer = rows[0];
+        logger('debug', 'Customer details', customer);
+
         const price = orders.reduce((cur, next) => {
             cur += next.price;
             return cur;
@@ -311,24 +327,59 @@ const payment = async ({ customerId, manual }) => {
         const { totalPrice } = calculateBill(price);
         logger('info', `total price for ${customerId} - ${totalPrice}`);
         if (manual) {
-            // TODO: send notification to manager to accept the payment
+            const userIds = await orderService.getNotificationUserIds(hotelId);
+            await notificationService.sendNotification(userIds, {
+                title: 'Payment Request',
+                message: `Payment request for Table-${customer.table.tableNumber} of amount ${totalPrice}. Please approve once the payment is done.`,
+                path: 'orders',
+                meta: {
+                    action: NOTIFICATION_ACTIONS.PAYMENT_REQUEST,
+                    tableId: customer.table.id,
+                    customerId,
+                    tableNumber: customer.table.tableNumber,
+                    totalPrice
+                }
+            });
+            return { message: 'Success' };
         } else {
-            // TODO: send payment through to Razorpay
+            const payload = {
+                amount: totalPrice * 100,
+                currency: 'INR',
+                receipt: `online payment receipt`
+            };
+            const order = await razorpayService.order(payload);
+            return {
+                email: customer.email,
+                name: customer.name,
+                phoneNumber: customer.phoneNumber,
+                orderId: order.id,
+                amount: payload.amount
+            };
         }
-
-        return { message: 'Success' };
     } catch (error) {
         logger('error', 'Error while order payment ', { error });
         throw CustomError(error.code, error.message);
     }
 };
 
-const paymentConfirmation = async (customerId) => {
+const paymentConfirmation = async (payload) => {
     try {
+        const { customerId } = payload;
         const orderOptions = {
             options: { where: { customerId } },
-            data: { status: ORDER_STATUS[3] }
+            data: {
+                status: ORDER_STATUS[3]
+            }
         };
+
+        if (!payload.manual) {
+            orderOptions.data.razorpayOrderId = payload.orderId;
+            orderOptions.data.razorpayPaymentId = payload.paymentId;
+        } else {
+            orderOptions.data.razorpayOrderId = 'manual';
+            orderOptions.data.razorpayPaymentId = 'manual';
+        }
+
         const orderRes = await orderRepo.update(orderOptions.options, orderOptions.data);
         logger('debug', 'Order updated response', orderRes);
 
@@ -339,6 +390,29 @@ const paymentConfirmation = async (customerId) => {
         const tableRes = await tableRepo.update(tableOptions.options, tableOptions.data);
         logger('debug', 'Table details updated', tableRes);
 
+        if (payload.manual) {
+            await notificationService.sendNotification(
+                undefined,
+                {
+                    title: 'Payment Confirmed',
+                    message: `Payment successfully confirmed`,
+                    meta: {
+                        action: NOTIFICATION_ACTIONS.MANUAL_PAYMENT_CONFIRMED
+                    }
+                },
+                customerId
+            );
+        } else {
+            const userIds = await orderService.getNotificationUserIds(payload.hotelId);
+            await notificationService.sendNotification(userIds, {
+                title: 'Payment Received',
+                message: `Payment recieved successfully for Table Number-${payload.tableNumber} of amount ${payload.amount / 100}rs`,
+                meta: {
+                    action: NOTIFICATION_ACTIONS.ONLINE_PAYMENT_CONFIRMED,
+                    hotelId: payload.hotelId
+                }
+            });
+        }
         return { message: 'Success' };
     } catch (error) {
         logger('error', 'Error while order payment confirmation', { error });

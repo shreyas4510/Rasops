@@ -61,7 +61,7 @@ export const feedbackValidation = (payload) => {
         const schema = Joi.object({
             customerId: Joi.string().required(),
             feedback: Joi.string().optional(),
-            rating: Joi.string().optional()
+            rating: Joi.number().optional()
         });
         return schema.validate(payload);
     } catch (error) {

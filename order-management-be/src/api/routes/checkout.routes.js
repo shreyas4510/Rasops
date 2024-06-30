@@ -10,6 +10,6 @@ router.post('/account', authenticate, checkoutController.account);
 router.post('/subscribe', authenticate, checkoutController.subscribe);
 router.post('/success', authenticate, checkoutController.success);
 router.post('/payment', checkoutController.payment);
-router.post('/payment/:customerId', checkoutController.paymentConfirmation);
+router.post('/confirm', checkoutController.paymentConfirmation);
 
 export default router;
