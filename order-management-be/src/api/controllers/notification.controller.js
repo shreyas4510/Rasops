@@ -41,7 +41,35 @@ const unsubscribe = async (req, res) => {
     }
 };
 
+const fetch = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        logger('debug', `Request to fetch notification ${userId}`);
+
+        const result = await notificationService.fetch(userId);
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', 'Error occurred while fetching user notification', { error });
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
+const update = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        logger('debug', `Request to updating notification ${userId}`);
+
+        const result = await notificationService.update(userId);
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', 'Error occurred while updating user notification', { error });
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     subscribe,
-    unsubscribe
+    unsubscribe,
+    fetch,
+    update
 };
