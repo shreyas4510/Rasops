@@ -46,4 +46,15 @@ const find = async (options) => {
     }
 };
 
-export default { save, update, remove, find };
+const count = async (options) => {
+    try {
+        logger('debug', 'Fetching menu items count');
+        return await db.menu.count(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while finding menu items count: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, update, remove, find, count };

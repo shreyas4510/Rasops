@@ -35,8 +35,20 @@ const remove = async (options) => {
     }
 };
 
+const count = async (options = {}) => {
+    try {
+        logger('debug', `Finding hotel user relation count with options ${JSON.stringify(options)}`);
+        return await db.hotelUserRelation.count(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', 'Error while finding manager count', { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
 export default {
     save,
     find,
-    remove
+    remove,
+    count
 };

@@ -35,4 +35,26 @@ const update = async (options, data) => {
     }
 };
 
-export default { find, save, update };
+const sum = async (columnName, options) => {
+    try {
+        logger('debug', 'Finding sum of orders with options:', { options });
+        return await db.orders.sum(columnName, options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', 'Error while finding sum of order', { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+const remove = async (options) => {
+    try {
+        logger('debug', 'Removing orders from the database');
+        return await db.orders.destroy(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while removing orders data: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { find, save, update, sum, remove };
