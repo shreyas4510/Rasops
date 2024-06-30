@@ -8,5 +8,6 @@ const router = Router();
 router.put('/:id', authenticate, hotelController.update);
 router.route('/').all(authenticate, ownerAuthentication).post(hotelController.register).get(hotelController.list);
 router.delete('/:id', authenticate, ownerAuthentication, hotelController.remove);
+router.get('/dashboard/:hotelId', authenticate, hotelController.dashboard);
 
 export default router;

@@ -35,4 +35,15 @@ const find = async (options) => {
     }
 };
 
-export default { save, update, find };
+const remove = async (options) => {
+    try {
+        logger('debug', 'Removing customer from the database');
+        return await db.customer.destroy(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while removing customer data: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, update, find, remove };

@@ -35,4 +35,15 @@ const update = async (options, data) => {
     }
 };
 
-export default { save, findOne, update };
+const remove = async (options) => {
+    try {
+        logger('debug', 'Removing subscriptions with options:', { options });
+        return await db.subscriptions.destroy(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', 'Error while removing subscriptions', { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, findOne, update, remove };

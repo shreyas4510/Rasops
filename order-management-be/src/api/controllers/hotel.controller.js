@@ -70,10 +70,25 @@ const remove = async (req, res) => {
         const result = await hotelService.remove(params.id);
         logger('info', 'Hotel removed successfully', { result });
 
-        // TODO: DELETE tables, menu and orders related to hotel
         return res.status(STATUS_CODE.OK).send(result);
     } catch (error) {
         logger('error', 'Error occurred during hotel removal', { error });
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
+const dashboard = async (req, res) => {
+    try {
+        const { hotelId } = req.params;
+        const user = req.user;
+        logger('debug', `Dashboard requested for hotel : ${hotelId}`);
+
+        const result = await hotelService.dashboard(hotelId, user);
+        logger('info', 'Dashboard data fetched successfully', { result });
+
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', 'Error occurred during fetching hotel dashboard details', { error });
         return res.status(error.code).send({ message: error.message });
     }
 };
@@ -82,5 +97,6 @@ export default {
     register,
     update,
     list,
-    remove
+    remove,
+    dashboard
 };

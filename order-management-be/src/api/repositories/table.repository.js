@@ -57,4 +57,15 @@ const update = async (options, data) => {
     }
 };
 
-export default { save, find, remove, findOne, update };
+const count = async (options = {}) => {
+    try {
+        logger('debug', `Finding table count with options ${JSON.stringify(options)}`);
+        return await db.tables.count(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', 'Error while finding table count', { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
+export default { save, find, remove, findOne, update, count };
