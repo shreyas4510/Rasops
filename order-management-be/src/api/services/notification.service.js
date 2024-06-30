@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import webpush from 'web-push';
 import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
+import { NOTIFICATION_STATUS } from '../models/notification.model.js';
 import { NOTIFICATION_PREFERENCE } from '../models/preferences.model.js';
 import notificationRepo from '../repositories/notification.repository.js';
 import pushSubscriptionRepo from '../repositories/pushSubscription.repository.js';
@@ -141,8 +142,41 @@ const sendNotification = async (userIds, data, customerId = undefined) => {
     }
 };
 
+const fetch = async (userId) => {
+    try {
+        const options = {
+            where: {
+                userId,
+                status: NOTIFICATION_STATUS[0]
+            },
+            order: [['updatedAt', 'DESC']],
+            limit: 50
+        };
+        const notifications = await notificationRepo.find(options);
+        return notifications;
+    } catch (error) {
+        logger('error', 'Error while fetching notification', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const update = async (userId) => {
+    try {
+        const options = { where: { userId } };
+        const data = { status: NOTIFICATION_STATUS[1] };
+        await notificationRepo.update(options, data);
+
+        return { message: 'SUCCESS' };
+    } catch (error) {
+        logger('error', 'Error while updating notification', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     subscribe,
     unsubscribe,
-    sendNotification
+    sendNotification,
+    fetch,
+    update
 };
