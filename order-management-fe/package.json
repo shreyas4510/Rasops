@@ -3,6 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@nivo/bar": "^0.87.0",
+        "@nivo/line": "^0.87.0",
+        "@nivo/pie": "^0.87.0",
         "@reduxjs/toolkit": "^1.9.1",
         "@tanstack/react-table": "^8.14.0",
         "@testing-library/jest-dom": "^5.17.0",
@@ -10,6 +13,7 @@
         "@testing-library/user-event": "^13.5.0",
         "axios": "^1.6.7",
         "bootstrap": "^5.3.3",
+        "chart.js": "^4.4.3",
         "crypto-js": "^4.2.0",
         "formik": "^2.4.5",
         "lodash.debounce": "^4.0.8",

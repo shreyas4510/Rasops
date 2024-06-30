@@ -37,11 +37,11 @@ export const update = async (payload) => {
     }
 };
 
-export const fetchAssignableManager = async () => {
+export const dashboard = async (hotelId) => {
     try {
-        return await api(method.GET, '/manager/assignable');
+        return await api(method.GET, `/hotel/dashboard/${hotelId}`);
     } catch (error) {
-        console.error(`Error while fetching assignable manager ${error}`);
+        console.error(`Error fetching dashboard data ${error}`);
         throw error;
     }
 };
