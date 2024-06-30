@@ -46,6 +46,9 @@ const ordersSlice = createSlice({
         },
         setOrderPagination(state, action) {
             state.pagination = action.payload;
+        },
+        setPaymentRequest(state, action) {
+            state.paymentRequest = action.payload;
         }
     },
     initialState: {
@@ -59,7 +62,8 @@ const ordersSlice = createSlice({
         pagination: {
             pageIndex: 0,
             pageSize: 10
-        }
+        },
+        paymentRequest: false
     }
 });
 export const {
@@ -72,7 +76,8 @@ export const {
     setOrderSelectedTable,
     setOrderSorting,
     setOrderFiltering,
-    setOrderPagination
+    setOrderPagination,
+    setPaymentRequest
 } = ordersSlice.actions;
 
 export const ordersReducer = ordersSlice.reducer;

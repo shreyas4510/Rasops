@@ -4,7 +4,7 @@ import env from '../../config/env';
 import CryptoJS from 'crypto-js';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setSubscriptionData, subscriptionSuccessRequest } from '../../store/slice';
+import { paymentConfirmationRequest, setSubscriptionData, subscriptionSuccessRequest } from '../../store/slice';
 
 const loadScript = (src) =>
     new Promise((resolve) => {
@@ -25,7 +25,17 @@ export const ACTIONS = {
     SUBSCRIPTION: 'subscription'
 };
 
-function Razorpay({ action, name, email, phoneNumber, subscriptionId = '', hotelName = '', amount = 0, orderId = '' }) {
+function Razorpay({
+    action,
+    name,
+    email,
+    phoneNumber,
+    subscriptionId = '',
+    hotelName = '',
+    amount = 0,
+    orderId = '',
+    handleSuccess = () => {}
+}) {
     const paymentId = useRef(null);
     const paymentMethod = useRef(null);
 
@@ -57,7 +67,7 @@ function Razorpay({ action, name, email, phoneNumber, subscriptionId = '', hotel
         rzp1.open();
     };
 
-    const handleSuccess = (response) => {
+    const onSuccess = (response) => {
         const paymentId = response.razorpay_payment_id;
 
         if (action === ACTIONS.SUBSCRIPTION) {
@@ -70,6 +80,8 @@ function Razorpay({ action, name, email, phoneNumber, subscriptionId = '', hotel
                 CryptoJS.HmacSHA256(`${orderId}|${paymentId}`, env.razorpay.secret).toString() === signature;
             if (!succeeded) {
                 toast.error('Failed to verify payment. Please contact support team');
+            } else {
+                handleSuccess({ orderId, paymentId });
             }
         }
     };
@@ -99,7 +111,7 @@ function Razorpay({ action, name, email, phoneNumber, subscriptionId = '', hotel
                 email,
                 contact: phoneNumber
             },
-            handler: handleSuccess,
+            handler: onSuccess,
             modal: {
                 confirm_close: true,
                 ondismiss: handleDismiss

@@ -67,6 +67,10 @@ function OMTModal({
                 <CustomButton
                     className="secondary-button"
                     onClick={() => {
+                        if (closeText === 'Pay Manually') {
+                            handleClose('payment');
+                            return;
+                        }
                         handleClose(false);
                     }}
                     label={closeText}

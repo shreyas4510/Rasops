@@ -35,3 +35,12 @@ export const updatePendingOrders = async (payload) => {
         throw error;
     }
 };
+
+export const feedback = async (payload) => {
+    try {
+        return await api(method.POST, `/order/feedback`, payload);
+    } catch (error) {
+        console.error(`Error while sending order feedback ${error}`);
+        throw error;
+    }
+};

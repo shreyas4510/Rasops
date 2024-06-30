@@ -23,9 +23,9 @@ function* getTablesRequestSaga(action) {
 
         yield put(getTablesSuccess({ data, count: res.count }));
         if (location === 'orders') {
-            if (active && data.length) {
-                yield put(setOrderSelectedTable(data[0]));
-                yield put(getActiveOrderRequest(data[0].value));
+            if (active) {
+                yield put(setOrderSelectedTable(data.length ? data[0] : {}));
+                yield put(getActiveOrderRequest(data.length ? data[0].value : ''));
             } else {
                 yield put(getCompletedOrdersRequest(hotelId));
             }
