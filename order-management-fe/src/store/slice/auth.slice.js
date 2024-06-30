@@ -17,7 +17,8 @@ const authSlice = createSlice({
                 className: fieldClass
             }
         },
-        formData: false
+        formData: false,
+        notificationsData: { count: 0, data: [], open: false }
     },
     reducers: {
         loginRequest() {},
@@ -36,7 +37,12 @@ const authSlice = createSlice({
         },
         setUpdateModalOptions(state, action) {
             state.updateOptions = action.payload;
-        }
+        },
+        setNotificationData(state, action) {
+            state.notificationsData = action.payload;
+        },
+        getNotificationRequest() {},
+        updateNotificationRequest() {}
     }
 });
 
@@ -51,7 +57,10 @@ export const {
     getUserSuccess,
     updateUserRequest,
     setSettingsFormData,
-    setUpdateModalOptions
+    setUpdateModalOptions,
+    setNotificationData,
+    getNotificationRequest,
+    updateNotificationRequest
 } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

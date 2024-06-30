@@ -5,14 +5,16 @@ import env from '../../config/env';
 import * as service from '../../services/auth.service';
 import * as notificationService from '../../services/notification.service';
 import { USER_ROLES } from '../../utils/constants';
-import { getUserRequest, getUserSuccess, setGlobalHotelId, setSettingsFormData } from '../slice';
+import { getUserRequest, getUserSuccess, setGlobalHotelId, setNotificationData, setSettingsFormData } from '../slice';
 import {
     FORGOT_PASSWORD_REQUEST,
+    GET_NOTIFICATION_REQUEST,
     GET_USER_REQUEST,
     LOGIN_USER_REQUEST,
     LOGOUT_USER_REQUEST,
     REGISTER_USER_REQUEST,
     RESET_PASSWORD_REQUEST,
+    UPDATE_NOTIFICATION_REQUEST,
     UPDATE_USER_REQUEST,
     VERIFY_USER_REQUEST
 } from '../types';
@@ -152,6 +154,32 @@ function* logoutUserRequestSaga() {
     }
 }
 
+function* getNotificationRequestSaga() {
+    try {
+        const res = yield notificationService.fetch();
+        yield put(
+            setNotificationData({
+                data: res.rows,
+                count: res.count,
+                open: true
+            })
+        );
+    } catch (error) {
+        console.error(`Failed to fetch notification: ${error?.message}`);
+        toast.error('Failed to fetch notification');
+    }
+}
+
+function* updateNotificationRequestSaga() {
+    try {
+        yield notificationService.update();
+        yield put(setNotificationData({ data: [], count: 0, open: false }));
+    } catch (error) {
+        console.error(`Failed to update notification: ${error?.message}`);
+        toast.error('Failed to set notifications as read');
+    }
+}
+
 export default function* authSaga() {
     yield all([
         takeLatest(LOGIN_USER_REQUEST, loginUserRequestSaga),
@@ -161,6 +189,8 @@ export default function* authSaga() {
         takeLatest(FORGOT_PASSWORD_REQUEST, forgotPasswordRequestSaga),
         takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga),
         takeLatest(GET_USER_REQUEST, getUserRequestSaga),
-        takeLatest(UPDATE_USER_REQUEST, updateUserRequestSaga)
+        takeLatest(UPDATE_USER_REQUEST, updateUserRequestSaga),
+        takeLatest(GET_NOTIFICATION_REQUEST, getNotificationRequestSaga),
+        takeLatest(UPDATE_NOTIFICATION_REQUEST, updateNotificationRequestSaga)
     ]);
 }
