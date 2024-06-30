@@ -7,3 +7,5 @@ export const FORGOT_PASSWORD_REQUEST = `${USER}/forgotPasswordRequest`;
 export const RESET_PASSWORD_REQUEST = `${USER}/resetPasswordRequest`;
 export const GET_USER_REQUEST = `${USER}/getUserRequest`;
 export const UPDATE_USER_REQUEST = `${USER}/updateUserRequest`;
+export const GET_NOTIFICATION_REQUEST = `${USER}/getNotificationRequest`;
+export const UPDATE_NOTIFICATION_REQUEST = `${USER}/updateNotificationRequest`;
