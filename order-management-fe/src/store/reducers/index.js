@@ -9,7 +9,8 @@ import {
     tablesReducer,
     paymentActivationReducer,
     checkoutReducer,
-    ordersReducer
+    ordersReducer,
+    dashboardReducer
 } from '../slice';
 
 const rootReducers = {
@@ -23,7 +24,8 @@ const rootReducers = {
     orderPlacement: orderPlacementReducer,
     paymentActivation: paymentActivationReducer,
     checkout: checkoutReducer,
-    orders: ordersReducer
+    orders: ordersReducer,
+    dashboard: dashboardReducer
 };
 
 export default rootReducers;

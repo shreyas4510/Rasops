@@ -27,3 +27,12 @@ export const removeManager = async (id) => {
         throw error;
     }
 };
+
+export const fetchAssignableManager = async () => {
+    try {
+        return await api(method.GET, '/manager/assignable');
+    } catch (error) {
+        console.error(`Error while fetching assignable manager ${error}`);
+        throw error;
+    }
+};

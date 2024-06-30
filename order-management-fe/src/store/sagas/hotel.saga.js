@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import * as service from '../../services/hotel.service';
+import * as managerService from '../../services/manager.service';
 import {
     getHotelRequest,
     getHotelSuccess,
@@ -62,7 +63,7 @@ function* updateHotelsRequestSaga(action) {
 
 function* getAssignableManagerSaga() {
     try {
-        const res = yield service.fetchAssignableManager();
+        const res = yield managerService.fetchAssignableManager();
         yield put(
             setAssignableManagers(
                 res?.rows?.map((row) => {
