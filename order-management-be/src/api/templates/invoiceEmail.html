@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hotel Invoice</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f8f9fa;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .content {
+                border-radius: 10px;
+                padding: 40px;
+                border: 2px solid #a0edb1; /* Updated border color */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            h2 {
+                color: #0d233f;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            p {
+                color: #555555;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+
+            .footer {
+                text-align: center;
+                color: #999999;
+            }
+
+            .footer a {
+                color: #0d233f;
+                text-decoration: none;
+            }
+
+            .footer a:hover {
+                text-decoration: underline;
+            }
+
+            .note {
+                font-size: 14px;
+                color: #999999;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="content">
+                <h2>Invoice from {{hotelName}}</h2>
+                <p>Dear {{customerName}},</p>
+                <p>We are pleased to send you the invoice for your recent transaction at {{hotelName}}.</p>
+                <p>Please find attached the invoice for your reference.</p>
+                <p>Best regards,<br />{{hotelName}} Team</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p class="note">
+                If you have any questions or need further assistance, please do not hesitate to contact us at
+                {{hotelContact}}.
+            </p>
+        </div>
+    </body>
+</html>

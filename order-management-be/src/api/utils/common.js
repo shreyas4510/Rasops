@@ -17,7 +17,8 @@ export const EMAIL_ACTIONS = {
     VERIFY_USER: 'verify-user',
     FORGOT_PASSWORD: 'forgot-password',
     INVITE_MANAGER: 'invite-manager',
-    CUSTOM_SUBSCRIPTION: 'custom-subscription'
+    CUSTOM_SUBSCRIPTION: 'custom-subscription',
+    INVOICE_EMAIL: 'invoice-email'
 };
 
 export const TABLES = {
