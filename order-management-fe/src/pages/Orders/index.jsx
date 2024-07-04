@@ -313,7 +313,6 @@ function Orders() {
                                             dispatch(
                                                 paymentConfirmationRequest({
                                                     manual: true,
-                                                    hotelId,
                                                     customerId: activeOrder.billDetails.id
                                                 })
                                             );
@@ -412,7 +411,6 @@ function Orders() {
                         dispatch(
                             paymentConfirmationRequest({
                                 manual: true,
-                                hotelId,
                                 customerId: paymentRequest.customerId
                             })
                         );

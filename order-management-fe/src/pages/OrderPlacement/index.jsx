@@ -220,9 +220,6 @@ function OrderPlacement() {
             paymentConfirmationRequest({
                 manual: false,
                 customerId: tableDetails.customer.id,
-                hotelId: tableDetails.hotel.id,
-                tableNumber: tableDetails.tableNumber,
-                amount: orderPaymentData.amount,
                 orderId: payload.orderId,
                 paymentId: payload.paymentId
             })
