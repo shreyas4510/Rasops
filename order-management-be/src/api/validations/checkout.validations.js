@@ -128,9 +128,6 @@ export const paymentConfirmationValidation = (payload) => {
         const schema = Joi.object({
             customerId: Joi.string().required(),
             manual: Joi.boolean().required(),
-            hotelId: Joi.string().optional(),
-            tableNumber: Joi.number().optional(),
-            amount: Joi.number().optional(),
             orderId: Joi.string().optional(),
             paymentId: Joi.string().optional()
         });

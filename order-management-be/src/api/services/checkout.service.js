@@ -24,6 +24,7 @@ import {
     STATUS_CODE,
     calculateBill
 } from '../utils/common.js';
+import { createInvoicePdf } from '../utils/pdfGenerator.js';
 import { sendEmail } from './email.service.js';
 import orderService from './order.service.js';
 import razorpayService from './razorpay.service.js';
@@ -365,6 +366,33 @@ const payment = async ({ customerId, hotelId, manual }) => {
 const paymentConfirmation = async (payload) => {
     try {
         const { customerId } = payload;
+
+        let { rows: customerDetails } = await customerRepo.find({
+            where: { id: customerId },
+            attributes: ['id', 'name', 'email'],
+            include: [
+                {
+                    model: db.hotel,
+                    attributes: ['id', 'name', 'careNumber']
+                },
+                {
+                    model: db.orders,
+                    attributes: ['quantity', 'price'],
+                    include: [
+                        {
+                            model: db.menu,
+                            attributes: ['name']
+                        }
+                    ]
+                },
+                {
+                    model: db.tables,
+                    attributes: ['tableNumber']
+                }
+            ]
+        });
+        customerDetails = customerDetails[0];
+
         const orderOptions = {
             options: { where: { customerId } },
             data: {
@@ -390,6 +418,22 @@ const paymentConfirmation = async (payload) => {
         const tableRes = await tableRepo.update(tableOptions.options, tableOptions.data);
         logger('debug', 'Table details updated', tableRes);
 
+        const invoicePdfData = [['Item', 'Quantity', 'Price']];
+        let price = 0;
+        customerDetails.orders.forEach((order) => {
+            invoicePdfData.push([order.menu.name, String(order.quantity), String(order.price)]);
+            price += order.price;
+        });
+
+        const { sgst, cgst, totalPrice } = calculateBill(price);
+        [
+            { label: 'SGST', value: sgst },
+            { label: 'CGST', value: cgst },
+            { label: 'Total', value: totalPrice }
+        ].forEach((obj) => {
+            invoicePdfData.push(['', obj.label, String(obj.value)]);
+        });
+
         if (payload.manual) {
             await notificationService.sendNotification(
                 undefined,
@@ -403,16 +447,42 @@ const paymentConfirmation = async (payload) => {
                 customerId
             );
         } else {
-            const userIds = await orderService.getNotificationUserIds(payload.hotelId);
+            const userIds = await orderService.getNotificationUserIds(customerDetails.hotel.id);
             await notificationService.sendNotification(userIds, {
                 title: 'Payment Received',
-                message: `Payment recieved successfully for Table Number-${payload.tableNumber} of amount ${payload.amount / 100}rs`,
+                message: `Payment recieved successfully for Table Number-${customerDetails.table.tableNumber} of amount ${totalPrice}rs`,
                 meta: {
                     action: NOTIFICATION_ACTIONS.ONLINE_PAYMENT_CONFIRMED,
-                    hotelId: payload.hotelId
+                    hotelId: customerDetails.hotel.id
                 }
             });
         }
+
+        // send mail to customer
+        const pdfData = await createInvoicePdf({
+            title: customerDetails.hotel.name,
+            customerId: customerDetails.id,
+            customerName: customerDetails.name,
+            date: moment().format('DD-MMM-YYYY'),
+            tableNumber: String(customerDetails.table.tableNumber),
+            invoiceNumber: payload.orderId,
+            totalAmount: String(totalPrice),
+            tableData: invoicePdfData
+        });
+
+        const emailOptions = {
+            hotelName: customerDetails.hotel.name,
+            customerName: customerDetails.name,
+            hotelContact: customerDetails.hotel.careNumber
+        };
+        await sendEmail(emailOptions, customerDetails.email, EMAIL_ACTIONS.INVOICE_EMAIL, [
+            {
+                filename: `invoice-${payload.orderId}.pdf`,
+                content: pdfData,
+                encoding: 'base64'
+            }
+        ]);
+
         return { message: 'Success' };
     } catch (error) {
         logger('error', 'Error while order payment confirmation', { error });

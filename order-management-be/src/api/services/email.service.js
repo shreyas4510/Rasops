@@ -48,12 +48,20 @@ const getEmailData = (action, payload) => {
                 subject: 'Re: Custom Subscription Request',
                 template: Mustache.render(template, { ...payload })
             };
+        case EMAIL_ACTIONS.INVOICE_EMAIL:
+            path = `${process.cwd()}/src/api/templates/invoiceEmail.html`;
+            template = readFileSync(path, 'utf8');
+
+            return {
+                subject: 'Re: Customer Invoice',
+                template: Mustache.render(template, { ...payload })
+            };
         default:
             break;
     }
 };
 
-export const sendEmail = async (payload, to, action) => {
+export const sendEmail = async (payload, to, action, attachments = []) => {
     try {
         // create the email data
         const data = getEmailData(action, payload);
@@ -63,7 +71,8 @@ export const sendEmail = async (payload, to, action) => {
             from: env.email.user,
             to,
             subject: data.subject,
-            html: data.template
+            html: data.template,
+            attachments
         };
 
         // send email to the user
