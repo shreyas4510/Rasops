@@ -56,7 +56,6 @@ function Navbars() {
             dispatch(getUserRequest({ navigate }));
         }
         if (viewData.hotelId) {
-            navigate('/dashboard');
             dispatch(setGlobalHotelId(viewData.hotelId));
         }
         if (!notificationsData.count) {

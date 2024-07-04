@@ -4,7 +4,7 @@ import env from '../../config/env';
 import CryptoJS from 'crypto-js';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { paymentConfirmationRequest, setSubscriptionData, subscriptionSuccessRequest } from '../../store/slice';
+import { setSubscriptionData, subscriptionSuccessRequest } from '../../store/slice';
 
 const loadScript = (src) =>
     new Promise((resolve) => {

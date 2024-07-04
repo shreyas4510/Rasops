@@ -4,7 +4,7 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import env from '../../config/env';
 import * as service from '../../services/auth.service';
 import * as notificationService from '../../services/notification.service';
-import { USER_ROLES } from '../../utils/constants';
+import { COMMON_TABS, MANAGER_TABS, OWNER_TABS, USER_ROLES } from '../../utils/constants';
 import { getUserRequest, getUserSuccess, setGlobalHotelId, setNotificationData, setSettingsFormData } from '../slice';
 import {
     FORGOT_PASSWORD_REQUEST,
@@ -111,10 +111,18 @@ function* getUserRequestSaga(action) {
                 CryptoJS.AES.decrypt(localStorage.getItem('data'), env.cryptoSecret).toString(CryptoJS.enc.Utf8)
             );
 
-            if (res.role.toUpperCase() === USER_ROLES[0] && Object.keys(viewData).length === 1) {
-                navigate('/hotels');
-            } else {
+            const path = window.location.pathname;
+            if (Object.keys(viewData).length > 1 || res.role.toUpperCase() === USER_ROLES[1]) {
                 yield put(setGlobalHotelId(res.hotelId || viewData.hotelId));
+            }
+
+            if (
+                res.role.toUpperCase() === USER_ROLES[0] &&
+                Object.keys(viewData).length === 1 &&
+                ![...OWNER_TABS, ...COMMON_TABS].find((obj) => obj.path === path)
+            ) {
+                navigate('/hotels');
+            } else if (![...MANAGER_TABS, ...COMMON_TABS].find((obj) => obj.path === path)) {
                 navigate('/dashboard');
             }
         }

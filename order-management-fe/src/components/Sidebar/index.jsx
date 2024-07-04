@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { IoMdArrowRoundBack, IoMdSettings, IoMdArrowRoundForward } from 'react-icons/io';
-import { MdOutlineDashboardCustomize, MdOutlineRestaurantMenu, MdOutlineAttachMoney } from 'react-icons/md';
-import { BsEnvelopePlusFill } from 'react-icons/bs';
-import { FaUserTie } from 'react-icons/fa';
-import { PiArmchairFill } from 'react-icons/pi';
-import { RiHotelFill } from 'react-icons/ri';
+import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
 import CryptoJS from 'crypto-js';
 import Logo from '../../assets/images/rasops.png';
 import '../../assets/styles/sidebar.css';
@@ -14,7 +9,7 @@ import env from '../../config/env';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../Loader';
-import { USER_ROLES } from '../../utils/constants';
+import { USER_ROLES, COMMON_TABS, MANAGER_TABS, OWNER_TABS } from '../../utils/constants';
 import NoHotel from '../NoHotel';
 import { logoutRequest } from '../../store/slice';
 
@@ -25,71 +20,6 @@ function Sidebar() {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
-
-    const ownertTabs = [
-        {
-            order: 2,
-            id: 'hotels',
-            Icon: RiHotelFill,
-            title: 'Hotels',
-            path: '/hotels'
-        },
-        {
-            order: 3,
-            id: 'invites',
-            Icon: BsEnvelopePlusFill,
-            title: 'Invites',
-            path: '/invites'
-        },
-        {
-            order: 4,
-            id: 'manager',
-            Icon: FaUserTie,
-            title: 'Managers',
-            path: '/manager'
-        }
-    ];
-
-    const managerTabs = [
-        {
-            order: 1,
-            id: 'dashboard',
-            Icon: MdOutlineDashboardCustomize,
-            title: 'Dashboard',
-            path: '/dashboard'
-        },
-        {
-            order: 5,
-            id: 'menu',
-            Icon: MdOutlineRestaurantMenu,
-            title: 'Menu',
-            path: '/menu'
-        },
-        {
-            order: 6,
-            id: 'tables',
-            Icon: PiArmchairFill,
-            title: 'Tables',
-            path: '/tables'
-        },
-        {
-            order: 7,
-            id: 'orders',
-            Icon: MdOutlineAttachMoney,
-            title: 'Orders',
-            path: '/orders'
-        }
-    ];
-
-    const commonTabs = [
-        {
-            order: 8,
-            id: 'settings',
-            Icon: IoMdSettings,
-            title: 'Settings',
-            path: '/settings'
-        }
-    ];
 
     const handleClick = (item) => {
         navigate(item.path);
@@ -102,8 +32,8 @@ function Sidebar() {
         );
         tabs =
             Object.keys(viewData).length === 1 && viewData.role.toUpperCase() === USER_ROLES[0]
-                ? [...ownertTabs, ...commonTabs].sort((a, b) => a.order - b.order)
-                : [...managerTabs, ...commonTabs].sort((a, b) => a.order - b.order);
+                ? [...OWNER_TABS, ...COMMON_TABS].sort((a, b) => a.order - b.order)
+                : [...MANAGER_TABS, ...COMMON_TABS].sort((a, b) => a.order - b.order);
     } catch (error) {
         toast.error('Oops! Something went wrong. Please try logging in again.');
         dispatch(logoutRequest());
@@ -113,9 +43,9 @@ function Sidebar() {
         if (Object.keys(user).length && user.role.toUpperCase() === USER_ROLES[0]) {
             return <Outlet />;
         } else if (Object.keys(user).length && user.role.toUpperCase() === USER_ROLES[1]) {
-            if (!globalHotelId && [...managerTabs].find((obj) => obj.path === location.pathname)) {
+            if (!globalHotelId && [...MANAGER_TABS].find((obj) => obj.path === location.pathname)) {
                 return <NoHotel />;
-            } else if ([...managerTabs, ...commonTabs].find((obj) => obj.path === location.pathname)) {
+            } else if ([...MANAGER_TABS, ...COMMON_TABS].find((obj) => obj.path === location.pathname)) {
                 return <Outlet />;
             } else {
                 <Loader />;
