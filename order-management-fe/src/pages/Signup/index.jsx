@@ -36,12 +36,7 @@ function Signup() {
 
                 const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
                 const keys = Object.keys(data);
-                if (
-                    keys.length === 3 &&
-                    keys.includes('email') &&
-                    keys.includes('inviteId') &&
-                    keys.includes('expires')
-                ) {
+                if (keys.length === 3 && keys.includes('email') && keys.includes('inviteId') && keys.includes('expires')) {
                     setInitialValues((prevValues) => ({
                         ...prevValues,
                         email: data.email
@@ -115,7 +110,7 @@ function Signup() {
                         />
                         <div className="text-center mx-3">
                             <p className="label-font m-0">
-                                Already have an account ? <CustomLink text="Login" onClick={handleOnClickLogin} />
+                Already have an account ? <CustomLink text="Login" onClick={handleOnClickLogin} />
                             </p>
                         </div>
                     </Form>

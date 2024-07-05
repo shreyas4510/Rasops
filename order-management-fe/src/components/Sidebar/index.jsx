@@ -31,9 +31,9 @@ function Sidebar() {
             CryptoJS.AES.decrypt(localStorage.getItem('data'), env.cryptoSecret).toString(CryptoJS.enc.Utf8)
         );
         tabs =
-            Object.keys(viewData).length === 1 && viewData.role.toUpperCase() === USER_ROLES[0]
-                ? [...OWNER_TABS, ...COMMON_TABS].sort((a, b) => a.order - b.order)
-                : [...MANAGER_TABS, ...COMMON_TABS].sort((a, b) => a.order - b.order);
+      Object.keys(viewData).length === 1 && viewData.role.toUpperCase() === USER_ROLES[0]
+          ? [...OWNER_TABS, ...COMMON_TABS].sort((a, b) => a.order - b.order)
+          : [...MANAGER_TABS, ...COMMON_TABS].sort((a, b) => a.order - b.order);
     } catch (error) {
         toast.error('Oops! Something went wrong. Please try logging in again.');
         dispatch(logoutRequest());
@@ -56,14 +56,9 @@ function Sidebar() {
 
     return (
         <>
-            <div
-                data-testid="sidebar-testId"
-                className={`otm-sidebar ${compress ? 'compressed-sidebar' : 'full-sidebar'}`}
-            >
+            <div data-testid="sidebar-testId" className={`otm-sidebar ${compress ? 'compressed-sidebar' : 'full-sidebar'}`}>
                 <div className={`d-flex my-4 align-items-center ${compress ? 'flex-column' : 'flex-row'}`}>
-                    <div
-                        className={`d-flex align-items-center justify-content-center w-100 ${compress ? 'order-2' : 'order-1'}`}
-                    >
+                    <div className={`d-flex align-items-center justify-content-center w-100 ${compress ? 'order-2' : 'order-1'}`}>
                         <h3 className={`text-white m-0 ${compress && 'd-none'}`}>Ras</h3>
                         <img src={Logo} height={40} className={compress ? 'mt-2' : 'mx-1'} />
                         <h3 className={`text-white m-0 ${compress && 'd-none'}`}>ps</h3>
@@ -75,12 +70,7 @@ function Sidebar() {
                         }}
                     >
                         {compress ? (
-                            <IoMdArrowRoundForward
-                                data-testid="arrow-forward"
-                                size={20}
-                                color="white"
-                                className="m-auto"
-                            />
+                            <IoMdArrowRoundForward data-testid="arrow-forward" size={20} color="white" className="m-auto" />
                         ) : (
                             <IoMdArrowRoundBack data-testid="arrow-back" size={20} color="white" className="m-auto" />
                         )}
@@ -110,9 +100,7 @@ function Sidebar() {
                     })}
                 </ul>
             </div>
-            <div className={`main-container ${compress ? 'main-container-compress' : 'main-container-full'}`}>
-                {render()}
-            </div>
+            <div className={`main-container ${compress ? 'main-container-compress' : 'main-container-full'}`}>{render()}</div>
         </>
     );
 }

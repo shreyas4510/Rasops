@@ -29,9 +29,7 @@ function OMTModal({
                     <div className="row mb-4">
                         {Object.entries(description).map(([key, property], index) => {
                             const disableCheck =
-                                property.invalidDisable && (isSubmitting || !isValid || !dirty)
-                                    ? true
-                                    : property.disabled;
+                property.invalidDisable && (isSubmitting || !isValid || !dirty) ? true : property.disabled;
                             return (
                                 <Fragment key={`${key}-${index}`}>
                                     <CustomFormGroup
@@ -80,15 +78,15 @@ function OMTModal({
                 <CustomButton type="submit" className="custom-button" disabled={disabled} label={submitText} />
             )}
             {submitText &&
-                type === 'string' && ( // Add this condition
-                    <CustomButton
-                        type="submit"
-                        onClick={handleSubmit}
-                        className="custom-button"
-                        disabled={disabled}
-                        label={submitText}
-                    />
-                )}
+        type === 'string' && ( // Add this condition
+                <CustomButton
+                    type="submit"
+                    onClick={handleSubmit}
+                    className="custom-button"
+                    disabled={disabled}
+                    label={submitText}
+                />
+            )}
         </Modal.Footer>
     );
 

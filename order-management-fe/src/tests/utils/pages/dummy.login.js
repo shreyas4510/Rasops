@@ -10,7 +10,7 @@ export const requiredCredentials = {
 export const validCredentials = {
     emailValidationErrorText: 'Invalid email',
     passwordValidationErrorText:
-        'Password must contain at least 8 characters, ' + 'one letter, one number, and one special character',
+    'Password must contain at least 8 characters, ' + 'one letter, one number, and one special character',
     emailValue: 'test@test',
     passwordValue: '1234567890',
     loginText: 'Login'

@@ -118,8 +118,8 @@ function* getUserRequestSaga(action) {
 
             if (
                 res.role.toUpperCase() === USER_ROLES[0] &&
-                Object.keys(viewData).length === 1 &&
-                ![...OWNER_TABS, ...COMMON_TABS].find((obj) => obj.path === path)
+        Object.keys(viewData).length === 1 &&
+        ![...OWNER_TABS, ...COMMON_TABS].find((obj) => obj.path === path)
             ) {
                 navigate('/hotels');
             } else if (![...MANAGER_TABS, ...COMMON_TABS].find((obj) => obj.path === path)) {

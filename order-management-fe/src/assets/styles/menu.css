@@ -1,7 +1,7 @@
 .options-container {
-    height: 50px;
-    background: linear-gradient(180deg, #49ac60, #08182d);
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    display: flex;
+  height: 50px;
+  background: linear-gradient(180deg, #49ac60, #08182d);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  display: flex;
 }

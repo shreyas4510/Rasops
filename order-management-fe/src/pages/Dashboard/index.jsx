@@ -183,13 +183,7 @@ function Dashboard() {
                 <Col className="col-9">
                     <h6>Month Revenue</h6>
                     {monthRevenue.length ? (
-                        <BarChart
-                            keys={['value']}
-                            index={'month'}
-                            data={monthRevenue}
-                            xlabel={'month'}
-                            ylabel={'Revenue'}
-                        />
+                        <BarChart keys={['value']} index={'month'} data={monthRevenue} xlabel={'month'} ylabel={'Revenue'} />
                     ) : (
                         <DashboardNoData />
                     )}

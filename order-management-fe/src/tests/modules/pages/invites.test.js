@@ -13,13 +13,13 @@ jest.mock('react-toastify');
 // Test suite for Invites page
 describe('test invite page', () => {
     beforeEach(() => {
-        // Mocking service function to return empty list
+    // Mocking service function to return empty list
         service.list.mockResolvedValue(defaultList);
     });
 
     // Test for successful invitation
     test('test send invite success', async () => {
-        // Mocking service function to resolve with success
+    // Mocking service function to resolve with success
         service.inviteUser.mockResolvedValue(invite.message);
         // Rendering Invites component
         render(<Invites />);
@@ -49,7 +49,7 @@ describe('test invite page', () => {
 
     // Test for invitation failure
     test('test send invite error', async () => {
-        // Mocking service function to reject with error
+    // Mocking service function to reject with error
         service.inviteUser.mockRejectedValue(new Error(invite.err));
         // Rendering Invites component
         render(<Invites />);
@@ -90,7 +90,7 @@ describe('test invite page', () => {
 
     // Test for successful records retrieval
     test('test success records', async () => {
-        // Mocking service function to return one record
+    // Mocking service function to return one record
         service.list.mockResolvedValue(success.res);
 
         await act(async () => {
@@ -112,7 +112,7 @@ describe('test invite page', () => {
 
     // Test for error in records retrieval
     test('test get list api error', async () => {
-        // Mocking service function to reject with error
+    // Mocking service function to reject with error
         service.list.mockRejectedValue(new Error(list.err));
         await act(async () => {
             // Rendering Invites component

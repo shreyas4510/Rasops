@@ -29,7 +29,7 @@ const PaymentActivation = () => {
     const Note = () => (
         <div className="row m-0">
             <p className="col my-2 text-danger">
-                *Note: Please fill out the form carefully as submitted details cannot be updated later
+        *Note: Please fill out the form carefully as submitted details cannot be updated later
             </p>
         </div>
     );
@@ -59,20 +59,8 @@ const PaymentActivation = () => {
                         <Form>
                             <Note />
                             <div className="row m-0">
-                                <CustomFormGroup
-                                    name="email"
-                                    type="email"
-                                    label="Email"
-                                    className="col-6 my-2"
-                                    required={true}
-                                />
-                                <CustomFormGroup
-                                    name="phone"
-                                    type="number"
-                                    label="Phone"
-                                    className="col-6 my-2"
-                                    required={true}
-                                />
+                                <CustomFormGroup name="email" type="email" label="Email" className="col-6 my-2" required={true} />
+                                <CustomFormGroup name="phone" type="number" label="Phone" className="col-6 my-2" required={true} />
                             </div>
 
                             <div className="row m-0">
@@ -217,30 +205,12 @@ const PaymentActivation = () => {
                         <Form>
                             <Note />
                             <div className="row m-0">
-                                <CustomFormGroup
-                                    name="name"
-                                    type="text"
-                                    label="Name"
-                                    className="col-6 my-2"
-                                    required={true}
-                                />
-                                <CustomFormGroup
-                                    name="email"
-                                    type="email"
-                                    label="Email"
-                                    className="col-6 my-2"
-                                    required={true}
-                                />
+                                <CustomFormGroup name="name" type="text" label="Name" className="col-6 my-2" required={true} />
+                                <CustomFormGroup name="email" type="email" label="Email" className="col-6 my-2" required={true} />
                             </div>
 
                             <div className="row m-0">
-                                <CustomFormGroup
-                                    name="kyc.pan"
-                                    type="text"
-                                    label="Pan"
-                                    className="col-6 my-2"
-                                    required={true}
-                                />
+                                <CustomFormGroup name="kyc.pan" type="text" label="Pan" className="col-6 my-2" required={true} />
                             </div>
 
                             <div className="row m-0">
@@ -298,12 +268,7 @@ const PaymentActivation = () => {
     const BankDetailsView = () => {
         const initialValues = state.bankDetailsInitialValues;
         return (
-            <Formik
-                innerRef={formRef}
-                initialValues={initialValues}
-                validationSchema={bankDetailsSchema}
-                onSubmit={() => {}}
-            >
+            <Formik innerRef={formRef} initialValues={initialValues} validationSchema={bankDetailsSchema} onSubmit={() => {}}>
                 {({ isValid, dirty, isSubmitting }) => {
                     useEffect(() => {
                         if (nextRef && nextRef.current) {
@@ -322,13 +287,7 @@ const PaymentActivation = () => {
                                     className="col-6 my-2"
                                     required={true}
                                 />
-                                <CustomFormGroup
-                                    name="ifscCode"
-                                    type="text"
-                                    label="IFSC Code"
-                                    className="col-6 my-2"
-                                    required={true}
-                                />
+                                <CustomFormGroup name="ifscCode" type="text" label="IFSC Code" className="col-6 my-2" required={true} />
                                 <CustomFormGroup
                                     name="beneficiaryName"
                                     type="text"

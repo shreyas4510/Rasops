@@ -76,8 +76,7 @@ function Razorpay({
 
         if (action === ACTIONS.ORDERS) {
             const signature = response.razorpay_signature;
-            const succeeded =
-                CryptoJS.HmacSHA256(`${orderId}|${paymentId}`, env.razorpay.secret).toString() === signature;
+            const succeeded = CryptoJS.HmacSHA256(`${orderId}|${paymentId}`, env.razorpay.secret).toString() === signature;
             if (!succeeded) {
                 toast.error('Failed to verify payment. Please contact support team');
             } else {

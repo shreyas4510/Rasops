@@ -126,11 +126,7 @@ function Managers() {
             id: 'name',
             header: 'Name',
             cell: ({ row }) => {
-                return row?.original?.firstName ? (
-                    <div>{row?.original?.firstName + ' ' + row?.original?.lastName}</div>
-                ) : (
-                    <></>
-                );
+                return row?.original?.firstName ? <div>{row?.original?.firstName + ' ' + row?.original?.lastName}</div> : <></>;
             }
         }),
         columnHelper.display({
@@ -146,8 +142,7 @@ function Managers() {
         columnHelper.display({
             id: 'createdAt',
             header: 'Onboarded',
-            cell: ({ row }) =>
-                row?.original?.createdAt && <div>{moment(row?.original?.createdAt).format('DD-MMM-YYYY')}</div>
+            cell: ({ row }) => row?.original?.createdAt && <div>{moment(row?.original?.createdAt).format('DD-MMM-YYYY')}</div>
         }),
         columnHelper.display({
             id: 'actions',
@@ -218,14 +213,12 @@ function Managers() {
                 description={
                     <>
                         <div>
-                            Are you sure you want to remove{' '}
-                            <span className="fw-bold">{`${selectedRow.firstName} ${selectedRow.lastName}`}</span> from
-                            our app ?
+              Are you sure you want to remove{' '}
+                            <span className="fw-bold">{`${selectedRow.firstName} ${selectedRow.lastName}`}</span> from our app ?
                         </div>
                         <br />
                         <div className="fw-bold">
-                            Note: This action is irreversible and will delete all associated data and listings for this
-                            hotel.
+              Note: This action is irreversible and will delete all associated data and listings for this hotel.
                         </div>
                     </>
                 }

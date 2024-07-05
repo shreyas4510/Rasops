@@ -70,10 +70,7 @@ function Navbars() {
                     <CustomButton
                         className="switch-button mx-4 d-flex align-items-center fw-bold"
                         onClick={() => {
-                            const details = CryptoJS.AES.encrypt(
-                                JSON.stringify({ role: user.role }),
-                                env.cryptoSecret
-                            ).toString();
+                            const details = CryptoJS.AES.encrypt(JSON.stringify({ role: user.role }), env.cryptoSecret).toString();
                             dispatch(setGlobalHotelId(null));
                             localStorage.setItem('data', details);
                             navigate('/hotels');
@@ -81,7 +78,7 @@ function Navbars() {
                         label={
                             <>
                                 <IoCaretBack size={20} className="me-1" />
-                                Owner View
+                Owner View
                             </>
                         }
                         disabled={false}
@@ -101,9 +98,7 @@ function Navbars() {
                             }}
                         >
                             <div className="notification-text">
-                                <span className="m-auto">
-                                    {notificationsData.count > 10 ? '10+' : notificationsData.count}
-                                </span>
+                                <span className="m-auto">{notificationsData.count > 10 ? '10+' : notificationsData.count}</span>
                             </div>
                             <FaBell color="white" size={25} />
                         </div>
@@ -126,7 +121,7 @@ function Navbars() {
                                 dispatch(updateNotificationRequest());
                             }}
                         >
-                            Mark as read
+              Mark as read
                         </NavDropdown.Item>
                     ) : (
                         <></>
@@ -135,9 +130,7 @@ function Navbars() {
                 <NavDropdown
                     key={'user-icon'}
                     data-testid="navbar-options"
-                    title={
-                        <img data-testid="navbar-user" className="p-1 bg-warning user-logo" src={User} alt="user pic" />
-                    }
+                    title={<img data-testid="navbar-user" className="p-1 bg-warning user-logo" src={User} alt="user pic" />}
                     drop="down-start"
                     className="hide-dropdown-arrow mx-3 p-0"
                 >

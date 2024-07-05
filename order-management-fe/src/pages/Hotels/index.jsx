@@ -120,10 +120,7 @@ function Hotels() {
                                     label: 'Check-In',
                                     icon: FaHandPointRight,
                                     onClick: () => {
-                                        if (
-                                            row.original.subscriptions &&
-                                            moment().diff(row.original.subscriptions.endDate) <= 0
-                                        ) {
+                                        if (row.original.subscriptions && moment().diff(row.original.subscriptions.endDate) <= 0) {
                                             const details = CryptoJS.AES.encrypt(
                                                 JSON.stringify({
                                                     role: user.data.role,
@@ -256,13 +253,11 @@ function Hotels() {
                 description={
                     <>
                         <div>
-                            Are you sure you want to remove <span className="fw-bold">{deleteHotelConfirm.name}</span>{' '}
-                            from our app ?
+              Are you sure you want to remove <span className="fw-bold">{deleteHotelConfirm.name}</span> from our app ?
                         </div>
                         <br />
                         <div className="fw-bold">
-                            Note: This action is irreversible and will delete all associated data and listings for this
-                            hotel.
+              Note: This action is irreversible and will delete all associated data and listings for this hotel.
                         </div>
                     </>
                 }

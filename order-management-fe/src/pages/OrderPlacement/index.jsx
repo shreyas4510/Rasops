@@ -264,9 +264,9 @@ function OrderPlacement() {
                 )}
             </div>
             <p className="col-2 text-end m-0">
-                ₹{' '}
+        ₹{' '}
                 {item.menu.price *
-                    (viewOrderDetails.updated[item.id] ? viewOrderDetails.updated[item.id].quantity : item.quantity)}
+          (viewOrderDetails.updated[item.id] ? viewOrderDetails.updated[item.id].quantity : item.quantity)}
             </p>
         </div>
     );
@@ -282,7 +282,7 @@ function OrderPlacement() {
                     <Card.Body className="d-flex flex-column align-items-center justify-content-center py-5 position-relative">
                         <div>
                             <h6 className="text-center" style={{ color: '#FDFD96' }}>
-                                Feedback
+                Feedback
                             </h6>
                             <FormControl
                                 as="textarea"
@@ -296,7 +296,7 @@ function OrderPlacement() {
                         </div>
                         <div className="my-5">
                             <h6 className="text-center" style={{ color: '#FDFD96' }}>
-                                Rating
+                Rating
                             </h6>
                             <Rating
                                 handleClick={(rating) => {
@@ -336,14 +336,9 @@ function OrderPlacement() {
                         <CustomFormGroup name="email" type="email" label="Email" />
                         <CustomFormGroup name="phoneNumber" type="number" label="Phone Number" />
                         <div className="d-flex mt-2 align-items-center">
-                            <CustomFormGroup
-                                name="confirmation"
-                                setFieldValue={setFieldValue}
-                                type="checkbox"
-                                className="none"
-                            />
+                            <CustomFormGroup name="confirmation" setFieldValue={setFieldValue} type="checkbox" className="none" />
                             <p className="label-font text-secondary m-0 mx-2" style={{ fontSize: '12px' }}>
-                                I confirm the details are correct for payments and invoices.
+                I confirm the details are correct for payments and invoices.
                             </p>
                         </div>
                         <CustomButton
@@ -377,25 +372,23 @@ function OrderPlacement() {
                             <OrderView key={`${item.id}-${item.name}`} item={item} />
                         ))}
                         {!Object.values(viewOrderDetails?.data || []).find((obj) => obj.status === ORDER_STATUS[0]) &&
-                            [
-                                { title: 'SGST Price', value: Math.round(viewOrderDetails.totalPrice * (18 / 100)) },
-                                { title: 'CGST Price', value: Math.round(viewOrderDetails.totalPrice * (18 / 100)) },
-                                {
-                                    title: 'Total Price',
-                                    value:
-                                        viewOrderDetails.totalPrice +
-                                        2 * Math.round(viewOrderDetails.totalPrice * (18 / 100))
-                                }
-                            ].map(({ title, value }, key) => (
-                                <div key={`${key}-${title}`} className="d-flex justify-content-between my-2">
-                                    <i className="fw-bold" style={{ color: '#570d0a' }}>
-                                        {title}
-                                    </i>
-                                    <i className="fw-bold" style={{ color: '#570d0a' }}>
-                                        ₹ {value}
-                                    </i>
-                                </div>
-                            ))}
+              [
+                  { title: 'SGST Price', value: Math.round(viewOrderDetails.totalPrice * (18 / 100)) },
+                  { title: 'CGST Price', value: Math.round(viewOrderDetails.totalPrice * (18 / 100)) },
+                  {
+                      title: 'Total Price',
+                      value: viewOrderDetails.totalPrice + 2 * Math.round(viewOrderDetails.totalPrice * (18 / 100))
+                  }
+              ].map(({ title, value }, key) => (
+                  <div key={`${key}-${title}`} className="d-flex justify-content-between my-2">
+                      <i className="fw-bold" style={{ color: '#570d0a' }}>
+                          {title}
+                      </i>
+                      <i className="fw-bold" style={{ color: '#570d0a' }}>
+                    ₹ {value}
+                      </i>
+                  </div>
+              ))}
                     </div>
                 }
                 handleSubmit={handleOrderSubmit}

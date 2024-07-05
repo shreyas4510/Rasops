@@ -1,89 +1,89 @@
 .otm-sidebar {
-    width: 250px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background-color: #08182d;
-    transition: width 0.5s ease;
+  width: 250px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #08182d;
+  transition: width 0.5s ease;
 }
 
 .compressed-sidebar {
-    width: 75px;
+  width: 75px;
 }
 
 /* main content div style */
 .main-container {
-    transition: margin 0.5s;
+  transition: margin 0.5s;
 }
 
 .main-container-full {
-    margin-left: 250px;
+  margin-left: 250px;
 }
 
 .main-container-compress {
-    margin-left: 75px;
+  margin-left: 75px;
 }
 
 /* sidebar options styles */
 .otm-sidebar ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .otm-sidebar ul li {
-    height: 50px;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    cursor: pointer;
-    position: relative;
+  height: 50px;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  cursor: pointer;
+  position: relative;
 }
 
 .otm-sidebar ul li::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: #49ac60;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #49ac60;
 }
 
 /* arrow to compress and full style */
 .arrow {
-    height: 45px;
-    width: 60px;
-    background-color: #49ac60;
-    cursor: pointer;
-    display: flex;
+  height: 45px;
+  width: 60px;
+  background-color: #49ac60;
+  cursor: pointer;
+  display: flex;
 }
 
 .arrow-full {
-    margin-left: auto;
-    border-top-left-radius: 25px;
-    border-bottom-left-radius: 25px;
+  margin-left: auto;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
 }
 
 .arrow-compress {
-    margin-right: auto;
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
+  margin-right: auto;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
 }
 
 /* line hover effect to the sidebar options */
 .otm-sidebar ul li:hover::before,
 .otm-sidebar ul li.active::before {
-    width: 100%;
+  width: 100%;
 }
 
 /* background color for sidebar options on hover and active */
 .otm-sidebar ul li.active,
 .otm-sidebar ul li:hover {
-    background-color: #0d2c4a;
+  background-color: #0d2c4a;
 }
 
 /* color change on hover and active for sidebar options */
@@ -91,32 +91,32 @@
 .otm-sidebar ul li:hover svg,
 .otm-sidebar ul li.active h6,
 .otm-sidebar ul li.active svg {
-    color: #49ac60;
+  color: #49ac60;
 }
 
 /* sidebar scrollbar style */
 .otm-sidebar::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 .otm-sidebar::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 10px;
+  background-color: #888;
+  border-radius: 10px;
 }
 
 .otm-sidebar::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
+  background-color: #555;
 }
 
 .otm-sidebar::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 .tooltip-inner {
-    font-weight: 500;
-    background-color: #49ac60;
+  font-weight: 500;
+  background-color: #49ac60;
 }
 
 .tooltip-arrow::before {
-    border-right-color: #49ac60 !important;
+  border-right-color: #49ac60 !important;
 }

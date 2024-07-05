@@ -33,11 +33,7 @@ function Subscription() {
         'E-Invoice for orders'
     ];
 
-    const customFeatures = [
-        'Discuss your requirements with us',
-        'Flexible pricing and features',
-        'Personalized service'
-    ];
+    const customFeatures = ['Discuss your requirements with us', 'Flexible pricing and features', 'Personalized service'];
 
     return (
         <>
@@ -74,27 +70,24 @@ function Subscription() {
                                 </div>
 
                                 <div className="my-4">
-                                    {(title !== 'Custom'
-                                        ? [...features, `Number of tables upto ${item.tables}`]
-                                        : customFeatures
-                                    ).map((feature, index) => (
-                                        <Row key={`${index}-feature-${feature}`} className="d-flex my-3 m-0">
-                                            <Col className="col-1">
-                                                <FaCircleCheck size={25} color="#49ac60" />
-                                            </Col>
-                                            <Col>
-                                                <p className={`m-0 mx-3 ${index === features.length ? 'fw-bold' : ''}`}>
-                                                    {feature}
-                                                </p>
-                                            </Col>
-                                        </Row>
-                                    ))}
+                                    {(title !== 'Custom' ? [...features, `Number of tables upto ${item.tables}`] : customFeatures).map(
+                                        (feature, index) => (
+                                            <Row key={`${index}-feature-${feature}`} className="d-flex my-3 m-0">
+                                                <Col className="col-1">
+                                                    <FaCircleCheck size={25} color="#49ac60" />
+                                                </Col>
+                                                <Col>
+                                                    <p className={`m-0 mx-3 ${index === features.length ? 'fw-bold' : ''}`}>{feature}</p>
+                                                </Col>
+                                            </Row>
+                                        )
+                                    )}
                                 </div>
                                 {title !== 'Custom' && (
                                     <Card.Text className="text-muted mb-4">
-                                        All features included
+                    All features included
                                         <br />
-                                        Save 10% on yearly subscription
+                    Save 10% on yearly subscription
                                     </Card.Text>
                                 )}
                                 <div className="d-flex justify-content-between mt-auto">
@@ -103,7 +96,7 @@ function Subscription() {
                                             <CustomButton
                                                 label={
                                                     <>
-                                                        Monthly
+                            Monthly
                                                         <br />
                                                         <div className="my-1">{item.monthPrice}</div>
                                                     </>
@@ -117,7 +110,7 @@ function Subscription() {
                                             <CustomButton
                                                 label={
                                                     <>
-                                                        Yearly
+                            Yearly
                                                         <br />
                                                         <div className="my-1">{item.yearPrice}</div>
                                                     </>
@@ -163,9 +156,9 @@ function Subscription() {
                     <div className="text-center">
                         <h5 className="my-2">{confirmation}</h5>
                         <p className="my-4">
-                            Excited to dive into premium content? 🌟
+              Excited to dive into premium content? 🌟
                             <br />
-                            Confirm your subscription and enjoy the ride!
+              Confirm your subscription and enjoy the ride!
                         </p>
                     </div>
                 }

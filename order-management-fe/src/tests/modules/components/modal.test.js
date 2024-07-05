@@ -8,7 +8,7 @@ const testFn = jest.fn();
 
 describe('test otm modal component', () => {
     test('test rendering of otm modal', async () => {
-        // Rendering the OMTModal component with provided props
+    // Rendering the OMTModal component with provided props
         await act(async () => {
             render(
                 <OMTModal

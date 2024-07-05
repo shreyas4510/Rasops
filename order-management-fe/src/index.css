@@ -1,40 +1,40 @@
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-        'Droid Sans', 'Helvetica Neue', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
-    height: 100vh;
+  height: 100vh;
 }
 
 code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 div::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 div::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(73, 172, 96, 0.37);
-    border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(73, 172, 96, 0.37);
+  border-radius: 10px;
 }
 
 div::-webkit-scrollbar-thumb {
-    -webkit-box-shadow: inset 0 0 6px #49ac60;
-    border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px #49ac60;
+  border-radius: 10px;
 }
 
 .accordion-button:not(.collapsed) {
-    color: #08182d;
-    background-color: rgba(73, 172, 96, 0.37);
+  color: #08182d;
+  background-color: rgba(73, 172, 96, 0.37);
 }
 
 .accordion-button:focus {
-    z-index: 3;
-    outline: 0;
-    box-shadow: 2px 2px 5px rgba(73, 172, 96, 0.37);
+  z-index: 3;
+  outline: 0;
+  box-shadow: 2px 2px 5px rgba(73, 172, 96, 0.37);
 }

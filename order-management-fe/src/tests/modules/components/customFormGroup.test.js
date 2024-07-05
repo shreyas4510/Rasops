@@ -6,7 +6,7 @@ import { id, text } from '../../utils/components/dummy.customFormGroup'; // Assu
 
 describe('test custom form group component', () => {
     test('test rendering of form group component', async () => {
-        // Simulate rendering of the CustomFormGroup component within a Formik context
+    // Simulate rendering of the CustomFormGroup component within a Formik context
         await act(async () => {
             render(
                 <Formik initialValues={{}} onSubmit={() => {}}>

@@ -110,13 +110,7 @@ describe('test table components', () => {
         const onSortingChange = jest.fn();
 
         render(
-            <Table
-                columns={columns}
-                data={data}
-                count={data.length}
-                onSortingChange={onSortingChange}
-                sorting={sorting}
-            />
+            <Table columns={columns} data={data} count={data.length} onSortingChange={onSortingChange} sorting={sorting} />
         );
 
         const header = screen.getByText(columnText);
@@ -134,13 +128,7 @@ describe('test table components', () => {
         const onFilterChange = jest.fn();
 
         render(
-            <Table
-                columns={columns}
-                data={data}
-                count={data.length}
-                onFilterChange={onFilterChange}
-                filtering={filtering}
-            />
+            <Table columns={columns} data={data} count={data.length} onFilterChange={onFilterChange} filtering={filtering} />
         );
 
         const input = screen.getByTestId(filterInputTestId);

@@ -32,7 +32,7 @@ self.addEventListener('notificationclick', function (event) {
     const notificationData = event.notification.data;
 
     event.waitUntil(
-        // eslint-disable-next-line no-undef
+    // eslint-disable-next-line no-undef
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             // Check if the URL is already open
             for (const client of clientList) {

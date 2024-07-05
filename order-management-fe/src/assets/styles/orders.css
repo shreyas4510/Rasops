@@ -1,44 +1,44 @@
 .carousel-item-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-    border-radius: 10px;
-    overflow-y: auto;
-    margin: 50px 0px;
-    padding: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  border-radius: 10px;
+  overflow-y: auto;
+  margin: 50px 0px;
+  padding: 50px;
 }
 
 .carousel-content {
-    padding: 20px;
+  padding: 20px;
 }
 
 .carousel-content h3 {
-    font-size: 24px;
-    margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
 .carousel-content p {
-    font-size: 16px;
-    color: #6c757d;
+  font-size: 16px;
+  color: #6c757d;
 }
 
 .order-bill-table td,
 .order-bill-table th {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .table-borders {
-    border: 1px solid rgba(73, 172, 96, 0.37);
+  border: 1px solid rgba(73, 172, 96, 0.37);
 }
 
 .active-orders-container {
-    background-color: rgba(73, 172, 96, 0.37);
-    position: relative;
+  background-color: rgba(73, 172, 96, 0.37);
+  position: relative;
 }
 
 .active-order-done-icon {
-    position: absolute;
-    top: 5px;
-    right: 5px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }

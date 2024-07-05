@@ -199,13 +199,13 @@ function Orders() {
                         <thead className="table-borders">
                             <tr>
                                 <th scope="col" className="col-6 fw-bold">
-                                    Item
+                  Item
                                 </th>
                                 <th scope="col" className="text-center">
-                                    Quantity
+                  Quantity
                                 </th>
                                 <th scope="col" className="text-end">
-                                    Price
+                  Price
                                 </th>
                             </tr>
                         </thead>
@@ -219,25 +219,25 @@ function Orders() {
                             ))}
                             <tr>
                                 <td className="text-end fw-bold" colSpan="2">
-                                    Price :
+                  Price :
                                 </td>
                                 <td className="text-end">{order.price}</td>
                             </tr>
                             <tr>
                                 <td className="text-end fw-bold" colSpan="2">
-                                    SGST :
+                  SGST :
                                 </td>
                                 <td className="text-end">{order.sgst}</td>
                             </tr>
                             <tr>
                                 <td className="text-end fw-bold" colSpan="2">
-                                    CGST :
+                  CGST :
                                 </td>
                                 <td className="text-end">{order.cgst}</td>
                             </tr>
                             <tr>
                                 <td className="text-end fw-bold" colSpan="2">
-                                    Total Price :
+                  Total Price :
                                 </td>
                                 <td className="text-end">{order.totalPrice}</td>
                             </tr>
@@ -336,12 +336,7 @@ function Orders() {
                     {activeOrder.description?.length ? (
                         <Container className="my-4">
                             <h6>Order Updates Description</h6>
-                            <Carousel
-                                className="custom-carousel shadow"
-                                controls={true}
-                                indicators={true}
-                                data-bs-theme="dark"
-                            >
+                            <Carousel className="custom-carousel shadow" controls={true} indicators={true} data-bs-theme="dark">
                                 {(activeOrder?.description || []).map((item, index) => (
                                     <Carousel.Item key={`${index}-order-description`}>
                                         <div className="carousel-item-content pt-4">

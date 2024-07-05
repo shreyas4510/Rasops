@@ -37,7 +37,7 @@ import {
 function Menu() {
     const dispatch = useDispatch();
     const { selectedCategory, modalData, categoriesOptions, categories, menuItems, sorting, filtering, pagination } =
-        useSelector((state) => state.menu);
+    useSelector((state) => state.menu);
     const hotelId = useSelector((state) => state.hotel.globalHotelId);
 
     const onPaginationChange = (paginate) => {
@@ -333,9 +333,9 @@ function Menu() {
                     name: 'warning',
                     type: 'strong',
                     label:
-                        type === 'category'
-                            ? '⚠️ Warning: Deleting categories will remove all menu items linked with them! Please be careful before proceeding!'
-                            : `⚠️ Warning: The action cannot be undone! Please be careful before proceeding!`,
+            type === 'category'
+                ? '⚠️ Warning: Deleting categories will remove all menu items linked with them! Please be careful before proceeding!'
+                : `⚠️ Warning: The action cannot be undone! Please be careful before proceeding!`,
                     className: 'text-center my-2 text-danger'
                 },
                 ...options

@@ -31,10 +31,7 @@ function Tables() {
 
     useEffect(() => {
         if (hotelId && selectedTable.value) {
-            const token = CryptoJS.AES.encrypt(
-                JSON.stringify({ tableId: selectedTable.value }),
-                env.cryptoSecret
-            ).toString();
+            const token = CryptoJS.AES.encrypt(JSON.stringify({ tableId: selectedTable.value }), env.cryptoSecret).toString();
 
             const url = `${env.appUrl}/place/${encodeURIComponent(token)}`;
             dispatch(setTableUrl(url));
@@ -128,9 +125,7 @@ function Tables() {
                 show={tablesModalData}
                 type="form"
                 validationSchema={
-                    tablesModalData.type === 'add'
-                        ? addTableValidationSchema
-                        : () => removeTableValidationSchema(tablesCounts)
+                    tablesModalData.type === 'add' ? addTableValidationSchema : () => removeTableValidationSchema(tablesCounts)
                 }
                 title={tablesModalData?.title}
                 initialValues={tablesModalData?.initialValues || {}}

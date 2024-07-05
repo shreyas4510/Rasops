@@ -25,7 +25,7 @@ jest.mock('crypto-js', () => ({
 describe('test sidebar component', () => {
     // Test to check if the sidebar compresses correctly
     test('test check compress', async () => {
-        // Rendering the Sidebar component
+    // Rendering the Sidebar component
         await act(async () => {
             render(<Sidebar />);
         });
@@ -46,7 +46,7 @@ describe('test sidebar component', () => {
 
     // Test to check if the sidebar expands correctly
     test('test check expand', async () => {
-        // Rendering the Sidebar component
+    // Rendering the Sidebar component
         await act(async () => {
             render(<Sidebar />);
         });

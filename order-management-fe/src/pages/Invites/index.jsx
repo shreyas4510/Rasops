@@ -160,7 +160,7 @@ function Invites() {
                         }}
                         className="py-3 px-4 border-0 send-button"
                     >
-                        Send
+            Send
                     </button>
                 </div>
             </div>

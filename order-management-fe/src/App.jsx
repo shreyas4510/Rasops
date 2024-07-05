@@ -45,7 +45,7 @@ function App() {
                 description={
                     <div>
                         <p className="text-center">
-                            Stay informed about every detail. Receive instant notifications for critical activities.
+              Stay informed about every detail. Receive instant notifications for critical activities.
                         </p>
                         <p className="text-center">Please turn on notifications to stay updated effortlessly.</p>
                     </div>

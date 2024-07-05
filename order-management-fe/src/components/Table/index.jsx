@@ -96,7 +96,7 @@ function Table({
     const Footer = () => (
         <div className="d-flex justify-content-between align-items-center p-2 table-footer">
             <div>
-                Go to : {'  '}
+        Go to : {'  '}
                 <input
                     type="number"
                     className="border p-1 rounded pagination-goto"
@@ -158,7 +158,7 @@ function Table({
                 >
                     {[10, 20, 30, 40, 50].map((pageSize) => (
                         <option key={pageSize} value={pageSize}>
-                            Show {pageSize}
+              Show {pageSize}
                         </option>
                     ))}
                 </select>

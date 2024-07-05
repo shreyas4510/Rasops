@@ -10,8 +10,8 @@ export const invalidToken = {
 };
 
 const token =
-    'U2FsdGVkX1/hOPKfcaDk6uZtWfKOviyT4LKCgc+WTlrmwdIKjUrBPakiy5eyZh0h0kEGKKsHv1rbSSdJUtDSrfvJ/' +
-    'ZP2cm+4maYefOAIVBCD3DICQ79duS5keLL+MpKi';
+  'U2FsdGVkX1/hOPKfcaDk6uZtWfKOviyT4LKCgc+WTlrmwdIKjUrBPakiy5eyZh0h0kEGKKsHv1rbSSdJUtDSrfvJ/' +
+  'ZP2cm+4maYefOAIVBCD3DICQ79duS5keLL+MpKi';
 export const apiFailure = {
     token,
     toastMessage: 'Failed to verify email: Failure',

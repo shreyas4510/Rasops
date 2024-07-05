@@ -79,7 +79,7 @@ describe('test login page', () => {
 
     test('test email and password validations', async () => {
         const { emailValidationErrorText, passwordValidationErrorText, emailValue, passwordValue, loginText } =
-            validCredentials;
+      validCredentials;
 
         render(
             <ReduxProvider>

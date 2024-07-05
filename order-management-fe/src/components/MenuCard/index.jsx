@@ -151,11 +151,7 @@ function MenuCard({
                         ref={(r) => (itemRefs.current[item.id] = r)}
                         name={item.id}
                         type="number"
-                        value={
-                            currentOrder[item.id]
-                                ? currentOrder[item.id]?.quantity || ''
-                                : orders[item.id]?.quantity || ''
-                        }
+                        value={currentOrder[item.id] ? currentOrder[item.id]?.quantity || '' : orders[item.id]?.quantity || ''}
                         placeholder="-"
                         className="form-control px-1 text-center py-1 order-input"
                         onChange={(e) => handleOnChange(e, item)}

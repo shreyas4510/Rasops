@@ -42,8 +42,8 @@ function VerifyUser() {
                 <h4 className="text-center">Hey {name}</h4>
                 <h1 className="fw-bold text-center custom-label">Welcome !!</h1>
                 <p className="text-muted text-center">
-                    Your email has been successfully verified. Please wait for a moment. You will be redirected to the
-                    dashboard shortly.
+          Your email has been successfully verified. Please wait for a moment. You will be redirected to the dashboard
+          shortly.
                 </p>
                 <p className="small text-muted text-center">If you not redirected try login</p>
             </AuthContainer>

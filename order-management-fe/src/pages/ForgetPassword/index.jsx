@@ -40,7 +40,7 @@ const ForgotPassword = () => {
                         />
                         <div className="text-center">
                             <p className="label-font m-0">
-                                Already have an account ? <CustomLink onClick={handleOnClickLogin} text="Login" />
+                Already have an account ? <CustomLink onClick={handleOnClickLogin} text="Login" />
                             </p>
                         </div>
                     </Form>
