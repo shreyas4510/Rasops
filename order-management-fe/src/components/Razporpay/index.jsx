@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
+import CryptoJS from 'crypto-js';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import env from '../../config/env';
-import CryptoJS from 'crypto-js';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { setSubscriptionData, subscriptionSuccessRequest } from '../../store/slice';
 
 const loadScript = (src) =>
@@ -76,7 +76,7 @@ function Razorpay({
 
         if (action === ACTIONS.ORDERS) {
             const signature = response.razorpay_signature;
-            let succeeded =
+            const succeeded =
                 CryptoJS.HmacSHA256(`${orderId}|${paymentId}`, env.razorpay.secret).toString() === signature;
             if (!succeeded) {
                 toast.error('Failed to verify payment. Please contact support team');
@@ -113,6 +113,7 @@ function Razorpay({
             },
             handler: onSuccess,
             modal: {
+                // eslint-disable-next-line camelcase
                 confirm_close: true,
                 ondismiss: handleDismiss
             },
@@ -126,6 +127,7 @@ function Razorpay({
             options = {
                 ...options,
                 amount,
+                // eslint-disable-next-line camelcase
                 order_id: orderId
             };
         }
@@ -133,6 +135,7 @@ function Razorpay({
         if (action === ACTIONS.SUBSCRIPTION) {
             options = {
                 ...options,
+                // eslint-disable-next-line camelcase
                 subscription_id: subscriptionId
             };
         }

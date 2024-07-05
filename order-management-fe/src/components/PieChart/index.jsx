@@ -1,3 +1,4 @@
+import React from 'react';
 import { ResponsivePie } from '@nivo/pie';
 
 function PieChart({ data }) {

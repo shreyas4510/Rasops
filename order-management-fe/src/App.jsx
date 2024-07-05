@@ -1,12 +1,12 @@
-import Routes from './routes';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Bounce, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import './assets/styles/auth.css';
 import './assets/styles/button.css';
+import 'react-toastify/dist/ReactToastify.css';
 import Loader from './components/Loader';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import OMTModal from './components/Modal';
+import Routes from './routes';
 import { setNotification } from './store/slice';
 
 function App() {

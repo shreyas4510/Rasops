@@ -1,10 +1,13 @@
-import { createColumnHelper } from '@tanstack/react-table';
 import React, { useEffect, useState } from 'react';
-import Table from '../../components/Table';
-import { TbUserEdit } from 'react-icons/tb';
+import { createColumnHelper } from '@tanstack/react-table';
+import moment from 'moment';
 import { MdDeleteForever } from 'react-icons/md';
-import OMTModal from '../../components/Modal';
+import { TbUserEdit } from 'react-icons/tb';
 import { useDispatch, useSelector } from 'react-redux';
+import ActionDropdown from '../../components/ActionDropdown';
+import OMTModal from '../../components/Modal';
+import Table from '../../components/Table';
+import { getHotelRequest } from '../../store/slice';
 import {
     getManagersRequest,
     removeManagerRequest,
@@ -13,9 +16,6 @@ import {
     setSelectedRow,
     updateManagerRequest
 } from '../../store/slice/manager.slice';
-import ActionDropdown from '../../components/ActionDropdown';
-import { getHotelRequest } from '../../store/slice';
-import moment from 'moment';
 
 function Managers() {
     const { managerOptions, formInfo, data, selectedRow } = useSelector((state) => state.manager);
@@ -46,36 +46,36 @@ function Managers() {
         };
     };
 
-    /**** pagination state ****/
+    /** ** pagination state ****/
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 10
     });
 
-    /**** sorting state ****/
+    /** ** sorting state ****/
     const [sorting, setSorting] = useState([]);
 
-    /**** filtering state ****/
+    /** ** filtering state ****/
     const [filtering, setFiltering] = useState({});
 
-    /**** table pagination start ****/
+    /** ** table pagination start ****/
     const onPaginationChange = (e) => {
         setPagination(e);
     };
 
-    /**** table filtering start ****/
+    /** ** table filtering start ****/
     const onFilterChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
 
         setFiltering({
             field: name,
-            value: value
+            value
         });
     };
-    /**** table filtering emd ****/
+    /** ** table filtering emd ****/
 
-    /**** table sorting start ****/
+    /** ** table sorting start ****/
     const onSortingChange = (e) => {
         const sortDetails = e()[0];
         const data = [...sorting][0];

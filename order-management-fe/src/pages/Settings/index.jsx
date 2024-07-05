@@ -1,8 +1,12 @@
 import React from 'react';
 import '../../assets/styles/settings.css';
+import CryptoJS from 'crypto-js';
 import { Card, Col, Form, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
 import { FaUserEdit } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import CustomButton from '../../components/CustomButton';
+import OMTModal from '../../components/Modal';
+import env from '../../config/env';
 import {
     setCurrentStep,
     setPaymentActivate,
@@ -10,13 +14,9 @@ import {
     setUpdateModalOptions,
     updateUserRequest
 } from '../../store/slice';
-import OMTModal from '../../components/Modal';
-import { settingsSchema } from '../../validations/auth';
-import env from '../../config/env';
-import CryptoJS from 'crypto-js';
-import CustomButton from '../../components/CustomButton';
-import PaymentActivation from '../PaymentActivation';
 import { NOTIFICATION_PREFERENCE, PAYMENT_PREFERENCE, USER_ROLES } from '../../utils/constants';
+import { settingsSchema } from '../../validations/auth';
+import PaymentActivation from '../PaymentActivation';
 
 const Settings = () => {
     const dispatch = useDispatch();

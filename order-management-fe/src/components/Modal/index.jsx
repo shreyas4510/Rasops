@@ -1,9 +1,8 @@
+import React, { Fragment } from 'react';
 import { Form, Formik } from 'formik';
 import { Modal } from 'react-bootstrap';
-import CustomFormGroup from '../CustomFormGroup';
 import CustomButton from '../CustomButton';
-import { Fragment } from 'react';
-
+import CustomFormGroup from '../CustomFormGroup';
 function OMTModal({
     title,
     type = 'string',

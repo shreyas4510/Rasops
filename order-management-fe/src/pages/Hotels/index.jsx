@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
-import { TiPlus } from 'react-icons/ti';
-import OMTModal from '../../components/Modal';
-import { hotelRegistrationSchema } from '../../validations/hotel';
+import { createColumnHelper } from '@tanstack/react-table';
 import CryptoJS from 'crypto-js';
-import env from '../../config/env';
+import moment from 'moment';
+import { FaHandPointRight } from 'react-icons/fa';
+import { MdEditDocument, MdDeleteForever } from 'react-icons/md';
+import { TiPlus } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FaHandPointRight } from 'react-icons/fa';
-import { MdEditDocument } from 'react-icons/md';
-import { MdDeleteForever } from 'react-icons/md';
+import ActionDropdown from '../../components/ActionDropdown';
+import CustomButton from '../../components/CustomButton';
+import OMTModal from '../../components/Modal';
+import Table from '../../components/Table';
+import env from '../../config/env';
 import {
     createHotelRequest,
     getHotelRequest,
@@ -19,13 +22,8 @@ import {
     getAssignableManagerRequest,
     setGlobalHotelId
 } from '../../store/slice/hotel.slice';
-import { createColumnHelper } from '@tanstack/react-table';
-import Table from '../../components/Table';
-import ActionDropdown from '../../components/ActionDropdown';
 import { getHotelUpdateDifference } from '../../utils/helpers.js';
-import CustomButton from '../../components/CustomButton';
-import moment from 'moment';
-
+import { hotelRegistrationSchema } from '../../validations/hotel';
 function Hotels() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);

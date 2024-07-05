@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
+import React, { useState } from 'react';
 import CryptoJS from 'crypto-js';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
+import { useDispatch, useSelector } from 'react-redux';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Logo from '../../assets/images/rasops.png';
 import '../../assets/styles/sidebar.css';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import env from '../../config/env';
-import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../Loader';
-import { USER_ROLES, COMMON_TABS, MANAGER_TABS, OWNER_TABS } from '../../utils/constants';
-import NoHotel from '../NoHotel';
 import { logoutRequest } from '../../store/slice';
+import { USER_ROLES, COMMON_TABS, MANAGER_TABS, OWNER_TABS } from '../../utils/constants';
+import Loader from '../Loader';
+import NoHotel from '../NoHotel';
 
 function Sidebar() {
     const [compress, setCompress] = useState(false);

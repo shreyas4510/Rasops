@@ -23,8 +23,10 @@ module.exports = {
         'no-extra-semi': 'error',
         eqeqeq: 'error',
         'no-undef': 'error',
+        'react/react-in-jsx-scope': 'error',
         'comma-dangle': ['error', 'never'],
         'arrow-spacing': 'error',
+        'react/prop-types': 'off',
         'prefer-const': 'error',
         'no-mixed-spaces-and-tabs': 'error',
         'object-curly-spacing': ['error', 'always'],
@@ -34,6 +36,7 @@ module.exports = {
         'linebreak-style': ['error', 'unix'],
         'space-before-function-paren': 'off',
         'generator-star-spacing': 'off',
+        'multiline-ternary': 'off',
         'import/order': [
             'error',
             {

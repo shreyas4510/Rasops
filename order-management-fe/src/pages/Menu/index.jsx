@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
-import CustomSelect from '../../components/CustomSelect';
-import { TiPlus } from 'react-icons/ti';
-import ActionDropdown from '../../components/ActionDropdown';
-import Table from '../../components/Table';
+import React, { useEffect } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
-import '../../assets/styles/menu.css';
+import moment from 'moment/moment';
+import { IoCloseSharp } from 'react-icons/io5';
+import { MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
+import { TiPlus } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
+import ActionDropdown from '../../components/ActionDropdown';
+import CustomSelect from '../../components/CustomSelect';
 import OMTModal from '../../components/Modal';
+import NoData from '../../components/NoData/index.jsx';
+import Table from '../../components/Table';
+import '../../assets/styles/menu.css';
 import {
     createCategoryRequest,
     createMenuItemRequest,
@@ -23,16 +26,13 @@ import {
     updateCategoryRequest,
     updateMenuItemsRequest
 } from '../../store/slice/menu.slice';
-import moment from 'moment/moment';
-import { IoCloseSharp } from 'react-icons/io5';
+import { MENU_STATUS } from '../../utils/constants.js';
 import {
     defaultValidation,
     validateCreateCategory,
     validateCreateMenuItem,
     validateUpdateCategory
 } from '../../validations/menu.js';
-import NoData from '../../components/NoData/index.jsx';
-import { MENU_STATUS } from '../../utils/constants.js';
 
 function Menu() {
     const dispatch = useDispatch();
@@ -75,7 +75,7 @@ function Menu() {
         dispatch(
             setFiltering({
                 field: name,
-                value: value
+                value
             })
         );
     };
@@ -134,24 +134,24 @@ function Menu() {
 
     const handleAddButtonClick = (modalData, values, type) => {
         const { options } = modalData;
-        const { add_button, ...rest } = options;
+        const { 'add-button': addButton, ...rest } = options;
         const secondInput = type === 'category' ? 'order' : 'price';
 
         const updatedOps = { ...rest };
         const key = moment().valueOf();
-        ['name', secondInput, 'icon'].map((item) => {
-            const iconKey = Object.keys(updatedOps).find((key) => key.startsWith(`${item}_`));
-            updatedOps[`${item}_${key}`] = {
+        ['name', secondInput, 'icon'].forEach((item) => {
+            const iconKey = Object.keys(updatedOps).find((key) => key.startsWith(`${item}-`));
+            updatedOps[`${item}-${key}`] = {
                 ...rest[iconKey],
-                name: `${item}_${key}`
+                name: `${item}-${key}`
             };
         });
-        updatedOps.add_button = add_button;
+        updatedOps['add-button'] = addButton;
 
         const updatedInitialVals = {
             ...values,
-            [`name_${key}`]: '',
-            [`${secondInput}_${key}`]: ''
+            [`name-${key}`]: '',
+            [`${secondInput}-${key}`]: ''
         };
 
         modalData = {
@@ -167,15 +167,15 @@ function Menu() {
         const { options, initialValues } = modalData;
         const secondInput = type === 'category' ? 'order' : 'price';
 
-        let updatedOptions = { ...options };
-        let updatedInitialVals = { ...initialValues };
+        const updatedOptions = { ...options };
+        const updatedInitialVals = { ...initialValues };
 
-        delete updatedOptions[`name_${id}`];
-        delete updatedOptions[`${secondInput}_${id}`];
-        delete updatedOptions[`icon_${id}`];
+        delete updatedOptions[`name-${id}`];
+        delete updatedOptions[`${secondInput}-${id}`];
+        delete updatedOptions[`icon-${id}`];
 
-        delete updatedInitialVals[`name_${id}`];
-        delete updatedInitialVals[`${secondInput}_${id}`];
+        delete updatedInitialVals[`name-${id}`];
+        delete updatedInitialVals[`${secondInput}-${id}`];
 
         modalData = {
             ...modalData,
@@ -188,13 +188,13 @@ function Menu() {
     };
 
     const handleAddItemClick = (type) => {
-        const nameKey = 'name_0';
-        const secondInput = type === 'category' ? 'order_0' : 'price_0';
+        const nameKey = 'name-0';
+        const secondInput = type === 'category' ? 'order-0' : 'price-0';
 
         let addOptions = {
             title: type === 'category' ? 'Create Category' : 'Create Menu',
             type: type === 'category' ? 'create' : 'createmenu',
-            initialValues: { name_0: '', [secondInput]: '' },
+            initialValues: { 'name-0': '', [secondInput]: '' },
             options: {
                 [nameKey]: {
                     name: nameKey,
@@ -208,8 +208,8 @@ function Menu() {
                     label: type === 'category' ? 'Order' : 'Price',
                     className: 'col-5 my-2'
                 },
-                icon_0: {
-                    name: 'icon_0',
+                'icon-0': {
+                    name: 'icon-0',
                     type: 'icon',
                     icon: IoCloseSharp,
                     className: 'col my-2 align-self-end w-100 pointer',
@@ -217,8 +217,8 @@ function Menu() {
                         addOptions = handleRemoveClick(id, addOptions, type);
                     }
                 },
-                add_button: {
-                    name: 'add_button',
+                'add-button': {
+                    name: 'add-button',
                     type: 'button',
                     label: 'Add',
                     className: 'col my-2 ms-auto w-100',
@@ -265,7 +265,7 @@ function Menu() {
             initialValues = {
                 name: data.name,
                 price: data.price,
-                status: data.status === MENU_STATUS[0] ? true : false
+                status: data.status === MENU_STATUS[0]
             };
 
             options = {
@@ -284,14 +284,14 @@ function Menu() {
                 status: {
                     name: 'status',
                     type: 'switch',
-                    checked: data.status === MENU_STATUS[0] ? true : false,
+                    checked: data.status === MENU_STATUS[0],
                     label: 'Status',
                     className: 'col-12 my-2'
                 }
             };
         }
 
-        let updateOptions = {
+        const updateOptions = {
             title: type === 'category' ? 'Update Category' : 'Update Menu Item',
             type: type === 'category' ? 'update' : 'updatemenu',
             initialValues,
@@ -311,7 +311,7 @@ function Menu() {
         const { rows } = type === 'category' ? categories : menuItems;
         const { options, initialValues } = rows.reduce(
             (cur, next) => {
-                const key = `category_${next.id}`;
+                const key = `category-${next.id}`;
                 cur.options[key] = {
                     name: key,
                     type: 'checkbox',
@@ -324,7 +324,7 @@ function Menu() {
             { initialValues: {}, options: {} }
         );
 
-        let removeOptions = {
+        const removeOptions = {
             title: type === 'category' ? 'Remove Categories' : 'Remove Menu Items',
             type: type === 'category' ? 'remove' : 'removemenu',
             initialValues,
@@ -353,7 +353,7 @@ function Menu() {
 
         if (['create', 'createmenu'].includes(modalData.type)) {
             const payload = Object.entries(values).reduce((cur, next) => {
-                const obj = next[0].split('_');
+                const obj = next[0].split('-');
                 if (!cur[obj[1]]) cur[obj[1]] = {};
                 cur[obj[1]][obj[0]] = next[1];
                 return cur;
@@ -379,7 +379,7 @@ function Menu() {
 
         if (['update', 'updatemenu'].includes(modalData.type)) {
             const data = {};
-            Object.keys(values).map((key) => {
+            Object.keys(values).forEach((key) => {
                 if (values[key] !== modalData.initialValues[key]) data[key] = values[key];
             });
 
@@ -405,7 +405,7 @@ function Menu() {
 
         if (['remove', 'removemenu'].includes(modalData.type)) {
             const itemIds = Object.entries(values).reduce((cur, [key, value]) => {
-                const id = key.split('_')[1];
+                const id = key.split('-')[1];
                 if (value) cur.push(id);
                 return cur;
             }, []);
