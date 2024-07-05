@@ -15,6 +15,10 @@ app.use(cors({ origin: '*' }));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+app.get('/', (_req, res) => {
+    res.send('Welcome to Rasops');
+});
+
 // prefix for all the routes
 app.use('/api', routes);
 
