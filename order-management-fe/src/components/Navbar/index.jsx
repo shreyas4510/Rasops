@@ -1,13 +1,15 @@
+import React, { useEffect } from 'react';
+import CryptoJS from 'crypto-js';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { FaBell } from 'react-icons/fa';
+import { IoCaretBack } from 'react-icons/io5';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import User from '../../assets/images/user.png';
 import '../../assets/styles/navbar.css';
-import CustomButton from '../CustomButton';
-import { useDispatch, useSelector } from 'react-redux';
-import { Fragment, useEffect } from 'react';
+import env from '../../config/env';
 import {
     getNotificationRequest,
     getUserRequest,
@@ -16,10 +18,8 @@ import {
     setNotificationData,
     updateNotificationRequest
 } from '../../store/slice';
-import CryptoJS from 'crypto-js';
-import env from '../../config/env';
-import { IoCaretBack } from 'react-icons/io5';
 import { USER_ROLES } from '../../utils/constants';
+import CustomButton from '../CustomButton';
 
 function Navbars() {
     const user = useSelector((state) => state.user.data);

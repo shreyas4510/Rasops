@@ -1,16 +1,15 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { getDashboardRequest } from '../../store/slice';
-import { BiSolidDish } from 'react-icons/bi';
+import { BiSolidDish, BiSolidFoodMenu } from 'react-icons/bi';
+import { FaRupeeSign } from 'react-icons/fa';
 import { FaUserTie } from 'react-icons/fa6';
 import { MdTableBar } from 'react-icons/md';
-import { FaRupeeSign } from 'react-icons/fa';
-import { BiSolidFoodMenu } from 'react-icons/bi';
-import LineChart from '../../components/LineChart';
-import PieChart from '../../components/PieChart';
+import { useDispatch, useSelector } from 'react-redux';
 import BarChart from '../../components/BarChart';
+import LineChart from '../../components/LineChart';
 import NoData from '../../components/NoData';
+import PieChart from '../../components/PieChart';
+import { getDashboardRequest } from '../../store/slice';
 
 function Dashboard() {
     const dispatch = useDispatch();

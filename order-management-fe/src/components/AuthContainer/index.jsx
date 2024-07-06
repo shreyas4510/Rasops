@@ -1,6 +1,6 @@
+import React from 'react';
 import moment from 'moment';
 import { Card, CardBody, Container } from 'react-bootstrap';
-
 function AuthContainer({ children, title = '' }) {
     return (
         <div className="view d-flex align-items-center m-0">

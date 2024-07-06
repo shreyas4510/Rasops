@@ -1,11 +1,11 @@
-import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
 import React, { useEffect, useRef } from 'react';
-import { TiArrowSortedDown, TiArrowSortedUp } from 'react-icons/ti';
+import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import moment from 'moment';
 import { FaCaretRight, FaCaretLeft } from 'react-icons/fa6';
 import { PiCaretDoubleRightFill, PiCaretDoubleLeftFill } from 'react-icons/pi';
+import { TiArrowSortedDown, TiArrowSortedUp } from 'react-icons/ti';
 import '../../assets/styles/table.css';
 import NoData from '../NoData';
-import moment from 'moment';
 
 const defaultPagination = {
     pageIndex: 0,

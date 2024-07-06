@@ -1,13 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Form, Formik } from 'formik';
-import { emailSchema } from '../../validations/auth';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import AuthContainer from '../../components/AuthContainer';
+import CustomButton from '../../components/CustomButton';
 import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomLink from '../../components/CustomLink';
-import CustomButton from '../../components/CustomButton';
-import { useDispatch } from 'react-redux';
 import { forgotPasswordRequest } from '../../store/slice';
+import { emailSchema } from '../../validations/auth';
 
 const ForgotPassword = () => {
     const navigate = useNavigate();

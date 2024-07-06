@@ -1,8 +1,9 @@
+import React from 'react';
 import { ErrorMessage, Field } from 'formik';
+import moment from 'moment';
 import { Form, FormGroup, FormLabel } from 'react-bootstrap';
 import Select from 'react-select';
 import CustomButton from '../CustomButton';
-import moment from 'moment';
 import '../../assets/styles/formGroup.css';
 
 function CustomFormGroup({

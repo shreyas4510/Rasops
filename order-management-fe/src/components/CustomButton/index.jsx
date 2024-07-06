@@ -24,4 +24,5 @@ const CustomButton = React.forwardRef((props, ref) => {
     );
 });
 
+CustomButton.displayName = 'CustomButton';
 export default CustomButton;

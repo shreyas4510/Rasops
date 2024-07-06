@@ -1,23 +1,23 @@
+import React, { useEffect, useRef } from 'react';
+import CryptoJS from 'crypto-js';
 import { Form, Formik } from 'formik';
-import Stepper from '../../components/Stepper';
-import CustomFormGroup from '../../components/CustomFormGroup';
-import { BUSINESS_CATEGORIES, BUSINESS_SUB_CATEGORIES, BUSINESS_TYPES } from '../../utils/constants';
-import { convertToTitleCase } from '../../utils/helpers';
 import { Accordion } from 'react-bootstrap';
-import {
-    bankDetailsSchema,
-    businessDetailsSchema,
-    stakeholderDetailsSchema
-} from '../../validations/paymentActivation';
-import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import CustomFormGroup from '../../components/CustomFormGroup';
+import Stepper from '../../components/Stepper';
+import env from '../../config/env';
 import {
     saveBankDetailsRequest,
     saveBusinessDetailsRequest,
     saveStakeholderDetailsRequest
 } from '../../store/slice/paymentActivation.slice';
-import env from '../../config/env';
-import CryptoJS from 'crypto-js';
+import { BUSINESS_CATEGORIES, BUSINESS_SUB_CATEGORIES, BUSINESS_TYPES } from '../../utils/constants';
+import { convertToTitleCase } from '../../utils/helpers';
+import {
+    bankDetailsSchema,
+    businessDetailsSchema,
+    stakeholderDetailsSchema
+} from '../../validations/paymentActivation';
 
 const PaymentActivation = () => {
     const state = useSelector((state) => state.paymentActivation);
@@ -354,10 +354,11 @@ const PaymentActivation = () => {
             case 2:
                 dispatch(saveStakeholderDetailsRequest({ step, payload }));
                 break;
-            case 3:
+            case 3: {
                 const token = CryptoJS.AES.encrypt(JSON.stringify(payload), env.cryptoSecret).toString();
                 dispatch(saveBankDetailsRequest({ token }));
                 break;
+            }
             default:
                 break;
         }

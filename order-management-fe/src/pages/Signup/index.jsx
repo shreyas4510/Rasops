@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
-import { Formik, Form } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import CryptoJS from 'crypto-js';
-import { userRegistrationSchema } from '../../validations/auth';
-import env from '../../config/env';
-import AuthContainer from '../../components/AuthContainer';
-import CustomFormGroup from '../../components/CustomFormGroup';
-import CustomButton from '../../components/CustomButton';
-import CustomLink from '../../components/CustomLink';
+import { Formik, Form } from 'formik';
+import { Col, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import AuthContainer from '../../components/AuthContainer';
+import CustomButton from '../../components/CustomButton';
+import CustomFormGroup from '../../components/CustomFormGroup';
+import CustomLink from '../../components/CustomLink';
+import env from '../../config/env';
 import { registerRequest } from '../../store/slice';
+import { userRegistrationSchema } from '../../validations/auth';
 
 function Signup() {
     const [initialValues, setInitialValues] = useState({
