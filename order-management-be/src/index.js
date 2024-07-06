@@ -14,14 +14,17 @@ const startServer = async () => {
         logger('info', '🔗 Establishing Notification connection...');
         await initNotifications();
 
-        logger('info', `🌐 Server running on port ${env.app.port}...`);
-        app.listen(env.app.port, () => {
-            logger('info', `✅ Server started successfully on port ${env.app.port}.`);
+        const port = process.env.PORT || env.app.port;
+        logger('info', `🌐 Server running on port ${port}...`);
+        app.listen(port, () => {
+            logger('info', `✅ Server started successfully on port ${port}.`);
         });
 
         app.on('error', (error) => {
             logger('error', `❌ Error starting server: ${error}`);
         });
+
+        return app;
     } catch (error) {
         logger('error', `❌ Error starting server: ${error}`);
     }
