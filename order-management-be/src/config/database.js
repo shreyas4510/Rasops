@@ -1,3 +1,4 @@
+import mysql2 from 'mysql2';
 import { Sequelize } from 'sequelize';
 import defineAssociations from '../api/models/associations.js';
 import categoryModel from '../api/models/category.model.js';
@@ -21,6 +22,7 @@ import logger from './logger.js';
 const config = {
     host: env.db.host,
     dialect: env.db.dialect,
+    dialectModule: mysql2,
     port: env.db.port,
     username: env.db.user,
     password: env.db.password
