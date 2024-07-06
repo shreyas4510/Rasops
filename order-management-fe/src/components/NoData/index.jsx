@@ -1,3 +1,4 @@
+import React from 'react';
 import NoDataLogo from '../../assets/images/no-data.png';
 
 function NoData({ className = '' }) {

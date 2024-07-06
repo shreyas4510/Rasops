@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Form, Formik } from 'formik';
 import CryptoJS from 'crypto-js';
-import { toast } from 'react-toastify';
-import { passwordSchema } from '../../validations/auth';
-import env from '../../config/env';
-import AuthContainer from '../../components/AuthContainer';
-import CustomFormGroup from '../../components/CustomFormGroup';
-import CustomButton from '../../components/CustomButton';
+import { Form, Formik } from 'formik';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import AuthContainer from '../../components/AuthContainer';
+import CustomButton from '../../components/CustomButton';
+import CustomFormGroup from '../../components/CustomFormGroup';
+import env from '../../config/env';
 import { resetPasswordRequest } from '../../store/slice';
+import { passwordSchema } from '../../validations/auth';
 
 const ResetPassword = () => {
     const [data, setData] = useState('');
@@ -38,7 +38,6 @@ const ResetPassword = () => {
                 toast.error(`Failed to verify email: ${err.message}`);
             }
         })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSubmit = (values, { setSubmitting }) => {

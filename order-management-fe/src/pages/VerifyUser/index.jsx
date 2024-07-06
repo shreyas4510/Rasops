@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
-import WelcomeImage from '../../assets/images/welcome.png';
-import env from '../../config/env';
-import AuthContainer from '../../components/AuthContainer';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import WelcomeImage from '../../assets/images/welcome.png';
+import AuthContainer from '../../components/AuthContainer';
+import env from '../../config/env';
 import { verifyRequest } from '../../store/slice';
 
 function VerifyUser() {
@@ -33,7 +33,6 @@ function VerifyUser() {
                 toast.error(`Failed to verify email: ${err.message}`);
             }
         })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

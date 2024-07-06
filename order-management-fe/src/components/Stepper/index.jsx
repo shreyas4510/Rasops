@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import CustomButton from '../CustomButton';
 import '../../assets/styles/stepper.css';

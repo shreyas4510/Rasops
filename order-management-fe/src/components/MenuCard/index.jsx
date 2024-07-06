@@ -1,12 +1,12 @@
+import React, { useEffect, useRef } from 'react';
 import { Card } from 'react-bootstrap';
 import '../../assets/styles/menuCard.css';
 import { BiSolidCategoryAlt } from 'react-icons/bi';
-import { TbTopologyStarRing2 } from 'react-icons/tb';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { IoMdDoneAll } from 'react-icons/io';
-import Chef from '../../assets/images/chef.png';
+import { TbTopologyStarRing2 } from 'react-icons/tb';
 import { TiArrowRightThick } from 'react-icons/ti';
-import { useEffect, useRef } from 'react';
+import Chef from '../../assets/images/chef.png';
 
 const types = {
     cover: 'COVER',

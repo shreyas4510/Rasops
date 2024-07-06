@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
-import { IoRocket } from 'react-icons/io5';
 import { FaCircleCheck } from 'react-icons/fa6';
-import CustomButton from '../../components/CustomButton';
 import { GiQueenCrown } from 'react-icons/gi';
+import { IoRocket } from 'react-icons/io5';
 import { RiCustomerService2Fill } from 'react-icons/ri';
 import '../../assets/styles/subscription.css';
-import Razorpay, { ACTIONS } from '../../components/Razporpay';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { setConfirmation, setHotelDetails, subscriptionRequest } from '../../store/slice';
+import CustomButton from '../../components/CustomButton';
 import OMTModal from '../../components/Modal';
+import Razorpay, { ACTIONS } from '../../components/Razporpay';
+import { setConfirmation, setHotelDetails, subscriptionRequest } from '../../store/slice';
 
 function Subscription() {
     const { state } = useLocation();

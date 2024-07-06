@@ -1,3 +1,4 @@
+import React from 'react';
 import Select from 'react-select';
 
 function CustomSelect({ value = {}, onChange = () => {}, className = '', options = [], onInputChange = () => {} }) {

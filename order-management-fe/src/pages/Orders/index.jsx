@@ -1,6 +1,15 @@
+import React, { useEffect } from 'react';
+import { createColumnHelper } from '@tanstack/react-table';
+import debounce from 'lodash.debounce';
+import { Carousel, Col, Container, Form, Row } from 'react-bootstrap';
+import { BsInfoCircleFill } from 'react-icons/bs';
+import { IoCheckmarkDoneCircle } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomSelect from '../../components/CustomSelect';
-import { useEffect } from 'react';
+import OMTModal from '../../components/Modal';
+import '../../assets/styles/orders.css';
+import NoData from '../../components/NoData';
+import Table from '../../components/Table';
 import {
     getActiveOrderRequest,
     getCompletedOrdersRequest,
@@ -15,16 +24,7 @@ import {
     updatePendingOrderRequest,
     updateUserRequest
 } from '../../store/slice';
-import debounce from 'lodash.debounce';
-import { Carousel, Col, Container, Form, Row } from 'react-bootstrap';
-import Table from '../../components/Table';
-import { createColumnHelper } from '@tanstack/react-table';
-import { BsInfoCircleFill } from 'react-icons/bs';
-import { IoCheckmarkDoneCircle } from 'react-icons/io5';
-import OMTModal from '../../components/Modal';
-import '../../assets/styles/orders.css';
 import { NOTIFICATION_ACTIONS, ORDER_PREFERENCE, ORDER_STATUS } from '../../utils/constants';
-import NoData from '../../components/NoData';
 
 function Orders() {
     const dispatch = useDispatch();
@@ -68,6 +68,7 @@ function Orders() {
                     if (selectedTable.value === meta.tableId) {
                         dispatch(getActiveOrderRequest(meta.tableId));
                     }
+                    break;
                 case NOTIFICATION_ACTIONS.PAYMENT_REQUEST:
                     dispatch(
                         setPaymentRequest({
@@ -78,6 +79,7 @@ function Orders() {
                             customerId: meta.customerId
                         })
                     );
+                    break;
                 default:
                     break;
             }

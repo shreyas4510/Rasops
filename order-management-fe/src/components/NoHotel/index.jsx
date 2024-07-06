@@ -1,3 +1,4 @@
+import React from 'react';
 import Hotel from '../../assets/images/hotel.png';
 
 function NoHotel() {

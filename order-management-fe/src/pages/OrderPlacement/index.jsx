@@ -1,8 +1,19 @@
-import { Fragment, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
 import CryptoJS from 'crypto-js';
-import env from '../../config/env';
+import { Form, Formik } from 'formik';
+import { Card, FormControl } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import AuthContainer from '../../components/AuthContainer';
+import CustomButton from '../../components/CustomButton';
+import CustomFormGroup from '../../components/CustomFormGroup';
+import Loader from '../../components/Loader';
+import MenuCard from '../../components/MenuCard';
+import OMTModal from '../../components/Modal';
+import Rating from '../../components/Rating';
+import Razorpay, { ACTIONS } from '../../components/Razporpay';
+import env from '../../config/env';
 import {
     getMenuDetailsRequest,
     getOrderDetailsRequest,
@@ -19,19 +30,8 @@ import {
     setUpdatedOrderDetails,
     setViewOrderDetails
 } from '../../store/slice';
-import AuthContainer from '../../components/AuthContainer';
-import { Form, Formik } from 'formik';
-import CustomFormGroup from '../../components/CustomFormGroup';
-import CustomButton from '../../components/CustomButton';
-import { customerRegistrationSchema } from '../../validations/orderPlacement';
-import MenuCard from '../../components/MenuCard';
-import Loader from '../../components/Loader';
-import OMTModal from '../../components/Modal';
 import { NOTIFICATION_ACTIONS, ORDER_STATUS, PAYMENT_PREFERENCE, TABLE_STATUS } from '../../utils/constants';
-import { toast } from 'react-toastify';
-import Razorpay, { ACTIONS } from '../../components/Razporpay';
-import { Card, FormControl } from 'react-bootstrap';
-import Rating from '../../components/Rating';
+import { customerRegistrationSchema } from '../../validations/orderPlacement';
 
 function OrderPlacement() {
     const { token } = useParams();
@@ -152,14 +152,15 @@ function OrderPlacement() {
             case 'category':
                 dispatch(setCurrentPage(1));
                 break;
-            case 'check-in':
+            case 'check-in': {
                 const pageNo = menuCard?.mapping[id] || 0;
                 dispatch(setCurrentPage(pageNo));
                 break;
+            }
             case 'view':
                 dispatch(getOrderDetailsRequest(tableDetails.customer.id));
                 break;
-            case 'place':
+            case 'place': {
                 const menus = { ...orderDetails };
                 if (!Object.values(menus).length) {
                     toast.warn('Order is empty please add menu items.');
@@ -176,6 +177,7 @@ function OrderPlacement() {
                     })
                 );
                 break;
+            }
             default:
                 break;
         }

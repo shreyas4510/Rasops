@@ -1,9 +1,15 @@
-import CustomSelect from '../../components/CustomSelect';
-import NoData from '../../components/NoData';
-import OMTModal from '../../components/Modal';
-import { addTableValidationSchema, removeTableValidationSchema } from '../../validations/tables';
+import React, { useEffect } from 'react';
+import CryptoJS from 'crypto-js';
+import debounce from 'lodash.debounce';
+import { QRCodeSVG } from 'qrcode.react';
+import { MdDeleteForever } from 'react-icons/md';
+import { TiPlus } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import ActionDropdown from '../../components/ActionDropdown';
+import CustomSelect from '../../components/CustomSelect';
+import OMTModal from '../../components/Modal';
+import NoData from '../../components/NoData';
+import env from '../../config/env';
 import {
     addTablesRequest,
     getTablesRequest,
@@ -12,13 +18,7 @@ import {
     setTableModalData,
     setTableUrl
 } from '../../store/slice';
-import { QRCodeSVG } from 'qrcode.react';
-import env from '../../config/env';
-import { TiPlus } from 'react-icons/ti';
-import ActionDropdown from '../../components/ActionDropdown';
-import { MdDeleteForever } from 'react-icons/md';
-import debounce from 'lodash.debounce';
-import CryptoJS from 'crypto-js';
+import { addTableValidationSchema, removeTableValidationSchema } from '../../validations/tables';
 
 function Tables() {
     const dispatch = useDispatch();

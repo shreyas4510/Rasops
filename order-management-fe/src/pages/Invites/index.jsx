@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { emailRegex } from '../../validations/auth';
+import React, { useEffect, useState } from 'react';
 import '../../assets/styles/invite.css';
-import Table from '../../components/Table';
 import { createColumnHelper } from '@tanstack/react-table';
 import moment from 'moment';
-import OMTModal from '../../components/Modal';
-import { useDispatch } from 'react-redux';
 import { MdDeleteForever } from 'react-icons/md';
+import { useDispatch, useSelector } from 'react-redux';
+import ActionDropdown from '../../components/ActionDropdown';
+import OMTModal from '../../components/Modal';
+import Table from '../../components/Table';
 import {
     inviteUserRequest,
     listInviteRequest,
@@ -15,26 +15,24 @@ import {
     setRemoveInvite,
     setSelectedInvite
 } from '../../store/slice/invite.slice';
-import { useSelector } from 'react-redux';
-import ActionDropdown from '../../components/ActionDropdown';
-
+import { emailRegex } from '../../validations/auth';
 function Invites() {
     const dispatch = useDispatch();
     const { change, email, inviteData, isRemoveInvite, selectedInvite } = useSelector((state) => state.invite);
 
-    /**** sorting state ****/
+    /** ** sorting state ****/
     const [sorting, setSorting] = useState([]);
 
-    /**** filtering state ****/
+    /** ** filtering state ****/
     const [filtering, setFiltering] = useState({});
 
-    /**** pagination state ****/
+    /** ** pagination state ****/
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 10
     });
 
-    /**** table pagination start ****/
+    /** ** table pagination start ****/
     const onPaginationChange = (e) => {
         setPagination(e);
     };
@@ -42,9 +40,9 @@ function Invites() {
     useEffect(() => {
         getInvites();
     }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value, change]);
-    /**** table pagination end ****/
+    /** ** table pagination end ****/
 
-    /**** table sorting start ****/
+    /** ** table sorting start ****/
     const onSortingChange = (e) => {
         const sortDetails = e()[0];
         const data = [...sorting][0];
@@ -55,19 +53,19 @@ function Invites() {
 
         setSorting([{ ...data, desc: !data.desc }]);
     };
-    /**** table sorting end ****/
+    /** ** table sorting end ****/
 
-    /**** table filtering start ****/
+    /** ** table filtering start ****/
     const onFilterChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
 
         setFiltering({
             field: name,
-            value: value
+            value
         });
     };
-    /**** table filtering emd ****/
+    /** ** table filtering emd ****/
 
     const getInvites = async () => {
         const params = {
@@ -124,7 +122,6 @@ function Invites() {
                             {
                                 label: 'Delete',
                                 icon: MdDeleteForever,
-                                onClick: setRemoveInvite,
                                 meta: { id: row.original.id },
                                 onClick: () => {
                                     dispatch(setSelectedInvite(row.original.id));

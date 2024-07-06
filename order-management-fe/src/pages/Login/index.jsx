@@ -1,17 +1,18 @@
-import { useNavigate } from 'react-router-dom';
-import { Form, Formik } from 'formik';
+import React from 'react';
 import CryptoJS from 'crypto-js';
+import { Form, Formik } from 'formik';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import AuthContainer from '../../components/AuthContainer';
-import { loginSchema } from '../../validations/auth';
-import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomButton from '../../components/CustomButton';
+import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomLink from '../../components/CustomLink';
 import env from '../../config/env';
 import { loginRequest } from '../../store/slice';
+import { loginSchema } from '../../validations/auth';
 
 function Login() {
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleOnClickSignup = (e) => {
@@ -52,7 +53,8 @@ function Login() {
                         />
                         <div className="text-center">
                             <p className="label-font m-0">
-                                Don't have an account ? <CustomLink onClick={handleOnClickSignup} text="Sign Up" />
+                                {`Don't have an account ?`}
+                                <CustomLink onClick={handleOnClickSignup} text="Sign Up" />
                             </p>
                             <p className="label-font m-0">
                                 <CustomLink text="Forgot your password ?" onClick={handleOnClickForgotPassword} />

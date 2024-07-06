@@ -1,22 +1,23 @@
+import React from 'react';
 import { Routes as Switch, Route, BrowserRouter, Navigate } from 'react-router-dom';
-import PublicRoutes from './PublicRoutes';
-import AuthRoutes from './AuthRoutes';
-import Login from '../pages/Login';
-import Signup from '../pages/Signup';
-import ForgotPassword from '../pages/ForgetPassword';
-import VerifyUser from '../pages/VerifyUser';
-import ResetPassword from '../pages/ResetPassword';
 import Dashboard from '../pages/Dashboard';
-import Invites from '../pages/Invites';
+import ForgotPassword from '../pages/ForgetPassword';
 import Hotels from '../pages/Hotels';
+import Invites from '../pages/Invites';
+import Login from '../pages/Login';
 import Managers from '../pages/Managers';
-import Settings from '../pages/Settings';
 import Menu from '../pages/Menu';
-import Orders from '../pages/Orders';
-import Tables from '../pages/Tables';
 import OrderPlacement from '../pages/OrderPlacement';
+import Orders from '../pages/Orders';
+import ResetPassword from '../pages/ResetPassword';
+import Settings from '../pages/Settings';
+import Signup from '../pages/Signup';
 import Subscription from '../pages/Subscription';
+import Tables from '../pages/Tables';
+import VerifyUser from '../pages/VerifyUser';
+import AuthRoutes from './AuthRoutes';
 import FullRoutes from './FullRoutes';
+import PublicRoutes from './PublicRoutes';
 
 export default function Routes() {
     return (
