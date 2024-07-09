@@ -7,7 +7,7 @@ import { db } from '../../config/database.js';
 import env from '../../config/env.js';
 import logger from '../../config/logger.js';
 import { INVITE_STATUS } from '../models/invite.model.js';
-import { NOTIFICATION_PREFERENCE, PAYMENT_PREFERENCE } from '../models/preferences.model.js';
+import { NOTIFICATION_PREFERENCE, ORDER_PREFERENCE, PAYMENT_PREFERENCE } from '../models/preferences.model.js';
 import { USER_ROLES, USER_STATUS } from '../models/user.model.js';
 import hotelUserRelationRepo from '../repositories/hotelUserRelation.repository.js';
 import inviteRepo from '../repositories/invite.repository.js';
@@ -45,7 +45,8 @@ const create = async (payload) => {
             id: uuidv4(),
             userId: user.id,
             notification: NOTIFICATION_PREFERENCE[0],
-            payment: PAYMENT_PREFERENCE[0]
+            payment: PAYMENT_PREFERENCE[0],
+            orders: ORDER_PREFERENCE[1]
         };
         await preferencesRepo.save(preferences);
         logger('info', 'User preferences saved successfully:', data);
@@ -168,7 +169,7 @@ const verify = async (payload) => {
         }
 
         user.status = USER_STATUS[0];
-        await user.save();
+        await userRepo.update({ where: { id: user.id } }, { status: USER_STATUS[0] });
 
         const { id, firstName, lastName, phoneNumber, role } = user;
         const data = CryptoJS.AES.encrypt(JSON.stringify({ role }), env.cryptoSecret).toString();
@@ -257,8 +258,7 @@ const reset = async (payload) => {
             );
         }
 
-        user.password = newPassword;
-        await user.save();
+        await userRepo.update({ where: { id: user.id } }, { password: newPassword });
         return { message: 'Password reset successfully' };
     } catch (error) {
         logger('error', `Error occurred during password reset process: ${error.message}`);
