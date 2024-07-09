@@ -2,8 +2,16 @@ import * as Yup from 'yup';
 
 export const emailRegex = /^[^\s@]+@(?:[^\s@]+\.(?:com|net))$/;
 export const userRegistrationSchema = Yup.object().shape({
-    firstName: Yup.string().min(3).max(30).required('First Name is required'),
-    lastName: Yup.string().min(3).max(30).required('Last Name is required'),
+    firstName: Yup.string()
+        .matches(/^[A-Za-z]+$/, 'First name must only contain alphabetic characters')
+        .min(3, 'First name must be at least 3 characters')
+        .max(30, 'First name can at most be 30 characters')
+        .required('First Name is required'),
+    lastName: Yup.string()
+        .matches(/^[A-Za-z]+$/, 'Last name must only contain alphabetic characters')
+        .min(3, 'First name must be at least 3 characters')
+        .max(30, 'First name can at most be 30 characters')
+        .required('Last Name is required'),
     phoneNumber: Yup.string()
         .min(10, 'Phone Number must be exactly 10 digits')
         .max(10, 'Phone Number must be exactly 10 digits')
