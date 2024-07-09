@@ -4,7 +4,10 @@ export const emailRegex = /^[^\s@]+@(?:[^\s@]+\.(?:com|net))$/;
 export const userRegistrationSchema = Yup.object().shape({
     firstName: Yup.string().min(3).max(30).required('First Name is required'),
     lastName: Yup.string().min(3).max(30).required('Last Name is required'),
-    phoneNumber: Yup.string().min(10).max(10).required('Phone Number is required'),
+    phoneNumber: Yup.string()
+        .min(10, 'Phone Number must be exactly 10 digits')
+        .max(10, 'Phone Number must be exactly 10 digits')
+        .required('Phone Number is required'),
     email: Yup.string().matches(emailRegex, 'Invalid email').required('Email is required'),
     password: Yup.string()
         .matches(
