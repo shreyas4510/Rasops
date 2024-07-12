@@ -9,8 +9,8 @@ export const userRegistrationSchema = Yup.object().shape({
         .required('First Name is required'),
     lastName: Yup.string()
         .matches(/^[A-Za-z]+$/, 'Last name must only contain alphabetic characters')
-        .min(3, 'First name must be at least 3 characters')
-        .max(30, 'First name can at most be 30 characters')
+        .min(3, 'Last name must be at least 3 characters')
+        .max(30, 'Last name can at most be 30 characters')
         .required('Last Name is required'),
     phoneNumber: Yup.string()
         .min(10, 'Phone Number must be exactly 10 digits')
