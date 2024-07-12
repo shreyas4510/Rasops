@@ -18,7 +18,7 @@ const getEmailData = (action, payload) => {
     logger('info', 'email filepath', filePath);
     switch (action) {
         case EMAIL_ACTIONS.VERIFY_USER:
-            filePath += `/src/api/templates/verifyEmail.html`;
+            filePath += `src/api/templates/verifyEmail.html`;
             template = readFileSync(filePath, 'utf8');
             url = `${env.app.appUrl}/verify?token=${encodeURIComponent(payload.token)}`;
 
@@ -27,7 +27,7 @@ const getEmailData = (action, payload) => {
                 template: Mustache.render(template, { appUrl: url })
             };
         case EMAIL_ACTIONS.FORGOT_PASSWORD:
-            filePath += `/src/api/templates/forgotPassword.html`;
+            filePath += `src/api/templates/forgotPassword.html`;
             template = readFileSync(filePath, 'utf8');
             url = `${env.app.appUrl}/reset?token=${encodeURIComponent(payload.token)}`;
 
@@ -36,7 +36,7 @@ const getEmailData = (action, payload) => {
                 template: Mustache.render(template, { appUrl: url })
             };
         case EMAIL_ACTIONS.INVITE_MANAGER:
-            filePath += `/src/api/templates/inviteManager.html`;
+            filePath += `src/api/templates/inviteManager.html`;
             template = readFileSync(filePath, 'utf8');
             url = `${env.app.appUrl}/signup?token=${encodeURIComponent(payload.token)}`;
 
@@ -48,7 +48,7 @@ const getEmailData = (action, payload) => {
                 })
             };
         case EMAIL_ACTIONS.CUSTOM_SUBSCRIPTION:
-            filePath += `/src/api/templates/customSubscription.html`;
+            filePath += `src/api/templates/customSubscription.html`;
             template = readFileSync(filePath, 'utf8');
 
             return {
@@ -56,7 +56,7 @@ const getEmailData = (action, payload) => {
                 template: Mustache.render(template, { ...payload })
             };
         case EMAIL_ACTIONS.INVOICE_EMAIL:
-            filePath += `/src/api/templates/invoiceEmail.html`;
+            filePath += `src/api/templates/invoiceEmail.html`;
             template = readFileSync(filePath, 'utf8');
 
             return {
