@@ -30,6 +30,4 @@ const startServer = async () => {
     }
 };
 
-const server = startServer();
-export const maxDuration = 25;
-export default server;
+startServer();
