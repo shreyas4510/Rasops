@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import Mustache from 'mustache';
 import { transporter } from '../../config/email.js';
 import env from '../../config/env.js';
@@ -8,19 +7,12 @@ import logger from '../../config/logger.js';
 import { EMAIL_ACTIONS, CustomError } from '../utils/common.js';
 
 const getEmailData = (action, payload) => {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
-    let filePath = path.resolve(`${__dirname}`);
-    filePath = filePath.split('src')[0];
-
     let template = '';
     let url = '';
-
-    logger('info', 'email filepath', filePath);
+    let filePath = '';
     switch (action) {
         case EMAIL_ACTIONS.VERIFY_USER:
-            filePath += `src/api/templates/verifyEmail.html`;
+            filePath = path.join(process.cwd(), `src/api/templates/verifyEmail.html`);
             template = readFileSync(filePath, 'utf8');
             url = `${env.app.appUrl}/verify?token=${encodeURIComponent(payload.token)}`;
 
@@ -29,7 +21,7 @@ const getEmailData = (action, payload) => {
                 template: Mustache.render(template, { appUrl: url })
             };
         case EMAIL_ACTIONS.FORGOT_PASSWORD:
-            filePath += `src/api/templates/forgotPassword.html`;
+            filePath = path.join(process.cwd(), `src/api/templates/forgotPassword.html`);
             template = readFileSync(filePath, 'utf8');
             url = `${env.app.appUrl}/reset?token=${encodeURIComponent(payload.token)}`;
 
@@ -38,7 +30,7 @@ const getEmailData = (action, payload) => {
                 template: Mustache.render(template, { appUrl: url })
             };
         case EMAIL_ACTIONS.INVITE_MANAGER:
-            filePath += `src/api/templates/inviteManager.html`;
+            filePath = path.join(process.cwd(), `src/api/templates/inviteManager.html`);
             template = readFileSync(filePath, 'utf8');
             url = `${env.app.appUrl}/signup?token=${encodeURIComponent(payload.token)}`;
 
@@ -50,7 +42,7 @@ const getEmailData = (action, payload) => {
                 })
             };
         case EMAIL_ACTIONS.CUSTOM_SUBSCRIPTION:
-            filePath += `src/api/templates/customSubscription.html`;
+            filePath = path.join(process.cwd(), `src/api/templates/customSubscription.html`);
             template = readFileSync(filePath, 'utf8');
 
             return {
@@ -58,7 +50,7 @@ const getEmailData = (action, payload) => {
                 template: Mustache.render(template, { ...payload })
             };
         case EMAIL_ACTIONS.INVOICE_EMAIL:
-            filePath += `src/api/templates/invoiceEmail.html`;
+            filePath = path.join(process.cwd(), `src/api/templates/invoiceEmail.html`);
             template = readFileSync(filePath, 'utf8');
 
             return {
