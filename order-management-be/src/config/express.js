@@ -3,6 +3,7 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerDocument } from '../../swagger.js';
 import routes from '../api/routes/index.js';
+import env from './env.js';
 
 // create app using express
 const app = express();
@@ -11,7 +12,12 @@ const app = express();
 app.use(express.json());
 
 // allow all origins for cors
-app.use(cors({ origin: '*' }));
+const corsOptions = {
+    origin: env.app.appUrl,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+};
+app.use(cors(corsOptions));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
