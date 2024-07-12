@@ -7,11 +7,13 @@ import env from '../../config/env.js';
 import logger from '../../config/logger.js';
 import { EMAIL_ACTIONS, CustomError } from '../utils/common.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const getEmailData = (action, payload) => {
-    let filePath = path.resolve(`${__dirname}`).split('src')[0];
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    let filePath = path.resolve(`${__dirname}`);
+    filePath = filePath.split('src')[0];
+
     let template = '';
     let url = '';
 
