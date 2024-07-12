@@ -25,27 +25,45 @@ const config = {
     dialectModule: mysql2,
     port: env.db.port,
     username: env.db.user,
-    password: env.db.password
+    password: env.db.password,
+    pool: {
+        max: 3,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
 };
+
+let sequelizeInstance = null;
 export const db = {};
 
 const createDatabase = async () => {
     try {
         logger('info', '🚀 Connecting to the database...');
-        const sequelize = new Sequelize({ ...config });
+        const creatDbInstance = new Sequelize({ ...config });
 
-        await sequelize.authenticate();
+        await creatDbInstance.authenticate();
         logger('info', '✅ Database connection authenticated successfully.');
 
         logger('info', '🏗️ Creating database if not exists...');
-        await sequelize.query(`CREATE DATABASE IF NOT EXISTS \`${env.db.name}\`;`);
+        await creatDbInstance.query(`CREATE DATABASE IF NOT EXISTS \`${env.db.name}\`;`);
         logger('info', '🏢 Database created successfully.');
 
-        return new Sequelize({ ...config, database: env.db.name, logging: false });
+        await creatDbInstance.close();
+
+        sequelizeInstance = new Sequelize({ ...config, database: env.db.name, logging: false });
+        return sequelizeInstance;
     } catch (error) {
-        logger(`error`, `❌ Error creating database: ${error}`);
+        logger('error', `❌ Error creating database: ${error}`);
         throw CustomError(error.code, error.message);
     }
+};
+
+const getSequelizeInstance = async () => {
+    if (!sequelizeInstance) {
+        sequelizeInstance = await createDatabase();
+    }
+    return sequelizeInstance;
 };
 
 const defineModels = (sequelize) => {
@@ -69,7 +87,7 @@ const defineModels = (sequelize) => {
 const initDb = async () => {
     try {
         logger('info', '🚀 Initializing database...');
-        const sequelize = await createDatabase();
+        const sequelize = await getSequelizeInstance();
 
         logger('info', '🛠️ Defining database models...');
         defineModels(sequelize);
@@ -80,7 +98,7 @@ const initDb = async () => {
 
         logger('info', '🎉 Database initialization completed successfully.');
     } catch (error) {
-        logger(`error`, `❌ Error initializing database: ${error}`);
+        logger('error', `❌ Error initializing database: ${error}`);
         throw CustomError(error.code, error.message);
     }
 };
