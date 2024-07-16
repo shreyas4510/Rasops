@@ -152,6 +152,8 @@ function Managers() {
         columnHelper.display({
             id: 'actions',
             header: 'Actions',
+            enableSorting: 'FALSE',
+            enableFiltering: 'FALSE',
             cell: ({ row }) => {
                 return row?.original?.id ? (
                     <ActionDropdown

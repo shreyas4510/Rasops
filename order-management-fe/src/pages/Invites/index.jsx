@@ -143,28 +143,32 @@ function Invites() {
                 <div className="heading-container">
                     <h4 className="text-center text-white pt-5">Invite Manager</h4>
                 </div>
-                <div className="position-absolute top-100 start-50 translate-middle email-container">
-                    <input
-                        data-testid="invite-email-id"
-                        type="text"
-                        placeholder="test@test.com"
-                        className="py-3 px-5 border-0 email-input"
-                        onChange={(e) => {
-                            dispatch(setEmail(e.target.value));
-                        }}
-                    />
-                    <button
-                        disabled={!emailRegex.test(email)}
-                        onClick={() => {
-                            handleSend();
-                        }}
-                        className="py-3 px-4 border-0 send-button"
-                    >
-                        Send
-                    </button>
+                <div className="d-flex flex-column align-items-center my-3">
+                    <div className='email-container'>
+                        <input
+                            data-testid="invite-email-id"
+                            type="text"
+                            placeholder="test@test.com"
+                            className="py-3 px-5 border-0 email-input"
+                            value={email || ''}
+                            onChange={(e) => {
+                                dispatch(setEmail(e.target.value));
+                            }}
+                        />
+                        <button
+                            disabled={!emailRegex.test(email)}
+                            onClick={() => {
+                                handleSend();
+                            }}
+                            className="py-3 px-4 border-0 send-button"
+                        >
+                            Send
+                        </button>
+                    </div>
+                    { email && !emailRegex.test(email) && <p className='error-text m-0'>Invalid Email</p> }
                 </div>
             </div>
-            <div className="m-5 d-flex flex-column">
+            <div className="mx-5 d-flex flex-column">
                 <Table
                     columns={columns}
                     data={inviteData.rows}
@@ -183,7 +187,7 @@ function Invites() {
             <OMTModal
                 show={isRemoveInvite}
                 size="md"
-                closeText={'Cancel'}
+                closeText={'Close'}
                 submitText={'Delete'}
                 title={'Delete Invite'}
                 description={'Are you sure you want to delete the Invite? This action cannot be undone.'}

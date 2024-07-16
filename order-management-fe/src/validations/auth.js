@@ -55,17 +55,23 @@ export const passwordSchema = Yup.object().shape({
 });
 
 export const settingsSchema = Yup.object().shape({
-    firstName: Yup.string().min(3).max(30).required(),
-    lastName: Yup.string().min(3).max(30).required(),
-    newPassword: Yup.string(),
-    confirmPassword: Yup.string().when('newPassword', {
-        is: (value) => value && value.length > 0,
-        then: () =>
-            Yup.string()
-                .required('Confirm password is required when setting new password.')
-                .oneOf([Yup.ref('newPassword'), null], 'Must match new password.'),
-        otherwise: () => Yup.string()
-    }),
+    firstName: Yup.string()
+        .matches(/^[A-Za-z]+$/, 'First name must only contain alphabetic characters')
+        .min(3, 'First name must be at least 3 characters')
+        .max(30, 'First name can at most be 30 characters')
+        .required('First Name is required'),
+    lastName: Yup.string()
+        .matches(/^[A-Za-z]+$/, 'Last name must only contain alphabetic characters')
+        .min(3, 'Last name must be at least 3 characters')
+        .max(30, 'Last name can at most be 30 characters')
+        .required('Last Name is required'),
+    newPassword: Yup.string()
+        .matches(
+            /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+            'Password must contain at least 8 characters, one letter, one number, and one special character'
+        ),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
     notification: Yup.string().required(),
     payment: Yup.string().required()
 });
