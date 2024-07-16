@@ -1,6 +1,7 @@
 .email-input {
     border-top-left-radius: 50px;
     border-bottom-left-radius: 50px;
+    border: solid 2px #e6e6e6;
 }
 
 .email-input:focus {
@@ -10,12 +11,6 @@
 .heading-container {
     height: 120px;
     background: linear-gradient(#49ac60, #08182d);
-}
-
-.email-container {
-    border: 2px #49ac60 solid;
-    border-radius: 100px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .send-button {
@@ -29,4 +24,14 @@
     background: #8ed19f;
     color: #fff;
     cursor: not-allowed;
+}
+
+.email-container {
+    border-radius: 50px;
+    border: solid 1px #49ac60;
+}
+
+.error-text {
+    font-size: 14px;
+    color: red;
 }
