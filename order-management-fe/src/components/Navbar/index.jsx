@@ -109,40 +109,34 @@ function Navbars() {
                         </div>
                     }
                     drop="down-start"
-                    className='hide-dropdown-arrow notification-dropdown'
+                    className="hide-dropdown-arrow notification-dropdown"
                 >
                     <div className={`notification-list ${!notificationsData.data.length ? 'p-0' : ''}`}>
-                        {
-                            notificationsData.data?.length ? (
-                                <>
-                                    {
-                                        notificationsData.data.map((notification, index) => (
-                                            <NavDropdown.Item key={`notification-${index}`}>
-                                                <h6 style={{ color: '#49ac60' }}>{notification.title}</h6>
-                                                <p className="my-1">{notification.message}</p>
-                                            </NavDropdown.Item>
-                                        ))
-                                    }
-                                </>
-                            ) : (
-                                <NavDropdown.Item key={`no-notification-`}>
-                                    <p className="my-1 text-center">No Notifications</p>
-                                </NavDropdown.Item>
-                            )
-                        }
-                    </div>
-                    {
-                        notificationsData.data.length ? (
-                            <NavDropdown.Item
-                                className="mark-as-read"
-                                onClick={() => {
-                                    dispatch(updateNotificationRequest());
-                                }}
-                            >
-                                Mark as read
+                        {notificationsData.data?.length ? (
+                            <>
+                                {notificationsData.data.map((notification, index) => (
+                                    <NavDropdown.Item key={`notification-${index}`}>
+                                        <h6 style={{ color: '#49ac60' }}>{notification.title}</h6>
+                                        <p className="my-1">{notification.message}</p>
+                                    </NavDropdown.Item>
+                                ))}
+                            </>
+                        ) : (
+                            <NavDropdown.Item key={`no-notification-`}>
+                                <p className="my-1 text-center">No Notifications</p>
                             </NavDropdown.Item>
-                        ) : null
-                    }
+                        )}
+                    </div>
+                    {notificationsData.data.length ? (
+                        <NavDropdown.Item
+                            className="mark-as-read"
+                            onClick={() => {
+                                dispatch(updateNotificationRequest());
+                            }}
+                        >
+                            Mark as read
+                        </NavDropdown.Item>
+                    ) : null}
                 </NavDropdown>
                 <NavDropdown
                     key={'user-icon'}

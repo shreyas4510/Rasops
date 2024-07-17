@@ -144,7 +144,7 @@ function Invites() {
                     <h4 className="text-center text-white pt-5">Invite Manager</h4>
                 </div>
                 <div className="d-flex flex-column align-items-center my-3">
-                    <div className='email-container'>
+                    <div className="email-container">
                         <input
                             data-testid="invite-email-id"
                             type="text"
@@ -165,7 +165,7 @@ function Invites() {
                             Send
                         </button>
                     </div>
-                    { email && !emailRegex.test(email) && <p className='error-text m-0'>Invalid Email</p> }
+                    {email && !emailRegex.test(email) && <p className="error-text m-0">Invalid Email</p>}
                 </div>
             </div>
             <div className="mx-5 d-flex flex-column">

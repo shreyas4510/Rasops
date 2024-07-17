@@ -78,16 +78,19 @@ function Hotels() {
         columnHelper.display({
             id: 'name',
             header: 'Name',
+            minSize: 185,
             cell: ({ row }) => <div>{row.original.name}</div>
         }),
         columnHelper.display({
             id: 'address',
             header: 'Address',
+            minSize: 300,
             cell: (props) => <div>{props.row.original.address}</div>
         }),
         columnHelper.display({
             id: 'openTime',
             header: 'Open Time',
+            minSize: 150,
             cell: ({ row }) => {
                 return row.original.openTime;
             }
@@ -95,6 +98,7 @@ function Hotels() {
         columnHelper.display({
             id: 'closeTime',
             header: 'Close Time',
+            minSize: 150,
             cell: ({ row }) => {
                 return row.original.closeTime;
             }
@@ -102,6 +106,7 @@ function Hotels() {
         columnHelper.display({
             id: 'rating',
             header: 'Rating',
+            minSize: 150,
             cell: ({ row }) => {
                 return row.original.rating;
             }
@@ -111,6 +116,7 @@ function Hotels() {
             header: 'Actions',
             enableSorting: 'FALSE',
             enableFiltering: 'FALSE',
+            minSize: 150,
             cell: ({ row }) => {
                 return (
                     row.original.id && (
@@ -214,7 +220,7 @@ function Hotels() {
             <div className="heading-container">
                 <h4 className="text-center text-white pt-5">Hotels</h4>
             </div>
-            <div className="text-end mx-5 my-4">
+            <div className="text-end px-2 px-md-5 my-4">
                 <CustomButton
                     className="d-flex border-none gap-2 ms-auto"
                     disabled={false}
@@ -230,7 +236,7 @@ function Hotels() {
                     }}
                 />
             </div>
-            <div className="mx-5 d-flex flex-column">
+            <div className="mx-md-5 mx-2 overflow-auto d-flex flex-column">
                 <Table columns={columns} data={data.rows} count={data.count} />
             </div>
             <OMTModal

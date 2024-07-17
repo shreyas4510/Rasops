@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CryptoJS from 'crypto-js';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoMdArrowRoundBack, IoMdArrowRoundForward } from 'react-icons/io';
@@ -24,6 +24,10 @@ function Sidebar() {
     const handleClick = (item) => {
         navigate(item.path);
     };
+
+    useEffect(() => {
+        setCompress(window.innerWidth < 768);
+    }, []);
 
     let tabs = [];
     try {
