@@ -177,7 +177,10 @@ function Table({
                                 {headerGroup.headers.map((header) => (
                                     <th
                                         className="text-center py-3 table-border"
-                                        style={{ cursor: `${header.column.getIsSorted() ? 'pointer' : ''}` }}
+                                        style={{
+                                            cursor: `${header.column.getIsSorted() ? 'pointer' : ''}`,
+                                            minWidth: header.column?.columnDef?.minSize || 0
+                                        }}
                                         key={`${header.id}-${moment().valueOf()}`}
                                         id={header.id}
                                     >
@@ -194,7 +197,7 @@ function Table({
                             {row.getVisibleCells().map((cell) => {
                                 return (
                                     <td
-                                        className="text-center py-2 table-border"
+                                        className="text-center p-2 table-border"
                                         style={{ background: `${row.id % 2 ? '#E8E8E8' : 'white'}` }}
                                         key={cell.id}
                                     >

@@ -65,13 +65,11 @@ export const settingsSchema = Yup.object().shape({
         .min(3, 'Last name must be at least 3 characters')
         .max(30, 'Last name can at most be 30 characters')
         .required('Last Name is required'),
-    newPassword: Yup.string()
-        .matches(
-            /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            'Password must contain at least 8 characters, one letter, one number, and one special character'
-        ),
-    confirmPassword: Yup.string()
-        .oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
+    newPassword: Yup.string().matches(
+        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        'Password must contain at least 8 characters, one letter, one number, and one special character'
+    ),
+    confirmPassword: Yup.string().oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
     notification: Yup.string().required(),
     payment: Yup.string().required()
 });

@@ -50,6 +50,13 @@
     border-bottom: 0.2px solid #d2d6d3;
 }
 
+@media (max-width: 375px) {
+    .notification-dropdown .dropdown-menu {
+        right: 0 !important;
+        left: 0 !important;
+    }
+}
+
 .mark-as-read {
     position: absolute;
     bottom: 0;

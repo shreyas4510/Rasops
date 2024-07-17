@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { HOTEL } from '../types';
 
-const fieldClass = 'col-6 my-2';
+const fieldClass = 'col-md-6 col-12 my-2';
 const hotelSlice = createSlice({
     name: HOTEL,
     initialState: {
