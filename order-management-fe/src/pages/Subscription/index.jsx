@@ -97,7 +97,7 @@ function Subscription() {
                                         Save 10% on yearly subscription
                                     </Card.Text>
                                 )}
-                                <div className="d-flex justify-content-between mt-auto">
+                                <div className="d-flex row justify-content-between mt-auto">
                                     {title !== 'Custom' ? (
                                         <>
                                             <CustomButton
@@ -109,7 +109,7 @@ function Subscription() {
                                                     </>
                                                 }
                                                 disabled={false}
-                                                className="mt-auto mx-auto mb-3 fw-bold"
+                                                className="mt-auto mx-auto mb-3 col-11 col-md-5 fw-bold"
                                                 onClick={() => {
                                                     dispatch(setConfirmation(`${title}-monthly`.toUpperCase()));
                                                 }}
@@ -123,7 +123,7 @@ function Subscription() {
                                                     </>
                                                 }
                                                 disabled={false}
-                                                className="mt-auto mx-auto mb-3 fw-bold"
+                                                className="mt-auto mx-auto col-11 col-md-5 mb-3 fw-bold"
                                                 onClick={() => {
                                                     dispatch(setConfirmation(`${title}-yearly`.toUpperCase()));
                                                 }}
@@ -133,7 +133,7 @@ function Subscription() {
                                         <CustomButton
                                             label={<>Contact Us</>}
                                             disabled={false}
-                                            className="mt-auto mx-auto mb-3 fw-bold py-3"
+                                            className="mt-auto mx-auto mb-3 fw-bold py-3 col-11"
                                             onClick={() => {
                                                 dispatch(setConfirmation(`${title}`.toUpperCase()));
                                             }}

@@ -96,13 +96,13 @@ function Dashboard() {
 
     return (
         <div className="m-4">
-            <div className="d-flex my-4">
+            <div className="d-flex flex-sm-row flex-column my-4">
                 {Object.keys(cardsData).map((item) => {
                     const Icon = cardDetails[item].icon;
                     return (
                         <CardView
                             background={cardDetails[item].background}
-                            classname={'mx-3'}
+                            classname={'mx-sm-3 my-2'}
                             icon={Icon}
                             item={item}
                             value={cardsData[item]}
@@ -111,64 +111,37 @@ function Dashboard() {
                     );
                 })}
             </div>
-            <Card className="mx-auto w-50 my-5 p-4 shadow custom-shadow">
+            <Card className="mx-auto user-details my-5 p-sm-4 shadow custom-shadow">
                 <Card.Body>
                     {Object.keys(hotel).length ? (
                         <>
-                            <Row className="mb-3">
-                                <Col xs={3}>
-                                    <strong className="setting-title">Hotel ID : </strong>
-                                </Col>
-                                <Col xs={9}>{hotel?.id}</Col>
-                            </Row>
-                            <Row className="mb-3">
-                                <Col xs={3}>
-                                    <strong className="setting-title">Hotel Name : </strong>
-                                </Col>
-                                <Col xs={9}>{hotel?.name}</Col>
-                            </Row>
-                            <Row className="mb-3">
-                                <Col xs={3}>
-                                    <strong className="setting-title">Open Time : </strong>
-                                </Col>
-                                <Col xs={9}>{hotel?.openTime}</Col>
-                            </Row>
-                            <Row className="mb-3">
-                                <Col xs={3}>
-                                    <strong className="setting-title">Close Time : </strong>
-                                </Col>
-                                <Col xs={9}>
-                                    <span>{hotel?.closeTime}</span>
-                                </Col>
-                            </Row>
-                            <Row className="mb-3">
-                                <Col xs={3}>
-                                    <strong className="setting-title">Address : </strong>
-                                </Col>
-                                <Col xs={9}>
-                                    <span>{hotel?.address}</span>
-                                </Col>
-                            </Row>
-                            <Row className="mb-3">
-                                <Col xs={3}>
-                                    <strong className="setting-title">Care Number : </strong>
-                                </Col>
-                                <Col xs={9}>
-                                    <span>{hotel?.careNumber}</span>
-                                </Col>
-                            </Row>
+                            {[
+                                { label: 'Hotel ID', value: hotel?.id },
+                                { label: 'Hotel Name', value: hotel?.name },
+                                { label: 'Open Time', value: hotel?.openTime },
+                                { label: 'Close Time', value: hotel?.closeTime },
+                                { label: 'Address', value: hotel?.address },
+                                { label: 'Care Number', value: hotel?.careNumber }
+                            ].map(({ label, value }, index) => (
+                                <Row className="mb-3" key={`${label}-${index}`}>
+                                    <Col className="col-sm-3 col-12">
+                                        <strong className="setting-title">{label} : </strong>
+                                    </Col>
+                                    <Col className="col-sm-9 col-12">{value}</Col>
+                                </Row>
+                            ))}
                         </>
                     ) : (
                         <DashboardNoData />
                     )}
                 </Card.Body>
             </Card>
-            <Row>
-                <Col className="col-5">
+            <Row className="m-0">
+                <Col className="col-sm-5 col-12">
                     <h6>Top 5 sold Menu items</h6>
                     {top5.length ? <PieChart data={top5} /> : <DashboardNoData />}
                 </Col>
-                <Col className="col-7">
+                <Col className="col-sm-7 col-12">
                     {dailyRevenue.length ? (
                         <>
                             <h6>Week Revenue</h6>
@@ -179,8 +152,8 @@ function Dashboard() {
                     )}
                 </Col>
             </Row>
-            <Row className="d-flex align-items-center">
-                <Col className="col-9">
+            <Row className="d-flex align-items-center m-0">
+                <Col className="col-sm-9 col-12">
                     <h6>Month Revenue</h6>
                     {monthRevenue.length ? (
                         <BarChart
@@ -194,7 +167,7 @@ function Dashboard() {
                         <DashboardNoData />
                     )}
                 </Col>
-                <Col className="col-3">
+                <Col className="col-sm-3 col-12">
                     {Object.keys({
                         today: { title: 'Today Revenue', value: revenueDetails.today },
                         week: { title: 'Week Revenue', value: revenueDetails.week },

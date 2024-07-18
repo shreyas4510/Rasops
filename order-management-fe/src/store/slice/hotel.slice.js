@@ -1,18 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { FIELD_CLASS } from '../../utils/constants';
 import { HOTEL } from '../types';
 
-const fieldClass = 'col-md-6 col-12 my-2';
 const hotelSlice = createSlice({
     name: HOTEL,
     initialState: {
         data: {},
         hotelOptions: {
-            hotelName: { name: 'name', type: 'text', label: 'Hotel Name', className: fieldClass },
-            address: { name: 'address', type: 'text', label: 'Address', className: fieldClass },
-            careNumber: { name: 'careNumber', type: 'text', label: 'Customer Care Number', className: fieldClass },
-            manager: { name: 'manager', type: 'select', label: 'Manager', className: fieldClass, options: [] },
-            openTime: { name: 'openTime', type: 'time', label: 'Open Time', className: fieldClass },
-            closeTime: { name: 'closeTime', type: 'time', label: 'Close Time', className: fieldClass }
+            hotelName: { name: 'name', type: 'text', label: 'Hotel Name', className: FIELD_CLASS },
+            address: { name: 'address', type: 'text', label: 'Address', className: FIELD_CLASS },
+            careNumber: { name: 'careNumber', type: 'text', label: 'Customer Care Number', className: FIELD_CLASS },
+            manager: { name: 'manager', type: 'select', label: 'Manager', className: FIELD_CLASS, options: [] },
+            openTime: { name: 'openTime', type: 'time', label: 'Open Time', className: FIELD_CLASS },
+            closeTime: { name: 'closeTime', type: 'time', label: 'Close Time', className: FIELD_CLASS }
         },
         deleteHotelConfirm: false,
         formData: false,

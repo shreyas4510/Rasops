@@ -167,7 +167,7 @@ function Table({
     );
 
     return (
-        <div className="position-relative">
+        <div className="mx-md-5 mx-2 overflow-auto d-flex flex-column position-relative">
             {!data.length ? <NoData /> : <></>}
             <table className="w-100">
                 <thead className="table-header">

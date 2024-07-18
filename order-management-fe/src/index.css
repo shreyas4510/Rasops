@@ -50,6 +50,16 @@ div::-webkit-scrollbar-thumb:horizontal {
     box-shadow: 2px 2px 5px rgba(73, 172, 96, 0.37);
 }
 
+.no-data-width {
+    width: 25%;
+}
+
+@media (max-width: 380px) {
+    .no-data-width {
+        width: 100%;
+    }
+}
+
 input[type='number'] {
     -moz-appearance: textfield;
 }

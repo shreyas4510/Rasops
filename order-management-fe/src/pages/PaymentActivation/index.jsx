@@ -26,6 +26,8 @@ const PaymentActivation = () => {
     const formRef = useRef(null);
     const nextRef = useRef(null);
 
+    const formFieldClassName = `col-12 col-sm-6 my-2`;
+
     const Note = () => (
         <div className="row m-0">
             <p className="col my-2 text-danger">
@@ -63,14 +65,14 @@ const PaymentActivation = () => {
                                     name="email"
                                     type="email"
                                     label="Email"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                                 <CustomFormGroup
                                     name="phone"
                                     type="number"
                                     label="Phone"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                             </div>
@@ -80,7 +82,7 @@ const PaymentActivation = () => {
                                     name="legalBusinessName"
                                     type="text"
                                     label="Legal Business Name"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                                 <CustomFormGroup
@@ -88,7 +90,7 @@ const PaymentActivation = () => {
                                     type="select"
                                     label="Business Type"
                                     options={businessTypeOptions}
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     setFieldValue={setFieldValue}
                                     isMulti={false}
                                     required={true}
@@ -105,7 +107,7 @@ const PaymentActivation = () => {
                                                     type="select"
                                                     label="Category"
                                                     options={businessCategoryOptions}
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                 />
 
                                                 <CustomFormGroup
@@ -113,19 +115,19 @@ const PaymentActivation = () => {
                                                     type="select"
                                                     label="Subcategory"
                                                     options={businessSubCategoryOptions}
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                 />
                                             </div>
 
                                             <div className="row m-0">
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="profile.addresses.registered.street1"
                                                     type="text"
                                                     label="Street 1"
                                                 />
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="profile.addresses.registered.street2"
                                                     type="text"
                                                     label="Street 2"
@@ -134,13 +136,13 @@ const PaymentActivation = () => {
 
                                             <div className="row m-0">
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="profile.addresses.registered.city"
                                                     type="text"
                                                     label="City"
                                                 />
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="profile.addresses.registered.state"
                                                     type="text"
                                                     label="State"
@@ -149,13 +151,13 @@ const PaymentActivation = () => {
 
                                             <div className="row m-0">
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="profile.addresses.registered.postalCode"
                                                     type="text"
                                                     label="Postal Code"
                                                 />
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="profile.addresses.registered.country"
                                                     type="text"
                                                     label="Country"
@@ -172,14 +174,14 @@ const PaymentActivation = () => {
                                         <Accordion.Body>
                                             <div className="row m-0">
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="legalInfo.pan"
                                                     type="text"
                                                     label="PAN"
                                                     required={true}
                                                 />
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="legalInfo.gst"
                                                     type="text"
                                                     label="GST"
@@ -221,14 +223,14 @@ const PaymentActivation = () => {
                                     name="name"
                                     type="text"
                                     label="Name"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                                 <CustomFormGroup
                                     name="email"
                                     type="email"
                                     label="Email"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                             </div>
@@ -238,7 +240,7 @@ const PaymentActivation = () => {
                                     name="kyc.pan"
                                     type="text"
                                     label="Pan"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                             </div>
@@ -250,13 +252,13 @@ const PaymentActivation = () => {
                                         <Accordion.Body>
                                             <div className="row m-0">
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="addresses.residential.street"
                                                     type="text"
                                                     label="Street"
                                                 />
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="addresses.residential.city"
                                                     type="text"
                                                     label="City"
@@ -264,13 +266,13 @@ const PaymentActivation = () => {
                                             </div>
                                             <div className="row m-0">
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="addresses.residential.state"
                                                     type="text"
                                                     label="State"
                                                 />
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="addresses.residential.postalCode"
                                                     type="text"
                                                     label="Postal Code"
@@ -278,7 +280,7 @@ const PaymentActivation = () => {
                                             </div>
                                             <div className="row m-0">
                                                 <CustomFormGroup
-                                                    className="col-6 my-2"
+                                                    className={formFieldClassName}
                                                     name="addresses.residential.country"
                                                     type="text"
                                                     label="Country"
@@ -319,21 +321,21 @@ const PaymentActivation = () => {
                                     name="accountNumber"
                                     type="text"
                                     label="Account Number"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                                 <CustomFormGroup
                                     name="ifscCode"
                                     type="text"
                                     label="IFSC Code"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                                 <CustomFormGroup
                                     name="beneficiaryName"
                                     type="text"
                                     label="Beneficiary Name"
-                                    className="col-6 my-2"
+                                    className={formFieldClassName}
                                     required={true}
                                 />
                             </div>

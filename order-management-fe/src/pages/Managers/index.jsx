@@ -125,6 +125,7 @@ function Managers() {
         columnHelper.display({
             id: 'name',
             header: 'Name',
+            minSize: 200,
             cell: ({ row }) => {
                 return row?.original?.firstName ? (
                     <div>{row?.original?.firstName + ' ' + row?.original?.lastName}</div>
@@ -136,16 +137,19 @@ function Managers() {
         columnHelper.display({
             id: 'phoneNumber',
             header: 'Phone Number',
+            minSize: 200,
             cell: ({ row }) => <div>{row?.original?.phoneNumber}</div>
         }),
         columnHelper.display({
             id: 'hotelName',
             header: 'Hotel Name',
+            minSize: 250,
             cell: ({ row }) => <div>{row?.original?.hotel?.name}</div>
         }),
         columnHelper.display({
             id: 'createdAt',
             header: 'Onboarded',
+            minSize: 150,
             cell: ({ row }) =>
                 row?.original?.createdAt && <div>{moment(row?.original?.createdAt).format('DD-MMM-YYYY')}</div>
         }),
@@ -154,6 +158,7 @@ function Managers() {
             header: 'Actions',
             enableSorting: 'FALSE',
             enableFiltering: 'FALSE',
+            minSize: 150,
             cell: ({ row }) => {
                 return row?.original?.id ? (
                     <ActionDropdown
@@ -184,7 +189,7 @@ function Managers() {
             <div className="heading-container">
                 <h4 className="text-center text-white pt-5">Managers</h4>
             </div>
-            <div className="mx-5 my-4 d-flex flex-column">
+            <div className="my-5">
                 <Table
                     columns={columns}
                     data={data?.rows}

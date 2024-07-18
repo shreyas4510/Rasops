@@ -95,11 +95,13 @@ function Invites() {
         columnHelper.display({
             id: 'email',
             header: 'Email',
+            minSize: 250,
             cell: (props) => <div>{props.row.original.email}</div>
         }),
         columnHelper.display({
             id: 'createdAt',
             header: 'Invited',
+            minSize: 150,
             cell: ({ row }) => {
                 return row.original.createdAt && <div>{moment(row.original.createdAt).format('DD-MMM-YYYY')}</div>;
             }
@@ -107,6 +109,7 @@ function Invites() {
         columnHelper.display({
             id: 'status',
             header: 'Status',
+            minSize: 150,
             cell: ({ row }) => <div>{row.original.status}</div>
         }),
         columnHelper.display({
@@ -114,6 +117,7 @@ function Invites() {
             header: 'Actions',
             enableSorting: 'FALSE',
             enableFiltering: 'FALSE',
+            minSize: 150,
             cell: ({ row }) => {
                 return row.original.status ? (
                     <ActionDropdown
@@ -139,51 +143,47 @@ function Invites() {
 
     return (
         <>
-            <div className="position-relative">
-                <div className="heading-container">
-                    <h4 className="text-center text-white pt-5">Invite Manager</h4>
-                </div>
-                <div className="d-flex flex-column align-items-center my-3">
-                    <div className="email-container">
-                        <input
-                            data-testid="invite-email-id"
-                            type="text"
-                            placeholder="test@test.com"
-                            className="py-3 px-5 border-0 email-input"
-                            value={email || ''}
-                            onChange={(e) => {
-                                dispatch(setEmail(e.target.value));
-                            }}
-                        />
-                        <button
-                            disabled={!emailRegex.test(email)}
-                            onClick={() => {
-                                handleSend();
-                            }}
-                            className="py-3 px-4 border-0 send-button"
-                        >
-                            Send
-                        </button>
-                    </div>
-                    {email && !emailRegex.test(email) && <p className="error-text m-0">Invalid Email</p>}
-                </div>
+            <div className="heading-container">
+                <h4 className="text-center text-white pt-5">Invite Manager</h4>
             </div>
-            <div className="mx-5 d-flex flex-column">
-                <Table
-                    columns={columns}
-                    data={inviteData.rows}
-                    count={inviteData.count}
-                    // pagination props
-                    onPaginationChange={onPaginationChange}
-                    pagination={pagination}
-                    // sorting props
-                    onSortingChange={onSortingChange}
-                    sorting={sorting}
-                    // filtering props
-                    onFilterChange={onFilterChange}
-                    filtering={filtering}
-                />
+            <div className="d-flex flex-column align-items-center my-3">
+                <div className="email-container d-flex">
+                    <input
+                        data-testid="invite-email-id"
+                        type="text"
+                        placeholder="test@test.com"
+                        className="py-2 py-sm-3 px-sm-5 px-3 border-0 email-input"
+                        value={email || ''}
+                        onChange={(e) => {
+                            dispatch(setEmail(e.target.value));
+                        }}
+                    />
+                    <button
+                        disabled={!emailRegex.test(email)}
+                        onClick={() => {
+                            handleSend();
+                        }}
+                        className="py-sm-3 py-2 px-sm-4 px-2 border-0 send-button"
+                    >
+                        Send
+                    </button>
+                </div>
+                {email && !emailRegex.test(email) && <p className="error-text m-0">Invalid Email</p>}
             </div>
+            <Table
+                columns={columns}
+                data={inviteData.rows}
+                count={inviteData.count}
+                // pagination props
+                onPaginationChange={onPaginationChange}
+                pagination={pagination}
+                // sorting props
+                onSortingChange={onSortingChange}
+                sorting={sorting}
+                // filtering props
+                onFilterChange={onFilterChange}
+                filtering={filtering}
+            />
             <OMTModal
                 show={isRemoveInvite}
                 size="md"
