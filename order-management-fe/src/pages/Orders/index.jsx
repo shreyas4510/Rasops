@@ -131,26 +131,31 @@ function Orders() {
         columnHelper.display({
             id: 'name',
             header: 'Customer Name',
+            minSize: 180,
             cell: ({ row }) => <div>{row.original?.name || ''}</div>
         }),
         columnHelper.display({
             id: 'email',
             header: 'Email',
+            minSize: 300,
             cell: ({ row }) => <div>{row.original?.email || ''}</div>
         }),
         columnHelper.display({
             id: 'phoneNumber',
             header: 'Phone Number',
+            minSize: 180,
             cell: ({ row }) => <div>{row.original?.phoneNumber || ''}</div>
         }),
         columnHelper.display({
             id: 'feedback',
             header: 'Feedback',
+            minSize: 300,
             cell: ({ row }) => <div>{row.original?.feedback || ''}</div>
         }),
         columnHelper.display({
             id: 'rating',
             header: 'Rating',
+            minSize: 150,
             cell: ({ row }) => <div>{row.original?.rating || ''}</div>
         }),
         columnHelper.display({
@@ -158,6 +163,7 @@ function Orders() {
             header: 'View',
             enableSorting: 'FALSE',
             enableFiltering: 'FALSE',
+            minSize: 150,
             cell: ({ row }) => {
                 return row.original.menu ? (
                     <BsInfoCircleFill
@@ -250,7 +256,7 @@ function Orders() {
 
     return (
         <div className="d-flex flex-column">
-            <Container className="my-4 d-flex flex-column">
+            <div className="my-4 mx-sm-5 mx-2 d-flex flex-column">
                 <div className="ms-auto">
                     <h6>Active</h6>
                     <Form.Check
@@ -261,10 +267,10 @@ function Orders() {
                         }}
                     />
                 </div>
-            </Container>
+            </div>
             {userData.preference?.orders === ORDER_PREFERENCE.on ? (
                 <>
-                    <div className="col-6 mx-auto">
+                    <div className="width-container mx-auto">
                         <h6>Tables</h6>
                         <CustomSelect
                             options={tablesData}
@@ -287,7 +293,7 @@ function Orders() {
                     {activeOrder.pendingOrder && (
                         <Container className="my-4 d-flex flex-column">
                             <h6>Active Order</h6>
-                            <div className="p-4 rounded shadow w-50 mx-auto active-orders-container">
+                            <div className="p-4 rounded shadow width-container mx-auto active-orders-container">
                                 {!activeOrder.bill ? (
                                     <>
                                         {Object.values(activeOrder?.pendingOrder || {}).map((item, index) => (
@@ -344,7 +350,7 @@ function Orders() {
                             >
                                 {(activeOrder?.description || []).map((item, index) => (
                                     <Carousel.Item key={`${index}-order-description`}>
-                                        <div className="carousel-item-content pt-4">
+                                        <div className="carousel-item-content px-5 my-5">
                                             <div className="carousel-content">
                                                 {item.map(({ description, status }, desIndex) => (
                                                     <h6
@@ -369,8 +375,8 @@ function Orders() {
                 </>
             ) : (
                 <>
-                    <Container className="my-4">
-                        <h6>Completed Orders</h6>
+                    <div>
+                        <h6 className="mx-sm-5 mx-2">Completed Orders</h6>
                         <Table
                             columns={columns}
                             data={completedOrders}
@@ -389,7 +395,7 @@ function Orders() {
                             }}
                             filtering={filtering}
                         />
-                    </Container>
+                    </div>
                     {selectedOrder && (
                         <OMTModal
                             show={selectedOrder}

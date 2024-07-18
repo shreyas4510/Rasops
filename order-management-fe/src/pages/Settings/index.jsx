@@ -87,7 +87,7 @@ const Settings = () => {
             <div className="heading-container">
                 <h4 className="text-center text-white pt-5">Settings</h4>
             </div>
-            <Card style={{ width: '60%' }} className="mx-auto my-5 p-4 shadow custom-shadow">
+            <Card className="user-details mx-auto my-5 p-0 p-sm-4 shadow custom-shadow">
                 <Card.Body>
                     <Row className="mb-3">
                         <Col xs={12} className="d-flex">
@@ -102,53 +102,26 @@ const Settings = () => {
                             />
                         </Col>
                     </Row>
+                    {[
+                        { label: 'Rasops ID', value: data?.id },
+                        { label: 'First Name', value: data?.firstName },
+                        { label: 'Last Name', value: data?.lastName },
+                        { label: 'E-mail', value: data.email },
+                        { label: 'Phone Number', value: data.phoneNumber },
+                        { label: 'Role', value: data.role }
+                    ].map(({ label, value }, index) => (
+                        <Row className="mb-3" key={`${label}-${index}`}>
+                            <Col className="col-12 col-sm-3">
+                                <strong className="setting-title">{label} : </strong>
+                            </Col>
+                            <Col className="col-12 col-sm-9">{value}</Col>
+                        </Row>
+                    ))}
                     <Row className="mb-3">
-                        <Col xs={3}>
-                            <strong className="setting-title">Rasops ID : </strong>
-                        </Col>
-                        <Col xs={9}>{data?.id}</Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col xs={3}>
-                            <strong className="setting-title">First Name : </strong>
-                        </Col>
-                        <Col xs={9}>{data?.firstName}</Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col xs={3}>
-                            <strong className="setting-title">Last Name : </strong>
-                        </Col>
-                        <Col xs={9}>{data?.lastName}</Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col xs={3}>
-                            <strong className="setting-title">E-mail : </strong>
-                        </Col>
-                        <Col xs={9}>
-                            <span>{data.email}</span>
-                        </Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col xs={3}>
-                            <strong className="setting-title">Phone Number : </strong>
-                        </Col>
-                        <Col xs={9}>
-                            <span>{data.phoneNumber}</span>
-                        </Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col xs={3}>
-                            <strong className="setting-title">Role : </strong>
-                        </Col>
-                        <Col xs={9}>
-                            <span>{data.role}</span>
-                        </Col>
-                    </Row>
-                    <Row className="mb-3">
-                        <Col xs={3}>
+                        <Col className="col-12 col-sm-3">
                             <strong className="setting-title">Notification Preference:</strong>
                         </Col>
-                        <Col xs={9}>
+                        <Col className="col-12 col-sm-9">
                             <Form.Check
                                 type="switch"
                                 checked={NOTIFICATION_PREFERENCE.on === data.preference?.notification}
@@ -159,10 +132,10 @@ const Settings = () => {
                     <Row className="mb-3">
                         {[PAYMENT_PREFERENCE.on, PAYMENT_PREFERENCE.off].includes(data.preference?.payment) ? (
                             <>
-                                <Col xs={3}>
+                                <Col className="col-12 col-sm-3">
                                     <strong className="setting-title">Payment Gateway Preference:</strong>
                                 </Col>
-                                <Col xs={9}>
+                                <Col className="col-12 col-sm-9">
                                     <Form.Check
                                         type="switch"
                                         checked={data.preference?.payment === PAYMENT_PREFERENCE.on}
@@ -172,10 +145,10 @@ const Settings = () => {
                             </>
                         ) : (
                             <>
-                                <Col xs={3}>
+                                <Col className="col-12 col-sm-3">
                                     <strong className="setting-title">Activate Payment Gateway:</strong>
                                 </Col>
-                                <Col xs={9}>
+                                <Col className="col-12 col-sm-9">
                                     <CustomButton
                                         label="Activate"
                                         disabled={data.role !== USER_ROLES[0]}

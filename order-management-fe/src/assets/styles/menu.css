@@ -5,3 +5,13 @@
     border-top-right-radius: 20px;
     display: flex;
 }
+
+.width-container {
+    width: 50%;
+}
+
+@media (max-width: 375px) {
+    .width-container {
+        width: 95%;
+    }
+}

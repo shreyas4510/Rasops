@@ -2,15 +2,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 200px;
+    height: 280px;
     border-radius: 10px;
-    overflow-y: auto;
-    margin: 50px 0px;
-    padding: 50px;
 }
 
 .carousel-content {
-    padding: 20px;
+    overflow-y: auto;
+    max-height: 100%;
 }
 
 .carousel-content h3 {

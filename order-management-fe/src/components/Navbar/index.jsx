@@ -68,7 +68,7 @@ function Navbars() {
             <Nav className="ms-auto d-flex align-items-center">
                 {Object.keys(viewData).length > 1 && viewData.role.toUpperCase() === USER_ROLES[0] && (
                     <CustomButton
-                        className="switch-button mx-4 d-flex align-items-center fw-bold"
+                        className="switch-button mx-sm-4 d-flex align-items-center fw-bold"
                         onClick={() => {
                             const details = CryptoJS.AES.encrypt(
                                 JSON.stringify({ role: user.role }),
@@ -145,7 +145,7 @@ function Navbars() {
                         <img data-testid="navbar-user" className="p-1 bg-warning user-logo" src={User} alt="user pic" />
                     }
                     drop="down-start"
-                    className="hide-dropdown-arrow mx-3 p-0"
+                    className="hide-dropdown-arrow mx-sm-3 p-0"
                 >
                     <NavDropdown.Item onClick={() => handleLogout()}>Logout</NavDropdown.Item>
                 </NavDropdown>

@@ -22,3 +22,13 @@
 .setting-title {
     color: #49ac60;
 }
+
+.user-details {
+    width: 60%;
+}
+
+@media (max-width: 380px) {
+    .user-details {
+        width: 90%;
+    }
+}

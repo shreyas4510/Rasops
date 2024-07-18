@@ -236,9 +236,7 @@ function Hotels() {
                     }}
                 />
             </div>
-            <div className="mx-md-5 mx-2 overflow-auto d-flex flex-column">
-                <Table columns={columns} data={data.rows} count={data.count} />
-            </div>
+            <Table columns={columns} data={data.rows} count={data.count} />
             <OMTModal
                 show={formData}
                 type="form"

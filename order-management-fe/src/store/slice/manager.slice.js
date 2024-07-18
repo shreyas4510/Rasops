@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { FIELD_CLASS } from '../../utils/constants';
 import { MANAGER } from '../types';
 
-const fieldClass = 'col-6 my-2';
 const managerSlice = createSlice({
     name: MANAGER,
     initialState: {
@@ -14,28 +14,28 @@ const managerSlice = createSlice({
                 name: 'name',
                 type: 'text',
                 label: 'Manager Name',
-                className: fieldClass,
+                className: FIELD_CLASS,
                 disabled: true
             },
             phoneNumber: {
                 name: 'phoneNumber',
                 type: 'number',
                 label: 'Phone Number',
-                className: fieldClass,
+                className: FIELD_CLASS,
                 disabled: true
             },
             email: {
                 name: 'email',
                 type: 'text',
                 label: 'Email',
-                className: fieldClass,
+                className: FIELD_CLASS,
                 disabled: true
             },
             onboarded: {
                 name: 'onboarded',
                 type: 'text',
                 label: 'Onboarded',
-                className: fieldClass,
+                className: FIELD_CLASS,
                 disabled: true
             },
             hotel: {

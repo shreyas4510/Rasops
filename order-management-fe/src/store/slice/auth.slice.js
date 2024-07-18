@@ -1,20 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { FIELD_CLASS } from '../../utils/constants';
 import { USER } from '../types';
 
-const fieldClass = 'col-6 my-2';
 const authSlice = createSlice({
     name: USER,
     initialState: {
         data: {},
         updateOptions: {
-            firstName: { name: 'firstName', type: 'text', label: 'First Name', className: fieldClass },
-            lastName: { name: 'lastName', type: 'text', label: 'Last Name', className: fieldClass },
-            newPassword: { name: 'newPassword', type: 'password', label: 'New Password', className: fieldClass },
+            firstName: { name: 'firstName', type: 'text', label: 'First Name', className: FIELD_CLASS },
+            lastName: { name: 'lastName', type: 'text', label: 'Last Name', className: FIELD_CLASS },
+            newPassword: { name: 'newPassword', type: 'password', label: 'New Password', className: FIELD_CLASS },
             confirmPassword: {
                 name: 'confirmPassword',
                 type: 'password',
                 label: 'Confirm Password',
-                className: fieldClass
+                className: FIELD_CLASS
             }
         },
         formData: false,

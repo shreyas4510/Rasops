@@ -103,3 +103,5 @@ export const COMMON_TABS = [
         path: '/settings'
     }
 ];
+
+export const FIELD_CLASS = 'col-md-6 col-12 my-2';

@@ -2,6 +2,7 @@
     border-top-left-radius: 50px;
     border-bottom-left-radius: 50px;
     border: solid 2px #e6e6e6;
+    width: 100%;
 }
 
 .email-input:focus {
@@ -34,4 +35,10 @@
 .error-text {
     font-size: 14px;
     color: red;
+}
+
+@media (max-width: 380px) {
+    .email-container {
+        width: 75%;
+    }
 }

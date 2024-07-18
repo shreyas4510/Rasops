@@ -26,7 +26,7 @@ import {
     updateCategoryRequest,
     updateMenuItemsRequest
 } from '../../store/slice/menu.slice';
-import { MENU_STATUS } from '../../utils/constants.js';
+import { FIELD_CLASS, MENU_STATUS } from '../../utils/constants.js';
 import {
     defaultValidation,
     validateCreateCategory,
@@ -85,16 +85,19 @@ function Menu() {
         columnHelper.display({
             id: 'name',
             header: 'Name',
+            minSize: 200,
             cell: ({ row }) => <div>{row.original.name}</div>
         }),
         columnHelper.display({
             id: 'price',
             header: 'Price',
+            minSize: 150,
             cell: ({ row }) => <div>{row.original.price}</div>
         }),
         columnHelper.display({
             id: 'status',
             header: 'Status',
+            minSize: 180,
             cell: ({ row }) => {
                 return row.original.status && <h6>{row.original.status}</h6>;
             }
@@ -102,6 +105,7 @@ function Menu() {
         columnHelper.display({
             id: 'createdAt',
             header: 'Added On',
+            minSize: 150,
             cell: ({ row }) => {
                 return row.original.createdAt && <div>{moment(row.original.createdAt).format('DD-MMM-YYYY')}</div>;
             }
@@ -111,6 +115,7 @@ function Menu() {
             header: 'Update',
             enableSorting: 'FALSE',
             enableFiltering: 'FALSE',
+            minSize: 150,
             cell: ({ row }) => {
                 return row.original.name ? (
                     <MdModeEditOutline
@@ -200,19 +205,19 @@ function Menu() {
                     name: nameKey,
                     type: 'text',
                     label: 'Name',
-                    className: 'col-6 my-2'
+                    className: 'col-md-6 col-12 my-2'
                 },
                 [secondInput]: {
                     name: secondInput,
                     type: 'number',
                     label: type === 'category' ? 'Order' : 'Price',
-                    className: 'col-5 my-2'
+                    className: 'col-md-5 col-11 my-2'
                 },
                 'icon-0': {
                     name: 'icon-0',
                     type: 'icon',
                     icon: IoCloseSharp,
-                    className: 'col my-2 align-self-end w-100 pointer',
+                    className: 'col my-2 p-0 align-self-end w-100 pointer',
                     onClick: (id) => {
                         addOptions = handleRemoveClick(id, addOptions, type);
                     }
@@ -252,13 +257,13 @@ function Menu() {
                     name: 'name',
                     type: 'text',
                     label: 'Name',
-                    className: 'col-6 my-2'
+                    className: FIELD_CLASS
                 },
                 order: {
                     name: 'order',
                     type: 'number',
                     label: 'Order',
-                    className: 'col-6 my-2'
+                    className: FIELD_CLASS
                 }
             };
         } else {
@@ -435,7 +440,7 @@ function Menu() {
 
     return (
         <>
-            <div className="w-50 mx-auto my-5">
+            <div className="width-container mx-auto my-4">
                 <h6>Categories</h6>
                 <div className="d-flex">
                     <CustomSelect
@@ -471,8 +476,8 @@ function Menu() {
                 </div>
             </div>
             {Object.keys(selectedCategory).length ? (
-                <div className="m-5 d-flex flex-column">
-                    <div className="options-container d-flex align-items-center px-4">
+                <div className="d-flex flex-column">
+                    <div className="options-container d-flex align-items-center px-4 mx-md-5 mx-2">
                         <h5 className="text-white">{selectedCategory.label}</h5>
                         <ActionDropdown
                             className="ms-auto"
@@ -483,12 +488,6 @@ function Menu() {
                                     label: 'Add',
                                     icon: TiPlus,
                                     onClick: () => handleAddItemClick('menu')
-                                },
-                                {
-                                    label: 'Update',
-                                    icon: MdModeEditOutline,
-                                    disabled: !menuItems.count,
-                                    onClick: () => {}
                                 },
                                 {
                                     label: 'Delete',
