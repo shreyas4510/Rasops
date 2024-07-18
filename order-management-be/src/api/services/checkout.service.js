@@ -287,13 +287,13 @@ const success = async (userId, payload) => {
         const data = {
             customerId: subscription.customer_id,
             paymentId: payload.paymentId,
-            startDate: moment(subscription.current_start).toISOString(),
-            endDate: moment(subscription.current_end).toISOString()
+            startDate: moment(subscription.current_start * 1000).toISOString(),
+            endDate: moment(subscription.current_end * 1000).toISOString()
         };
         logger('debug', `Update subscription on success`, { options, data });
         await subscriptionRepo.update(options, data);
 
-        await notificationService.sendNotification(userId, {
+        await notificationService.sendNotification([userId], {
             title: 'Subscription Done',
             message: `You have successfully subscribed to plan - ${subscription.plan_id}`
         });
