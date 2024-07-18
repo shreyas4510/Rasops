@@ -93,78 +93,93 @@ function Table({
         </>
     );
 
-    const Footer = () => (
-        <div className="d-flex justify-content-between align-items-center p-2 table-footer">
-            <div>
-                Go to : {'  '}
-                <input
-                    type="number"
-                    className="border p-1 rounded pagination-goto"
-                    defaultValue={table.getState().pagination.pageIndex + 1}
-                    onChange={(e) => {
-                        const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                        table.setPageIndex(page);
-                    }}
-                />
-            </div>
-            <div className="d-flex align-items-center">
-                <button
-                    data-testid="first-page"
-                    className="border rounded p-1 mx-1 pagination-btn"
-                    onClick={() => table.firstPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    <PiCaretDoubleLeftFill size={15} color="#49AC60" />
-                </button>
-                <button
-                    data-testid="prev-page"
-                    className="border rounded p-1 mx-1 pagination-btn"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    <FaCaretLeft size={15} color="#49AC60" />
-                </button>
-                <div className="mx-2">
-                    <span>Page</span>
-                    {'  '}
-                    <strong data-testid="page-count">
-                        {table.getState().pagination.pageIndex + 1} of {table.getPageCount().toLocaleString()}
-                    </strong>
+    const Footer = () => {
+        let width = 0;
+        if (window.innerWidth <= 380) {
+            table.getHeaderGroups().forEach(({ headers }) => {
+                width = headers.reduce((cur, { column }) => {
+                    cur += Number(column.columnDef.minSize);
+                    return cur;
+                }, 0);
+            });
+        }
+
+        return (
+            <div
+                style={{ width: `${width ? `${width}px` : '100%'}` }}
+                className="d-flex justify-content-between align-items-center p-2 table-footer"
+            >
+                <div>
+                    Go to : {'  '}
+                    <input
+                        type="number"
+                        className="border p-1 rounded pagination-goto"
+                        defaultValue={table.getState().pagination.pageIndex + 1}
+                        onChange={(e) => {
+                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                            table.setPageIndex(page);
+                        }}
+                    />
                 </div>
-                <button
-                    data-testid="next-page"
-                    className="border rounded p-1 mx-1 pagination-btn"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    <FaCaretRight size={15} color="#49AC60" />
-                </button>
-                <button
-                    data-testid="last-page"
-                    className="border rounded p-1 mx-1 pagination-btn"
-                    onClick={() => table.lastPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    <PiCaretDoubleRightFill size={15} color="#49AC60" />
-                </button>
+                <div className="d-flex align-items-center">
+                    <button
+                        data-testid="first-page"
+                        className="border rounded p-1 mx-1 pagination-btn"
+                        onClick={() => table.firstPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <PiCaretDoubleLeftFill size={15} color="#49AC60" />
+                    </button>
+                    <button
+                        data-testid="prev-page"
+                        className="border rounded p-1 mx-1 pagination-btn"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <FaCaretLeft size={15} color="#49AC60" />
+                    </button>
+                    <div className="mx-2">
+                        <span>Page</span>
+                        {'  '}
+                        <strong data-testid="page-count">
+                            {table.getState().pagination.pageIndex + 1} of {table.getPageCount().toLocaleString()}
+                        </strong>
+                    </div>
+                    <button
+                        data-testid="next-page"
+                        className="border rounded p-1 mx-1 pagination-btn"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <FaCaretRight size={15} color="#49AC60" />
+                    </button>
+                    <button
+                        data-testid="last-page"
+                        className="border rounded p-1 mx-1 pagination-btn"
+                        onClick={() => table.lastPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <PiCaretDoubleRightFill size={15} color="#49AC60" />
+                    </button>
+                </div>
+                <div>
+                    <select
+                        className="form-control"
+                        value={table.getState().pagination.pageSize}
+                        onChange={(e) => {
+                            table.setPageSize(Number(e.target.value));
+                        }}
+                    >
+                        {[10, 20, 30, 40, 50].map((pageSize) => (
+                            <option key={pageSize} value={pageSize}>
+                                Show {pageSize}
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
-            <div>
-                <select
-                    className="form-control"
-                    value={table.getState().pagination.pageSize}
-                    onChange={(e) => {
-                        table.setPageSize(Number(e.target.value));
-                    }}
-                >
-                    {[10, 20, 30, 40, 50].map((pageSize) => (
-                        <option key={pageSize} value={pageSize}>
-                            Show {pageSize}
-                        </option>
-                    ))}
-                </select>
-            </div>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="mx-md-5 mx-2 overflow-auto d-flex flex-column position-relative">

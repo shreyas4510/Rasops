@@ -3,6 +3,8 @@ import { Form, Formik } from 'formik';
 import { Modal } from 'react-bootstrap';
 import CustomButton from '../CustomButton';
 import CustomFormGroup from '../CustomFormGroup';
+import '../../assets/styles/modal.css';
+
 function OMTModal({
     title,
     type = 'string',
@@ -103,7 +105,7 @@ function OMTModal({
             <Modal.Header closeButton>
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className="omt-modal-body">
                 {type === 'string' && description}
                 {type === 'form' && <FormComponent description={description} />}
             </Modal.Body>

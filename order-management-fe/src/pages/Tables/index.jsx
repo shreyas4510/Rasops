@@ -81,7 +81,7 @@ function Tables() {
 
     return (
         <>
-            <div className="w-50 mx-auto my-5">
+            <div className="width-container mx-auto my-sm-5 my-3">
                 <h6>Tables</h6>
                 <div className="d-flex">
                     <CustomSelect
@@ -116,7 +116,7 @@ function Tables() {
                     <h5 style={{ color: '#49ac60' }} className="fw-bold">
                         {selectedTable.label}
                     </h5>
-                    {tableUrl && <QRCodeSVG size={400} value={tableUrl} className="mt-5" />}
+                    {tableUrl && <QRCodeSVG value={tableUrl} className="qr-code mt-sm-5 w-75" />}
                 </div>
             ) : (
                 <div className="d-flex">
