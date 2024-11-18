@@ -35,6 +35,17 @@ const find = async (options) => {
     }
 };
 
+const findOne = async (options) => {
+    try {
+        logger('debug', 'Find one invite data in the database');
+        return await db.invites.findOne(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while find one invite data: ${err || error.message}`);
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
 const remove = async (options) => {
     try {
         logger('debug', 'Removing invite data from the database');
@@ -46,4 +57,4 @@ const remove = async (options) => {
     }
 };
 
-export default { save, update, find, remove };
+export default { save, update, find, findOne, remove };
