@@ -18,6 +18,19 @@ import { sendEmail } from './email.service.js';
 
 const create = async (payload) => {
     try {
+        // check if the invite is deleted
+        if (payload.invite) {
+            logger('debug', `Check if invite is still valid: ${payload.invite}`);
+            const res = await inviteRepo.findOne({
+                where: { id: payload.invite }
+            });
+
+            if (!res) {
+                logger('debug', `Invite not found in database for ${payload.invite}`);
+                throw CustomError(STATUS_CODE.NOT_FOUND, 'Invite is not valid. Please contact the provider.');               
+            }
+        }
+
         // create payload of user data
         const user = {
             id: uuidv4(),
