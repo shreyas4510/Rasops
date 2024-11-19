@@ -98,9 +98,9 @@ function CustomFormGroup({
                             onClick={() => {
                                 if (Object.keys(values).length <= 2) return;
 
-                                const key = name.split('_')[1];
-                                delete values[`name_${key}`];
-                                delete values[`order_${key}`];
+                                const key = name.split('-')[1];
+                                delete values[`name-${key}`];
+                                delete values[`order-${key}`];
                                 setFormValues(values);
                                 onClick(key, values);
                             }}
