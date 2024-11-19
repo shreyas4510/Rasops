@@ -410,7 +410,7 @@ function Menu() {
 
         if (['remove', 'removemenu'].includes(modalData.type)) {
             const itemIds = Object.entries(values).reduce((cur, [key, value]) => {
-                const id = key.split('-')[1];
+                const id = key.substring(key.indexOf('-') + 1, key.length);
                 if (value) cur.push(id);
                 return cur;
             }, []);

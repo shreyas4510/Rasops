@@ -14,12 +14,12 @@ export const validateCreateCategory = (initialValues, data = []) => {
 
     const valid = {};
     Object.keys(initialValues).forEach((key) => {
-        const messageKey = key.startsWith('name_') ? 'Name' : 'Order';
+        const messageKey = key.startsWith('name-') ? 'Name' : 'Order';
         valid[key] = Yup.string()
             .required(`${messageKey} is required`)
             .test('is-unique', `${messageKey} value must be unique`, function (value) {
                 let isValid = true;
-                const type = key.split('_')[0];
+                const type = key.split('-')[0];
                 if (type === 'name') {
                     isValid = !names.includes(value);
                 }
@@ -30,7 +30,7 @@ export const validateCreateCategory = (initialValues, data = []) => {
 
                 if (isValid) {
                     Object.entries(this.parent).forEach(([vKey, vValue]) => {
-                        if (vKey !== key && vKey.startsWith(`${key.split('_')[0]}`) && vValue === value) {
+                        if (vKey !== key && vKey.startsWith(`${key.split('-')[0]}`) && vValue === value) {
                             isValid = false;
                         }
                     });
