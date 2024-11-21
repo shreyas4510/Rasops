@@ -5,6 +5,7 @@ import { Card, FormControl } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import MenuBackgroundImg from '../../assets/images/menu-background.png';
 import AuthContainer from '../../components/AuthContainer';
 import CustomButton from '../../components/CustomButton';
 import CustomFormGroup from '../../components/CustomFormGroup';
@@ -82,26 +83,34 @@ function OrderPlacement() {
     useEffect(() => {
         const handleServiceWorkerMessage = (event) => {
             const { meta } = event.data;
-            if (NOTIFICATION_ACTIONS.ORDER_SERVED === meta.action) {
-                dispatch(
-                    getMenuDetailsRequest({
-                        hotelId: tableDetails.hotel.id,
-                        customerId: tableDetails.customer.id
-                    })
-                );
+            if (meta?.action === NOTIFICATION_ACTIONS.ORDER_SERVED) {
+                if (tableDetails && tableDetails.hotel && tableDetails.customer) {
+                    dispatch(
+                        getMenuDetailsRequest({
+                            hotelId: tableDetails.hotel.id,
+                            customerId: tableDetails.customer.id
+                        })
+                    );
+                } else {
+                    console.warn('tableDetails or its properties are missing.');
+                }
             }
 
-            if (NOTIFICATION_ACTIONS.MANUAL_PAYMENT_CONFIRMED === meta.action) {
-                toast.info(`🥂 Payment confirmed, thank you for choosing us! 🌟 Your feedback means the world to us.`);
-                dispatch(setViewOrderDetails({}));
-                dispatch(setFeedback(true));
+            if (meta?.action === NOTIFICATION_ACTIONS.MANUAL_PAYMENT_CONFIRMED) {
+                if (meta.tableNumber === tableDetails.tableNumber) {
+                    toast.info(
+                        '🥂 Payment confirmed, thank you for choosing us! 🌟 Your feedback means the world to us.'
+                    );
+                    dispatch(setViewOrderDetails({}));
+                    dispatch(setFeedback(true));
+                }
             }
         };
         navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
         return () => {
             navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
         };
-    }, []);
+    }, [tableDetails.customer, tableDetails.hotel]);
 
     const handleOrderSubmit = () => {
         if (viewOrderDetails.submitText === 'Pay') {
@@ -278,16 +287,16 @@ function OrderPlacement() {
     if (feedback) {
         return (
             <div className="d-flex h-100">
-                <Card className="m-auto d-flex menu-container">
+                <Card className="m-auto d-flex menu-container" style={{ backgroundImage: `url(${MenuBackgroundImg})` }}>
                     <Card.Body className="d-flex flex-column align-items-center justify-content-center py-5 position-relative">
                         <div>
-                            <h6 className="text-center" style={{ color: '#FDFD96' }}>
+                            <h6 className="text-center" style={{ color: '#fff' }}>
                                 Feedback
                             </h6>
                             <FormControl
                                 as="textarea"
                                 rows={5}
-                                style={{ background: '#FDFD96', border: 'none' }}
+                                style={{ background: '#fff', border: 'none' }}
                                 placeholder="Your feedback helps us improve! Share your thoughts here..."
                                 onChange={(e) => {
                                     dispatch(setFeedbackDetails({ ...feedbackDetails, feedback: e.target.value }));
@@ -295,7 +304,7 @@ function OrderPlacement() {
                             />
                         </div>
                         <div className="my-5">
-                            <h6 className="text-center" style={{ color: '#FDFD96' }}>
+                            <h6 className="text-center" style={{ color: '#fff' }}>
                                 Rating
                             </h6>
                             <Rating
@@ -307,12 +316,14 @@ function OrderPlacement() {
                         <div
                             className="pb-5 text-center view-order"
                             onClick={() => {
-                                dispatch(
-                                    sendFeedbackRequest({
-                                        ...feedbackDetails,
-                                        customerId: tableDetails.customer.id
-                                    })
-                                );
+                                if ('feedback' in feedbackDetails || 'rating' in feedbackDetails) {
+                                    dispatch(
+                                        sendFeedbackRequest({
+                                            ...feedbackDetails,
+                                            customerId: tableDetails.customer.id
+                                        })
+                                    );
+                                }
                             }}
                         >
                             <h6 role="button">Submit</h6>
@@ -378,13 +389,13 @@ function OrderPlacement() {
                         ))}
                         {!Object.values(viewOrderDetails?.data || []).find((obj) => obj.status === ORDER_STATUS[0]) &&
                             [
-                                { title: 'SGST Price', value: Math.round(viewOrderDetails.totalPrice * (18 / 100)) },
-                                { title: 'CGST Price', value: Math.round(viewOrderDetails.totalPrice * (18 / 100)) },
+                                { title: 'SGST Price', value: Math.round(viewOrderDetails.totalPrice * (2.5 / 100)) },
+                                { title: 'CGST Price', value: Math.round(viewOrderDetails.totalPrice * (2.5 / 100)) },
                                 {
                                     title: 'Total Price',
                                     value:
                                         viewOrderDetails.totalPrice +
-                                        2 * Math.round(viewOrderDetails.totalPrice * (18 / 100))
+                                        2 * Math.round(viewOrderDetails.totalPrice * (5 / 100))
                                 }
                             ].map(({ title, value }, key) => (
                                 <div key={`${key}-${title}`} className="d-flex justify-content-between my-2">

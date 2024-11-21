@@ -1,17 +1,16 @@
 .menu-container {
-    height: auto;
-    min-height: 90vh;
-    background: radial-gradient(#570d0a, #08182d);
-    width: 85%;
+    height: 95%;
+    width: 95%;
     max-width: 500px;
     border: none;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    background-size: cover;
+    background-position: center;
 }
 
 .corner-view {
     width: 45px;
     height: 45px;
-    background: #fdfd96;
     position: absolute;
 }
 
@@ -40,20 +39,20 @@
 }
 
 .menu-title {
-    color: #fdfd96;
+    color: #fff;
     position: absolute;
     top: 0;
     display: flex;
 }
 
 .view-order {
-    color: #fdfd96;
+    color: #fff;
     position: absolute;
     bottom: 0;
 }
 
 .list-view {
-    color: #fdfd96;
+    color: #fff;
 }
 
 .order-input {

@@ -441,7 +441,8 @@ const paymentConfirmation = async (payload) => {
                     title: 'Payment Confirmed',
                     message: `Payment successfully confirmed`,
                     meta: {
-                        action: NOTIFICATION_ACTIONS.MANUAL_PAYMENT_CONFIRMED
+                        action: NOTIFICATION_ACTIONS.MANUAL_PAYMENT_CONFIRMED,
+                        tableNumber: customerDetails.table.tableNumber
                     }
                 },
                 customerId
@@ -452,6 +453,7 @@ const paymentConfirmation = async (payload) => {
                 title: 'Payment Received',
                 message: `Payment recieved successfully for Table Number-${customerDetails.table.tableNumber} of amount ${totalPrice}rs`,
                 meta: {
+                    tableNumber: customerDetails.table.tableNumber,
                     action: NOTIFICATION_ACTIONS.ONLINE_PAYMENT_CONFIRMED,
                     hotelId: customerDetails.hotel.id
                 }

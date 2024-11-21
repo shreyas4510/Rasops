@@ -53,8 +53,8 @@ export const PLANS = {
 };
 
 export const calculateBill = (price) => {
-    const sgst = Math.round(price * (18 / 100));
-    const cgst = Math.round(price * (18 / 100));
+    const sgst = Math.round(price * (2.5 / 100));
+    const cgst = Math.round(price * (2.5 / 100));
     const totalPrice = price + sgst + cgst;
 
     return { sgst, cgst, totalPrice };
