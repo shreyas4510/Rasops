@@ -151,16 +151,13 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
     };
 
     const typeData = {
-        cover: [{ name, id }]
+        cover: [{ name, id }],
+        category: [],
+        menuData: {}
     };
 
     const orders = {};
     categories.forEach(({ id: categoryId, name, menus }) => {
-        if (!typeData.category) {
-            typeData.category = [];
-            typeData.menuData = {};
-        }
-
         typeData.category.push({
             name,
             id: categoryId
@@ -196,7 +193,7 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
     page++;
 
     // Add categories in the menu card details page wise
-    const categoriesPerPage = 12;
+    const categoriesPerPage = 10;
     const categoriesCount = Math.ceil(typeData.category.length / categoriesPerPage);
     for (let index = page; index < page + categoriesCount; index++) {
         data[index] = {
@@ -209,7 +206,7 @@ const getMenuCardFormatData = ({ id, name, categories }) => {
 
     // add menu items in the menu card details page wise
     const mapping = {};
-    const menusPerPage = 10;
+    const menusPerPage = 8;
     Object.keys(typeData.menuData).forEach((key) => {
         const id = key.split('_')[0];
         const name = key.split('_')[1];
@@ -270,7 +267,7 @@ const getMenuDetails = async (hotelId, customerId) => {
             orders
         };
     } catch (error) {
-        logger('error', 'Error while detching hotel details', { error });
+        logger('error', 'Error while getting hotel details', { error });
         throw CustomError(error.code, error.message);
     }
 };

@@ -10,7 +10,7 @@ const Rating = ({ handleClick = () => {} }) => {
                 <FaStar
                     key={`star-${index}`}
                     className="mx-2"
-                    color={index + 1 <= rating ? '#FDFD96' : '#e4e5e9'}
+                    color={index + 1 <= rating ? '#fff' : '#e4e5e9'}
                     size={30}
                     onClick={() => {
                         setRating(index + 1);

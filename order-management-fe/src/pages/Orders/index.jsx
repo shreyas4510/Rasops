@@ -54,7 +54,7 @@ function Orders() {
     useEffect(() => {
         const handleServiceWorkerMessage = (event) => {
             const { meta } = event.data;
-            switch (meta.action) {
+            switch (meta?.action) {
                 case NOTIFICATION_ACTIONS.CUSTOMER_REGISTERATION:
                     if (userData.preference?.orders !== ORDER_PREFERENCE.on) {
                         debounceSetPreference(ORDER_PREFERENCE.on);
@@ -74,13 +74,14 @@ function Orders() {
                         setPaymentRequest({
                             title: 'Payment Request',
                             message: `Payment request for Table-${meta.tableNumber} of amount ${meta.totalPrice}. Please approve once the payment is done.`,
-                            submitText: 'Apporve',
+                            submitText: 'Approve',
                             tableId: meta.tableId,
                             customerId: meta.customerId
                         })
                     );
                     break;
                 default:
+                    console.warn(`Unhandled notification action: ${meta.action}`);
                     break;
             }
         };
@@ -89,7 +90,7 @@ function Orders() {
         return () => {
             navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
         };
-    }, []);
+    }, [selectedTable, userData]);
 
     useEffect(() => {
         const params = {
@@ -321,7 +322,8 @@ function Orders() {
                                             dispatch(
                                                 paymentConfirmationRequest({
                                                     manual: true,
-                                                    customerId: activeOrder.billDetails.id
+                                                    customerId: activeOrder.billDetails.id,
+                                                    hotelId
                                                 })
                                             );
                                         } else {

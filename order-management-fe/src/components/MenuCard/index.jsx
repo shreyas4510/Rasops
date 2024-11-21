@@ -4,9 +4,9 @@ import '../../assets/styles/menuCard.css';
 import { BiSolidCategoryAlt } from 'react-icons/bi';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { IoMdDoneAll } from 'react-icons/io';
-import { TbTopologyStarRing2 } from 'react-icons/tb';
 import { TiArrowRightThick } from 'react-icons/ti';
 import Chef from '../../assets/images/chef.png';
+import MenuBackgroundImg from '../../assets/images/menu-background.png';
 
 const types = {
     cover: 'COVER',
@@ -39,7 +39,7 @@ function MenuCard({
         return (
             <>
                 <img width={70} src={Chef} />
-                <h2 className="fw-bold mt-2" style={{ color: '#FDFD96' }}>
+                <h2 className="fw-bold mt-2 display-1" style={{ color: '#FDFD96' }}>
                     {name}
                 </h2>
                 <div className="mt-5 pt-4">
@@ -49,11 +49,7 @@ function MenuCard({
                         { Icon: FaArrowLeft, description: 'Previous Page' },
                         { Icon: FaArrowRight, description: 'Next Page' }
                     ].map(({ Icon, description }, index) => (
-                        <div
-                            key={`${index}-${description}`}
-                            className="d-flex align-items-center my-1"
-                            style={{ color: '#FDFD96' }}
-                        >
+                        <div key={`${index}-${description}`} className="d-flex align-items-center my-1 text-white">
                             <Icon size={20} />
                             <span className="mx-2">:</span>
                             <span>{description}</span>
@@ -68,9 +64,7 @@ function MenuCard({
         <>
             {type !== types.cover && (
                 <div className="pt-2 mx-5 text-center align-items-center justify-content-center menu-title">
-                    <TbTopologyStarRing2 size={17} color="FDFD96" />
-                    <h6 className="m-0 mx-2">{title}</h6>
-                    <TbTopologyStarRing2 size={17} color="FDFD96" />
+                    <h6 className="mt-4 mx-2 fw-bolder display-6">{title}</h6>
                 </div>
             )}
             {type !== types.cover && (
@@ -81,8 +75,8 @@ function MenuCard({
             <div className="corner-view top-left-corner">
                 {type !== types.cover && (
                     <BiSolidCategoryAlt
-                        color="#570d0a"
-                        size={17}
+                        color="white"
+                        size={20}
                         className="ms-2 mt-2"
                         onClick={() => handleClick({ action: 'category' })}
                     />
@@ -91,8 +85,8 @@ function MenuCard({
             <div className="corner-view bottom-left-corner">
                 {type !== types.cover && (
                     <FaArrowLeft
-                        size={17}
-                        color="#570d0a"
+                        color="white"
+                        size={20}
                         className="ms-2 mt-3"
                         role="button"
                         onClick={() => handleClick({ action: 'prev' })}
@@ -102,8 +96,8 @@ function MenuCard({
             <div className="corner-view bottom-right-corner">
                 {currentPage < count - 1 && (
                     <FaArrowRight
-                        size={17}
-                        color="#570d0a"
+                        color="white"
+                        size={20}
                         className="ms-3 mt-3"
                         role="button"
                         onClick={() => handleClick({ action: 'next' })}
@@ -113,8 +107,8 @@ function MenuCard({
             <div className="corner-view top-right-corner">
                 {type !== types.cover && (
                     <IoMdDoneAll
-                        size={17}
-                        color="#570d0a"
+                        color="white"
+                        size={20}
                         className="ms-3 mt-2"
                         onClick={() => handleClick({ action: 'place' })}
                     />
@@ -167,7 +161,7 @@ function MenuCard({
 
     return (
         <div className="d-flex h-100">
-            <Card className="m-auto d-flex menu-container">
+            <Card className="m-auto d-flex menu-container" style={{ backgroundImage: `url(${MenuBackgroundImg})` }}>
                 <Card.Body className="d-flex flex-column align-items-center justify-content-center py-5 position-relative">
                     <CoverView type={listData?.type} />
                     <CategoryView type={listData?.type} data={listData?.data} />

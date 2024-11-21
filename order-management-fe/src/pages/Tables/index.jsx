@@ -116,7 +116,7 @@ function Tables() {
                     <h5 style={{ color: '#49ac60' }} className="fw-bold">
                         {selectedTable.label}
                     </h5>
-                    {tableUrl && <QRCodeSVG value={tableUrl} className="qr-code mt-sm-5 w-75" />}
+                    {tableUrl && <QRCodeSVG value={tableUrl} className="qr-code mt-sm-5 w-75 mb-5" />}
                 </div>
             ) : (
                 <div className="d-flex">

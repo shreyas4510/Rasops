@@ -9,9 +9,7 @@ function* getActiveOrdersRequestSaga(action) {
         const tableId = action.payload;
         let result = yield service.getActiveOrders(tableId);
         result.description = (result.description || []).reverse();
-
         if ('message' in result) {
-            toast.warn('No Active orders at the moment');
             result = {};
         }
         yield put(getActiveOrderSuccess(result));
