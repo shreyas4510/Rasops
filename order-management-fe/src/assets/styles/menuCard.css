@@ -1,6 +1,6 @@
 .menu-container {
-    height: 95%;
-    width: 95%;
+    height: 100%;
+    width: 100%;
     max-width: 500px;
     border: none;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
@@ -11,6 +11,7 @@
 .corner-view {
     width: 45px;
     height: 45px;
+    background-color: #262525;
     position: absolute;
 }
 
