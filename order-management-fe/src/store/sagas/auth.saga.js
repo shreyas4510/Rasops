@@ -4,7 +4,7 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import env from '../../config/env';
 import * as service from '../../services/auth.service';
 import * as notificationService from '../../services/notification.service';
-import { COMMON_TABS, MANAGER_TABS, OWNER_TABS, USER_ROLES } from '../../utils/constants';
+import { MANAGER_TABS, OWNER_TABS, USER_ROLES } from '../../utils/constants';
 import { getUserRequest, getUserSuccess, setGlobalHotelId, setNotificationData, setSettingsFormData } from '../slice';
 import {
     FORGOT_PASSWORD_REQUEST,
@@ -119,10 +119,15 @@ function* getUserRequestSaga(action) {
             if (
                 res.role.toUpperCase() === USER_ROLES[0] &&
                 Object.keys(viewData).length === 1 &&
-                ![...OWNER_TABS, ...COMMON_TABS].find((obj) => obj.path === path)
+                [...MANAGER_TABS].find((obj) => obj.path === path)
             ) {
                 navigate('/hotels');
-            } else if (![...MANAGER_TABS, ...COMMON_TABS].find((obj) => obj.path === path)) {
+            }
+
+            if (
+                (res.role.toUpperCase() === USER_ROLES[1] || Object.keys(viewData).length === 2) &&
+                [...OWNER_TABS].find((obj) => obj.path === path)
+            ) {
                 navigate('/dashboard');
             }
         }
