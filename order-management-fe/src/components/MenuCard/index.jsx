@@ -39,7 +39,7 @@ function MenuCard({
         return (
             <>
                 <img width={70} src={Chef} />
-                <h2 className="fw-bold mt-2 display-1" style={{ color: '#FDFD96' }}>
+                <h2 className="fw-bold mt-2 display-1 text-center" style={{ color: '#FDFD96' }}>
                     {name}
                 </h2>
                 <div className="mt-5 pt-4">
@@ -76,7 +76,7 @@ function MenuCard({
                 {type !== types.cover && (
                     <BiSolidCategoryAlt
                         color="white"
-                        size={20}
+                        size={18}
                         className="ms-2 mt-2"
                         onClick={() => handleClick({ action: 'category' })}
                     />
@@ -86,7 +86,7 @@ function MenuCard({
                 {type !== types.cover && (
                     <FaArrowLeft
                         color="white"
-                        size={20}
+                        size={18}
                         className="ms-2 mt-3"
                         role="button"
                         onClick={() => handleClick({ action: 'prev' })}
@@ -97,7 +97,7 @@ function MenuCard({
                 {currentPage < count - 1 && (
                     <FaArrowRight
                         color="white"
-                        size={20}
+                        size={18}
                         className="ms-3 mt-3"
                         role="button"
                         onClick={() => handleClick({ action: 'next' })}
@@ -108,7 +108,7 @@ function MenuCard({
                 {type !== types.cover && (
                     <IoMdDoneAll
                         color="white"
-                        size={20}
+                        size={18}
                         className="ms-3 mt-2"
                         onClick={() => handleClick({ action: 'place' })}
                     />
