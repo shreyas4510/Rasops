@@ -62,3 +62,12 @@ export const paymentConfirmation = async (payload) => {
         throw error;
     }
 };
+
+export const cancelSubscription = async (payload) => {
+    try {
+        return await api(method.POST, `/checkout/cancel`, payload);
+    } catch (error) {
+        console.error(`Error while cancelling subscription request ${error}`);
+        throw error;
+    }
+};

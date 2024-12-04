@@ -4,6 +4,7 @@ import CryptoJS from 'crypto-js';
 import moment from 'moment';
 import { FaHandPointRight } from 'react-icons/fa';
 import { MdEditDocument, MdDeleteForever } from 'react-icons/md';
+import { TbCoinRupeeFilled } from 'react-icons/tb';
 import { TiPlus } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +25,7 @@ import {
 } from '../../store/slice/hotel.slice';
 import { getHotelUpdateDifference } from '../../utils/helpers.js';
 import { hotelRegistrationSchema } from '../../validations/hotel';
+
 function Hotels() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
@@ -144,10 +146,33 @@ function Hotels() {
                                             navigate('/subscription', {
                                                 state: {
                                                     id: row.original.id,
-                                                    name: row.original.name
+                                                    name: row.original.name,
+                                                    subscribed: {
+                                                        planName: row.original.subscriptions?.planName,
+                                                        status: !!row.original.subscriptions
+                                                    }
                                                 }
                                             });
                                         }
+                                    }
+                                },
+                                {
+                                    label: 'Subscription',
+                                    className: `${
+                                        row.original.subscriptions &&
+                                        moment().diff(row.original.subscriptions.endDate) <= 0
+                                            ? 'd-block'
+                                            : 'd-none'
+                                    }`,
+                                    icon: TbCoinRupeeFilled,
+                                    onClick: () => {
+                                        navigate('/subscription', {
+                                            state: {
+                                                id: row.original.id,
+                                                name: row.original.name,
+                                                data: row.original.subscriptions
+                                            }
+                                        });
                                     }
                                 },
                                 {

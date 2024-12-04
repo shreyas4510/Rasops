@@ -16,7 +16,6 @@ import Subscription from '../pages/Subscription';
 import Tables from '../pages/Tables';
 import VerifyUser from '../pages/VerifyUser';
 import AuthRoutes from './AuthRoutes';
-import FullRoutes from './FullRoutes';
 import PublicRoutes from './PublicRoutes';
 
 export default function Routes() {
@@ -32,9 +31,6 @@ export default function Routes() {
                     <Route path="reset" element={<ResetPassword />} />
                     <Route path="place/:token" element={<OrderPlacement />} />
                 </Route>
-                <Route path="/" element={<FullRoutes />}>
-                    <Route path="subscription" element={<Subscription />} />
-                </Route>
                 <Route path="/" element={<AuthRoutes />}>
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="invites" element={<Invites />} />
@@ -44,6 +40,7 @@ export default function Routes() {
                     <Route path="settings" element={<Settings />} />
                     <Route path="tables" element={<Tables />} />
                     <Route path="orders" element={<Orders />} />
+                    <Route path="subscription" element={<Subscription />} />
                 </Route>
                 <Route path="/404" element={<>Not Found</>} />
                 <Route path="*" element={<Navigate to="/404" />} />

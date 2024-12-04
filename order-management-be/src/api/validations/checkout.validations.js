@@ -137,3 +137,16 @@ export const paymentConfirmationValidation = (payload) => {
         throw CustomError(error.code, error.message);
     }
 };
+
+export const cancelValidation = (payload) => {
+    try {
+        const schema = Joi.object({
+            subscriptionId: Joi.string().required(),
+            cancelImmediately: Joi.boolean().optional()
+        });
+        return schema.validate(payload);
+    } catch (error) {
+        logger('error', 'Error in subscription cancellation validation', { error });
+        throw CustomError(error.code, error.message);
+    }
+};

@@ -35,9 +35,7 @@ const env = {
         keySecret: process.env.RAZORPAY_KEY_SECRET
     },
     plans: {
-        basicMonthly: process.env.BASIC_MONTHLY,
-        basicYearly: process.env.BASIC_YEARLY,
-        standardMonthly: process.env.STANDARD_MONTHLY,
+        standaranMonthly: process.env.STANDARD_MONTHLY,
         standardYearly: process.env.STANDARD_YEARLY
     },
     supportEmail: process.env.SUPPORT_EMAIL

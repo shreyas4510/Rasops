@@ -4,6 +4,7 @@ import { STATUS_CODE } from '../utils/common.js';
 import {
     accountDetailsValidation,
     businessDetailsValidation,
+    cancelValidation,
     paymentConfirmationValidation,
     paymentValidation,
     stakeholderDetailsValidation,
@@ -151,6 +152,24 @@ const paymentConfirmation = async (req, res) => {
     }
 };
 
+const cancel = async (req, res) => {
+    try {
+        const payload = req.body;
+
+        const validation = cancelValidation(payload);
+        if (validation.error) {
+            logger('error', 'Cancel subscription validation error', { error: validation.error });
+            return res.status(STATUS_CODE.BAD_REQUEST).send({ message: validation.error.message });
+        }
+
+        const result = await checkoutService.cancel(payload);
+        return res.status(STATUS_CODE.OK).send(result);
+    } catch (error) {
+        logger('error', 'Error occurred during subscription cancellation', { error });
+        return res.status(error.code).send({ message: error.message });
+    }
+};
+
 export default {
     business,
     stakeholder,
@@ -158,5 +177,6 @@ export default {
     subscribe,
     success,
     payment,
-    paymentConfirmation
+    paymentConfirmation,
+    cancel
 };

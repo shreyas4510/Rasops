@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
+export const SUBSCRIPTION_STATUS = ['ACTIVE', 'CANCELLED'];
 const subscriptionModel = (sequelize) =>
     sequelize.define(
         TABLES.SUBSCRIPTION,
@@ -25,6 +26,10 @@ const subscriptionModel = (sequelize) =>
                 type: DataTypes.STRING,
                 allowNull: false
             },
+            planName: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
             customerId: {
                 type: DataTypes.STRING,
                 allowNull: true
@@ -32,6 +37,11 @@ const subscriptionModel = (sequelize) =>
             paymentId: {
                 type: DataTypes.STRING,
                 allowNull: true
+            },
+            status: {
+                type: DataTypes.ENUM,
+                values: SUBSCRIPTION_STATUS,
+                allowNull: false
             },
             startDate: {
                 type: DataTypes.DATE,

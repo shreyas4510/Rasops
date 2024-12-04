@@ -6,6 +6,7 @@ import env from '../../config/env.js';
 import logger from '../../config/logger.js';
 import { ORDER_STATUS } from '../models/order.model.js';
 import { PAYMENT_PREFERENCE } from '../models/preferences.model.js';
+import { SUBSCRIPTION_STATUS } from '../models/subscriptions.js';
 import { TABLE_STATUS } from '../models/table.model.js';
 import { USER_ROLES } from '../models/user.model.js';
 import customerRepo from '../repositories/customer.repository.js';
@@ -192,19 +193,9 @@ const account = async (userId, token) => {
 
 const getPlanId = (planId) => {
     switch (planId) {
-        case PLANS.BASIC_MONTHLY:
-            return {
-                planId: env.plans.basicMonthly,
-                tables: 50
-            };
-        case PLANS.BASIC_YEARLY:
-            return {
-                planId: env.plans.basicYearly,
-                tables: 50
-            };
         case PLANS.STANDARD_MONTHLY:
             return {
-                planId: env.plans.standardMonthly,
+                planId: env.plans.standaranMonthly,
                 tables: 100
             };
         case PLANS.STANDARD_YEARLY:
@@ -255,21 +246,37 @@ const subscribe = async (payload) => {
         }
 
         const { planId, tables } = getPlanId(payload.plan);
+        const hotelSubscription = await subscriptionRepo.findOne({
+            where: { hotelId: payload.hotelId }
+        });
 
         // eslint-disable-next-line camelcase
         const data = { plan_id: planId, total_count: 1 };
         logger('debug', `Request to create subscription data`, data);
         const subscription = await razorpayService.subscribe(data);
 
-        const options = {
-            id: uuidv4(),
-            hotelId: payload.hotelId,
-            subscriptionId: subscription.id,
-            planId: payload.plan,
-            tables
-        };
-        logger('debug', `Options to store in table`, options);
-        await subscriptionRepo.save(options);
+        if (!hotelSubscription) {
+            const options = {
+                id: uuidv4(),
+                hotelId: payload.hotelId,
+                subscriptionId: subscription.id,
+                planId: subscription.plan_id,
+                planName: payload.plan,
+                tables
+            };
+            logger('debug', `Options to store in table`, options);
+            await subscriptionRepo.save(options);
+        } else {
+            const options = { where: { hotelId: payload.hotelId } };
+            const data = {
+                subscriptionId: subscription.id,
+                planId: subscription.plan_id,
+                planName: payload.plan,
+                tables
+            };
+            logger('debug', `Existing subscription updated`, { options, data });
+            await subscriptionRepo.update(options, data);
+        }
 
         return { id: subscription.id };
     } catch (error) {
@@ -287,6 +294,7 @@ const success = async (userId, payload) => {
         const data = {
             customerId: subscription.customer_id,
             paymentId: payload.paymentId,
+            status: SUBSCRIPTION_STATUS[0],
             startDate: moment(subscription.current_start * 1000).toISOString(),
             endDate: moment(subscription.current_end * 1000).toISOString()
         };
@@ -492,6 +500,71 @@ const paymentConfirmation = async (payload) => {
     }
 };
 
+const calculateRefundAmount = (subscription, plan) => {
+    try {
+        const amount = plan.item.amount / 100;
+        const totalDays = moment(subscription.endDate, 'YYYY-MM-DD hh:mm:ss')
+            .startOf('day')
+            .diff(moment(subscription.startDate, 'YYYY-MM-DD hh:mm:ss').startOf('day'), 'days');
+        const remainingDays = moment(subscription.endDate, 'YYYY-MM-DD hh:mm:ss').startOf('day').diff(moment(), 'days');
+        return Math.round(remainingDays * (amount / totalDays));
+    } catch (error) {
+        logger('error', 'Error while calculate refund amount', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const cancel = async (payload) => {
+    try {
+        const { subscriptionId, cancelImmediately } = payload;
+        logger('debug', `Payload for cancel subscription`, payload);
+
+        const subscriptionOptions = {
+            where: { subscriptionId },
+            attributes: ['id', 'subscriptionId', 'planId', 'paymentId', 'startDate', 'endDate']
+        };
+        const subscription = await subscriptionRepo.findOne(subscriptionOptions);
+        logger('debug', `Subscription details`, { subscription });
+
+        if (!subscription) {
+            throw CustomError(STATUS_CODE.NOT_FOUND, 'Subscription not found');
+        }
+        await razorpayService.cancel(subscriptionId, cancelImmediately);
+        logger('debug', `Subscription cancelled successfully`);
+
+        if (cancelImmediately) {
+            const plan = await razorpayService.getPlan(subscription.planId);
+            logger('debug', `Plan details on cancel subscription`, { plan });
+
+            if (!plan) {
+                throw CustomError(STATUS_CODE.NOT_FOUND, 'Invalid Plan');
+            }
+
+            const refundAmount = calculateRefundAmount(subscription, plan);
+            logger('debug', `Refund amount`, { refundAmount });
+            await razorpayService.refund(subscription.paymentId, refundAmount);
+
+            const options = { where: { id: subscription.id } };
+            const data = {
+                endDate: moment().endOf('day').toISOString(),
+                status: SUBSCRIPTION_STATUS[1]
+            };
+
+            logger('debug', `Update subscription on cancel subscription`, { options, data });
+            await subscriptionRepo.update(options, data);
+        }
+
+        return {
+            message: cancelImmediately
+                ? 'Subscription canceled immediately and refund processed.'
+                : 'Subscription canceled at the end of the period.'
+        };
+    } catch (error) {
+        logger('error', 'Error while canceling subscription', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     business,
     stakeholder,
@@ -499,5 +572,6 @@ export default {
     subscribe,
     success,
     payment,
-    paymentConfirmation
+    paymentConfirmation,
+    cancel
 };

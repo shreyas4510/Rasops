@@ -133,7 +133,7 @@ const list = async (userId) => {
                         },
                         {
                             model: db.subscriptions,
-                            attributes: ['subscriptionId', 'endDate']
+                            attributes: ['subscriptionId', 'endDate', 'planName']
                         }
                     ]
                 }
