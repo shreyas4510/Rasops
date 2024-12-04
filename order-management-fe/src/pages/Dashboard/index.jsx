@@ -124,10 +124,12 @@ function Dashboard() {
                                 { label: 'Care Number', value: hotel?.careNumber }
                             ].map(({ label, value }, index) => (
                                 <Row className="mb-3" key={`${label}-${index}`}>
-                                    <Col className="col-sm-3 col-12">
+                                    <Col className="col-sm-4 col-12">
                                         <strong className="setting-title">{label} : </strong>
                                     </Col>
-                                    <Col className="col-sm-9 col-12">{value}</Col>
+                                    <Col className="col-sm-8 col-12">
+                                        <strong>{value}</strong>
+                                    </Col>
                                 </Row>
                             ))}
                         </>
@@ -142,7 +144,7 @@ function Dashboard() {
                     {top5.length ? <PieChart data={top5} /> : <DashboardNoData />}
                 </Col>
                 <Col className="col-sm-7 col-12">
-                    {dailyRevenue.length ? (
+                    {dailyRevenue.data?.length ? (
                         <>
                             <h6>Week Revenue</h6>
                             <LineChart data={dailyRevenue} xLabel="Day" yLabel="Revenue" />
