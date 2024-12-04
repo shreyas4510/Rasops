@@ -27,7 +27,7 @@ const create = async (payload) => {
 
             if (!res) {
                 logger('debug', `Invite not found in database for ${payload.invite}`);
-                throw CustomError(STATUS_CODE.NOT_FOUND, 'Invite is not valid. Please contact the provider.');               
+                throw CustomError(STATUS_CODE.NOT_FOUND, 'Invite is not valid. Please contact the provider.');
             }
         }
 

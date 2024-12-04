@@ -81,6 +81,36 @@ const order = async (data) => {
     }
 };
 
+const cancel = async (subscriptionId, cancelAtCycleEnd = false) => {
+    try {
+        const cancelResponse = await razorpay.subscriptions.cancel(subscriptionId, cancelAtCycleEnd);
+        return cancelResponse;
+    } catch (error) {
+        logger('error', 'Error while canceling subscription', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const getPlan = async (planId) => {
+    try {
+        const data = await razorpay.plans.fetch(planId);
+        return data;
+    } catch (error) {
+        logger('error', 'Error while fetching plan', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
+const refund = async (paymentId, amount) => {
+    try {
+        const data = await razorpay.payments.refund(paymentId, { amount });
+        return data;
+    } catch (error) {
+        logger('error', 'Error while fetching plan', { error });
+        throw CustomError(error.code, error.message);
+    }
+};
+
 export default {
     createLinkedAccount,
     createStakeholder,
@@ -88,5 +118,8 @@ export default {
     updateProduct,
     subscribe,
     fetch,
-    order
+    order,
+    cancel,
+    getPlan,
+    refund
 };
