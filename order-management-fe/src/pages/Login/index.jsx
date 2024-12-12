@@ -53,7 +53,7 @@ function Login() {
                         />
                         <div className="text-center">
                             <p className="label-font m-0">
-                                {`Don't have an account ?`}
+                                {`Don't have an account ? `}
                                 <CustomLink onClick={handleOnClickSignup} text="Sign Up" />
                             </p>
                             <p className="label-font m-0">

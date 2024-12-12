@@ -104,4 +104,6 @@ export const COMMON_TABS = [
     }
 ];
 
+export const VERIFICATION_ROUTE = ['/verify', '/reset', '/signup'];
+
 export const FIELD_CLASS = 'col-md-6 col-12 my-2';

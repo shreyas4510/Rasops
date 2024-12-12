@@ -18,7 +18,8 @@ const authSlice = createSlice({
             }
         },
         formData: false,
-        notificationsData: { count: 0, data: [], open: false }
+        notificationsData: { count: 0, data: [], open: false },
+        verifyUsername: ''
     },
     reducers: {
         loginRequest() {},
@@ -41,6 +42,9 @@ const authSlice = createSlice({
         setNotificationData(state, action) {
             state.notificationsData = action.payload;
         },
+        setVerifyUserName(state, action) {
+            state.verifyUsername = action.payload;
+        },
         getNotificationRequest() {},
         updateNotificationRequest() {}
     }
@@ -60,7 +64,8 @@ export const {
     setUpdateModalOptions,
     setNotificationData,
     getNotificationRequest,
-    updateNotificationRequest
+    updateNotificationRequest,
+    setVerifyUserName
 } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;
