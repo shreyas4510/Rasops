@@ -73,7 +73,7 @@ const create = async (payload) => {
         };
 
         const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
-        await sendEmail({ token }, user.email, EMAIL_ACTIONS.VERIFY_USER);
+        await sendEmail({ token: encodeURIComponent(token) }, user.email, EMAIL_ACTIONS.VERIFY_USER);
         return data;
     } catch (error) {
         logger('error', `Error occurred during user creation: ${error}`);
@@ -100,8 +100,8 @@ const login = async (payload) => {
         }
 
         if (user.status === USER_STATUS[1]) {
-            logger('error', 'Email not verified.');
-            throw CustomError(STATUS_CODE.FORBIDDEN, 'Email not verified');
+            logger('error', 'Email is not verified.');
+            throw CustomError(STATUS_CODE.FORBIDDEN, 'Email is not verified');
         }
 
         const { id, firstName, lastName, phoneNumber, role } = user;
@@ -174,7 +174,7 @@ const verify = async (payload) => {
                 expires: moment().add(1, 'hour').valueOf()
             };
             const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
-            await sendEmail({ token }, user.email, EMAIL_ACTIONS.VERIFY_USER);
+            await sendEmail({ token: encodeURIComponent(token) }, user.email, EMAIL_ACTIONS.VERIFY_USER);
             throw CustomError(
                 STATUS_CODE.GONE,
                 `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`
@@ -231,7 +231,7 @@ const forget = async (payload) => {
         const token = CryptoJS.AES.encrypt(JSON.stringify(verifyOptions), env.cryptoSecret).toString();
 
         logger('info', 'Sending verification email for forgot password');
-        await sendEmail({ token }, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
+        await sendEmail({ token: encodeURIComponent(token) }, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
 
         return { message: 'Recover password link sent. Please check your email.' };
     } catch (error) {
@@ -264,7 +264,7 @@ const reset = async (payload) => {
                 expires: moment().add(1, 'hour').valueOf()
             };
             const token = CryptoJS.AES.encrypt(JSON.stringify(options), env.cryptoSecret).toString();
-            await sendEmail({ token }, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
+            await sendEmail({ token: encodeURIComponent(token) }, user.email, EMAIL_ACTIONS.FORGOT_PASSWORD);
             throw CustomError(
                 STATUS_CODE.GONE,
                 `Sorry, the link has expired. We've sent a new one to your email. Please check and try again.`
@@ -305,7 +305,7 @@ const invite = async (payload) => {
         };
 
         const token = CryptoJS.AES.encrypt(JSON.stringify(options), env.cryptoSecret).toString();
-        await sendEmail({ token, name: payload.name }, email, EMAIL_ACTIONS.INVITE_MANAGER);
+        await sendEmail({ token: encodeURIComponent(token), name: payload.name }, email, EMAIL_ACTIONS.INVITE_MANAGER);
         logger('info', 'Invite link sent successfully', { email });
 
         return { message: 'Invite link sent' };
