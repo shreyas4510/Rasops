@@ -4,8 +4,15 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import env from '../../config/env';
 import * as service from '../../services/auth.service';
 import * as notificationService from '../../services/notification.service';
-import { MANAGER_TABS, OWNER_TABS, USER_ROLES } from '../../utils/constants';
-import { getUserRequest, getUserSuccess, setGlobalHotelId, setNotificationData, setSettingsFormData } from '../slice';
+import { MANAGER_TABS, OWNER_TABS, USER_ROLES, VERIFICATION_ROUTE } from '../../utils/constants';
+import {
+    getUserRequest,
+    getUserSuccess,
+    setGlobalHotelId,
+    setNotificationData,
+    setSettingsFormData,
+    setVerifyUserName
+} from '../slice';
 import {
     FORGOT_PASSWORD_REQUEST,
     GET_NOTIFICATION_REQUEST,
@@ -47,18 +54,21 @@ function* registerUserRequestSaga(action) {
 }
 
 function* verifyUserRequestSaga(action) {
+    const { data, navigate } = action.payload;
     try {
-        const { data, navigate } = action.payload;
-        const res = yield service.verifyUser(data);
+        const { name, ...rest } = data;
+        const res = yield service.verifyUser(rest);
 
         localStorage.setItem('token', res.token);
         localStorage.setItem('data', res.data);
 
         toast.success('Verified successfully');
+        yield put(setVerifyUserName(name));
         yield put(getUserRequest({ navigate }));
         yield registerNotification();
     } catch (error) {
         toast.error(`Failed to verify email: ${error?.message}`);
+        navigate('/login');
     }
 }
 
@@ -117,16 +127,18 @@ function* getUserRequestSaga(action) {
             }
 
             if (
-                res.role.toUpperCase() === USER_ROLES[0] &&
-                Object.keys(viewData).length === 1 &&
-                [...MANAGER_TABS].find((obj) => obj.path === path)
+                (VERIFICATION_ROUTE.includes(path.toLowerCase()) && res.role.toUpperCase() === USER_ROLES[0]) ||
+                (res.role.toUpperCase() === USER_ROLES[0] &&
+                    Object.keys(viewData).length === 1 &&
+                    [...MANAGER_TABS].find((obj) => obj.path === path))
             ) {
                 navigate('/hotels');
             }
 
             if (
-                (res.role.toUpperCase() === USER_ROLES[1] || Object.keys(viewData).length === 2) &&
-                [...OWNER_TABS].find((obj) => obj.path === path)
+                (VERIFICATION_ROUTE.includes(path.toLowerCase()) && res.role.toUpperCase() === USER_ROLES[1]) ||
+                ((res.role.toUpperCase() === USER_ROLES[1] || Object.keys(viewData).length === 2) &&
+                    [...OWNER_TABS].find((obj) => obj.path === path))
             ) {
                 navigate('/dashboard');
             }

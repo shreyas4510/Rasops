@@ -48,6 +48,7 @@ function Signup() {
                     }));
                     setInvite({ status: true, email: data.email, id: data.inviteId });
                 }
+                localStorage.clear();
             } catch (err) {
                 toast.error(`Failed to validate invite: ${err.message}`);
             }
@@ -84,26 +85,26 @@ function Signup() {
                 {({ isSubmitting, isValid, dirty }) => (
                     <Form className="d-flex flex-column">
                         <Row className="mt-2">
-                            <Col>
+                            <Col className="col-12 col-md-6">
                                 <CustomFormGroup name="firstName" type="text" label="First Name" />
                             </Col>
-                            <Col>
+                            <Col className="col-12 col-md-6">
                                 <CustomFormGroup name="lastName" type="text" label="Last Name" />
                             </Col>
                         </Row>
                         <Row className="mt-2">
-                            <Col>
+                            <Col className="col-12 col-md-6">
                                 <CustomFormGroup name="email" type="email" label="Email" disabled={invite.status} />
                             </Col>
-                            <Col>
+                            <Col className="col-12 col-md-6">
                                 <CustomFormGroup name="phoneNumber" type="number" label="Phone Number" />
                             </Col>
                         </Row>
                         <Row className="mt-2">
-                            <Col>
+                            <Col className="col-12 col-md-6">
                                 <CustomFormGroup name="password" type="password" label="Password" />
                             </Col>
-                            <Col>
+                            <Col className="col-12 col-md-6">
                                 <CustomFormGroup name="confirmPassword" type="password" label="Confirm Password" />
                             </Col>
                         </Row>

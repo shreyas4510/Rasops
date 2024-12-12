@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import CryptoJS from 'crypto-js';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import WelcomeImage from '../../assets/images/welcome.png';
 import AuthContainer from '../../components/AuthContainer';
 import env from '../../config/env';
 import { verifyRequest } from '../../store/slice';
 
 function VerifyUser() {
-    const [name, setName] = useState('');
+    const { verifyUsername } = useSelector((state) => state.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -25,18 +24,19 @@ function VerifyUser() {
                 const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
                 const keys = Object.keys(data);
                 if (keys.length === 3 && keys.includes('email') && keys.includes('name') && keys.includes('expires')) {
-                    setName(data.name);
-                    const payload = { email: data.email, expires: data.expires };
+                    const payload = { email: data.email, expires: data.expires, name: data.name };
                     dispatch(verifyRequest({ data: payload, navigate }));
                 }
+                localStorage.clear();
             } catch (err) {
-                toast.error(`Failed to verify email: ${err.message}`);
+                console.error(`Failed to verify user token ${err}`);
+                navigate('/login');
             }
         })();
     }, []);
 
     return (
-        name && (
+        verifyUsername && (
             <AuthContainer>
                 <img src={WelcomeImage} alt="Food" className="welcome-image mx-auto my-4" />
                 <h4 className="text-center">Hey {name}</h4>

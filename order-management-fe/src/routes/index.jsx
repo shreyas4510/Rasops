@@ -7,6 +7,7 @@ import Invites from '../pages/Invites';
 import Login from '../pages/Login';
 import Managers from '../pages/Managers';
 import Menu from '../pages/Menu';
+import NotFound from '../pages/NotFound';
 import OrderPlacement from '../pages/OrderPlacement';
 import Orders from '../pages/Orders';
 import ResetPassword from '../pages/ResetPassword';
@@ -42,7 +43,7 @@ export default function Routes() {
                     <Route path="orders" element={<Orders />} />
                     <Route path="subscription" element={<Subscription />} />
                 </Route>
-                <Route path="/404" element={<>Not Found</>} />
+                <Route path="/404" element={<NotFound />} />
                 <Route path="*" element={<Navigate to="/404" />} />
             </Switch>
         </BrowserRouter>
