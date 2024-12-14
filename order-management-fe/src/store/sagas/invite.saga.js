@@ -12,11 +12,11 @@ import { INVITE_USER_REQUEST, LIST_USER_REQUEST, REMOVE_USER_REQUEST } from '../
 
 function* inviteUserRequestSaga(action) {
     try {
-        const { email } = action.payload;
-        const res = yield service.inviteUser({ email });
+        const { email, resend } = action.payload;
+        const res = yield service.inviteUser({ email, resend });
         yield put(inviteUserSuccess({ data: res }));
         yield put(setEmail(''));
-        toast.success('User invited successfully');
+        toast.success(resend ? 'Invite resend successfully' : 'User invited successfully');
     } catch (error) {
         toast.error(`Failed to invite user: ${error.message}`);
     }

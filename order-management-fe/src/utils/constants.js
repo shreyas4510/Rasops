@@ -107,3 +107,10 @@ export const COMMON_TABS = [
 export const VERIFICATION_ROUTE = ['/verify', '/reset', '/signup'];
 
 export const FIELD_CLASS = 'col-md-6 col-12 my-2';
+
+export const EXPIRED_INVITE_DATA = {
+    firstName: 'EXPIRED',
+    lastName: 'EXPIRED',
+    password: 'expired@1234',
+    phoneNumber: 1111111111
+};
