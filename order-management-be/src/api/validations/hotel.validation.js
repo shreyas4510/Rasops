@@ -25,8 +25,8 @@ export const registerationValidation = (payload) => {
 export const updateValidation = (payload) => {
     try {
         const schema = Joi.object({
-            openTime: Joi.string().optional(),
-            closeTime: Joi.string().optional(),
+            openTime: Joi.string().allow('').optional(),
+            closeTime: Joi.string().allow('').optional(),
             name: Joi.string().min(3).optional(),
             careNumber: Joi.number()
                 .min(10 ** 9)

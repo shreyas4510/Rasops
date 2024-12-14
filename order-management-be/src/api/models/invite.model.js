@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { TABLES } from '../utils/common.js';
 
-export const INVITE_STATUS = ['PENDING', 'ACCEPTED'];
+export const INVITE_STATUS = ['PENDING', 'ACCEPTED', 'EXPIRED'];
 
 const inviteModel = (sequelize) =>
     sequelize.define(
