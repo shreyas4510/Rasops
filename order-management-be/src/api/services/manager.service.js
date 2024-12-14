@@ -70,10 +70,10 @@ const fetch = async (payload) => {
             };
         }
 
-        logger('debug', `Fetching manager with options ${options}`);
+        logger('debug', `Fetching manager with options`, options);
         const data = await inviteRepo.find(options);
 
-        logger('debug', `Managers fetched successfully ${data}`);
+        logger('debug', `Managers fetched successfully`, data);
         const managers = data.rows.reduce((cur, next) => {
             const { user } = next;
             const obj = {

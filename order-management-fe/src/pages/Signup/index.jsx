@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CryptoJS from 'crypto-js';
 import { Formik, Form } from 'formik';
+import moment from 'moment';
 import { Col, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +12,7 @@ import CustomFormGroup from '../../components/CustomFormGroup';
 import CustomLink from '../../components/CustomLink';
 import env from '../../config/env';
 import { registerRequest } from '../../store/slice';
+import { EXPIRED_INVITE_DATA } from '../../utils/constants';
 import { userRegistrationSchema } from '../../validations/auth';
 
 function Signup() {
@@ -35,6 +37,18 @@ function Signup() {
                 if (!token || token === 'null') return;
 
                 const data = JSON.parse(CryptoJS.AES.decrypt(token, env.cryptoSecret).toString(CryptoJS.enc.Utf8));
+                if (moment().diff(data.expires, 'seconds') > 0) {
+                    const expiredData = { ...EXPIRED_INVITE_DATA };
+                    expiredData.email = data.email;
+                    expiredData.password = CryptoJS.AES.encrypt(expiredData.password, env.cryptoSecret).toString();
+                    expiredData.invite = data.inviteId;
+                    dispatch(registerRequest({ data: expiredData, navigate }));
+
+                    navigate('/login');
+                    localStorage.clear();
+                    return;
+                }
+
                 const keys = Object.keys(data);
                 if (
                     keys.length === 3 &&

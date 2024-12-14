@@ -29,6 +29,14 @@ const create = async (payload) => {
                 logger('debug', `Invite not found in database for ${payload.invite}`);
                 throw CustomError(STATUS_CODE.NOT_FOUND, 'Invite is not valid. Please contact the provider.');
             }
+
+            if (payload.firstName === payload.lastName && String(payload.firstName).toLowerCase() === 'expired') {
+                await inviteRepo.update({ id: payload.invite }, { status: INVITE_STATUS[2] });
+                throw CustomError(
+                    STATUS_CODE.GONE,
+                    'Sorry, link has already expired. Request the Hotel owner to re-invite and try again.'
+                );
+            }
         }
 
         // create payload of user data
@@ -123,7 +131,7 @@ const login = async (payload) => {
             };
             const { rows } = await hotelUserRelationRepo.find(checkHotelSubscription);
             const subscription = rows[0]?.hotel?.subscription;
-            if (!subscription || moment().diff(subscription.endDate) > 0) {
+            if (rows.length && (!subscription || moment().diff(subscription.endDate) > 0)) {
                 logger('error', 'Hotel Subscription expired.');
                 throw CustomError(STATUS_CODE.FORBIDDEN, 'Hotel Subscription expired');
             }
@@ -215,7 +223,7 @@ const forget = async (payload) => {
         const user = await userRepo.findOne({ where: { email } });
         if (!user) {
             logger('error', 'User not found with the provided email.');
-            throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid Email');
+            throw CustomError(STATUS_CODE.BAD_REQUEST, 'User Not Registerd');
         }
 
         if (user.status === USER_STATUS[1]) {
@@ -284,7 +292,7 @@ const invite = async (payload) => {
         const { email } = payload;
 
         const user = await userRepo.findOne({ where: { email } });
-        if (user) {
+        if (user && !payload.resend) {
             logger('error', 'Email already registered', { email });
             throw CustomError(STATUS_CODE.CONFLICT, 'Email already registered');
         }
@@ -296,7 +304,13 @@ const invite = async (payload) => {
             ownerId: payload.owner
         };
         // save the invite details to the database
-        const inviteData = await inviteRepo.save(data);
+        let inviteData = {};
+        if (payload.resend) {
+            inviteData.id = payload.resend;
+            await inviteRepo.update({ id: payload.resend }, { status: INVITE_STATUS[0] });
+        } else {
+            inviteData = await inviteRepo.save(data);
+        }
 
         const options = {
             email,

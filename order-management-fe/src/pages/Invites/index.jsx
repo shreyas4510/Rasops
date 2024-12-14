@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../../assets/styles/invite.css';
 import { createColumnHelper } from '@tanstack/react-table';
 import moment from 'moment';
+import { BsSendArrowUpFill } from 'react-icons/bs';
 import { MdDeleteForever } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import ActionDropdown from '../../components/ActionDropdown';
@@ -16,6 +17,7 @@ import {
     setSelectedInvite
 } from '../../store/slice/invite.slice';
 import { emailRegex } from '../../validations/auth';
+
 function Invites() {
     const dispatch = useDispatch();
     const { change, email, inviteData, isRemoveInvite, selectedInvite } = useSelector((state) => state.invite);
@@ -123,6 +125,20 @@ function Invites() {
                     <ActionDropdown
                         disabled={row.original.status.toUpperCase() === 'ACCEPTED'}
                         options={[
+                            {
+                                label: 'Resend',
+                                icon: BsSendArrowUpFill,
+                                meta: { id: row.original.id },
+                                className: `${row.original.status.toUpperCase() === 'EXPIRED' ? 'd-block' : 'd-none'}`,
+                                onClick: () => {
+                                    dispatch(
+                                        inviteUserRequest({
+                                            email: row.original.email,
+                                            resend: row.original.id
+                                        })
+                                    );
+                                }
+                            },
                             {
                                 label: 'Delete',
                                 icon: MdDeleteForever,

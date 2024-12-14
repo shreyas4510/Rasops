@@ -52,7 +52,8 @@ export const emailValidation = (payload) => {
             email: Joi.string().email({
                 minDomainSegments: 2,
                 tlds: { allow: ['com', 'net'] }
-            })
+            }),
+            resend: Joi.string().optional()
         });
 
         return schema.validate(payload);

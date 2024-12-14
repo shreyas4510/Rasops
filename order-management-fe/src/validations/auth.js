@@ -51,7 +51,7 @@ export const passwordSchema = Yup.object().shape({
         .required('Password is required'),
     confirmPassword: Yup.string()
         .oneOf([Yup.ref('password'), null], 'Passwords must match')
-        .required()
+        .required('Comfirm password is required.')
 });
 
 export const settingsSchema = Yup.object().shape({
