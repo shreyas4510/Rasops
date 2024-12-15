@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import '../../assets/styles/invite.css';
 import { createColumnHelper } from '@tanstack/react-table';
+import debounce from 'lodash.debounce';
 import moment from 'moment';
 import { BsSendArrowUpFill } from 'react-icons/bs';
 import { MdDeleteForever } from 'react-icons/md';
@@ -13,6 +14,9 @@ import {
     listInviteRequest,
     removeInviteRequest,
     setEmail,
+    setInviteFiltering,
+    setInvitePagination,
+    setInviteSorting,
     setRemoveInvite,
     setSelectedInvite
 } from '../../store/slice/invite.slice';
@@ -20,56 +24,11 @@ import { emailRegex } from '../../validations/auth';
 
 function Invites() {
     const dispatch = useDispatch();
-    const { change, email, inviteData, isRemoveInvite, selectedInvite } = useSelector((state) => state.invite);
-
-    /** ** sorting state ****/
-    const [sorting, setSorting] = useState([]);
-
-    /** ** filtering state ****/
-    const [filtering, setFiltering] = useState({});
-
-    /** ** pagination state ****/
-    const [pagination, setPagination] = useState({
-        pageIndex: 0,
-        pageSize: 10
-    });
-
-    /** ** table pagination start ****/
-    const onPaginationChange = (e) => {
-        setPagination(e);
-    };
+    const { change, email, inviteData, isRemoveInvite, selectedInvite, sorting, pagination, filtering } = useSelector(
+        (state) => state.invite
+    );
 
     useEffect(() => {
-        getInvites();
-    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value, change]);
-    /** ** table pagination end ****/
-
-    /** ** table sorting start ****/
-    const onSortingChange = (e) => {
-        const sortDetails = e()[0];
-        const data = [...sorting][0];
-        if (!data || data.id !== sortDetails.id) {
-            setSorting([{ id: sortDetails.id, desc: false }]);
-            return;
-        }
-
-        setSorting([{ ...data, desc: !data.desc }]);
-    };
-    /** ** table sorting end ****/
-
-    /** ** table filtering start ****/
-    const onFilterChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-
-        setFiltering({
-            field: name,
-            value
-        });
-    };
-    /** ** table filtering emd ****/
-
-    const getInvites = async () => {
         const params = {
             skip: pagination?.pageIndex ? pagination?.pageIndex * pagination?.pageSize : undefined,
             limit: pagination?.pageSize,
@@ -78,7 +37,33 @@ function Invites() {
             filterKey: filtering?.field,
             filterValue: filtering?.value
         };
-        dispatch(listInviteRequest(params));
+
+        const debounceTableFilters = debounce((params) => {
+            dispatch(listInviteRequest(params));
+        }, 300);
+
+        const cleanup = () => {
+            debounceTableFilters.cancel();
+        };
+        debounceTableFilters(params);
+        return cleanup;
+    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value, change]);
+
+    const onSortingChange = (e) => {
+        const sortDetails = e()[0];
+        const data = [...sorting][0];
+
+        dispatch(setInvitePagination({ pageIndex: 0, pageSize: 10 }));
+        if (!data || data.id !== sortDetails.id) {
+            dispatch(setInviteSorting([{ id: sortDetails.id, desc: false }]));
+            return;
+        }
+        dispatch(setInviteSorting([{ ...data, desc: !data.desc }]));
+    };
+
+    const onFilterChange = (e) => {
+        dispatch(setInvitePagination({ pageIndex: 0, pageSize: 10 }));
+        dispatch(setInviteFiltering({ field: e.target.name, value: e.target.value }));
     };
 
     const handleSend = () => {
@@ -97,26 +82,30 @@ function Invites() {
         columnHelper.display({
             id: 'email',
             header: 'Email',
+            headerPlaceholder: 'user@rasops.com',
             minSize: 250,
             cell: (props) => <div>{props.row.original.email}</div>
         }),
         columnHelper.display({
             id: 'createdAt',
             header: 'Invited',
+            headerPlaceholder: moment().format('YYYY-MM-DD'),
             minSize: 150,
             cell: ({ row }) => {
-                return row.original.createdAt && <div>{moment(row.original.createdAt).format('DD-MMM-YYYY')}</div>;
+                return row.original.createdAt && <div>{moment(row.original.createdAt).format('YYYY-MM-DD')}</div>;
             }
         }),
         columnHelper.display({
             id: 'status',
             header: 'Status',
+            headerPlaceholder: 'ACCEPTED',
             minSize: 150,
             cell: ({ row }) => <div>{row.original.status}</div>
         }),
         columnHelper.display({
             id: 'actions',
             header: 'Actions',
+            headerPlaceholder: '-',
             enableSorting: 'FALSE',
             enableFiltering: 'FALSE',
             minSize: 150,
@@ -191,7 +180,9 @@ function Invites() {
                 data={inviteData.rows}
                 count={inviteData.count}
                 // pagination props
-                onPaginationChange={onPaginationChange}
+                onPaginationChange={(paginate) => {
+                    dispatch(setInvitePagination(paginate(pagination)));
+                }}
                 pagination={pagination}
                 // sorting props
                 onSortingChange={onSortingChange}
