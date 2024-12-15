@@ -1,4 +1,4 @@
-import { Op, literal } from 'sequelize';
+import { Op, Sequelize, literal } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
@@ -53,7 +53,8 @@ const fetch = async (payload) => {
         if (filterKey === hotelKey && filterValue) {
             options.include[0].include[0].include[0].where = {
                 name: {
-                    [Op.like]: `%${filterValue}%`
+                    // eslint-disable-next-line no-useless-escape
+                    [Op.like]: Sequelize.literal(`\'%${filterValue}%\'`)
                 }
             };
         }
@@ -65,7 +66,8 @@ const fetch = async (payload) => {
         if (filterKey && filterValue) {
             options.include[0].where = {
                 [filterKey]: {
-                    [Op.like]: `%${filterValue}%`
+                    // eslint-disable-next-line no-useless-escape
+                    [Op.like]: Sequelize.literal(`\'%${filterValue}%\'`)
                 }
             };
         }
@@ -185,7 +187,20 @@ const getAssignable = async (ownerId, filter) => {
 
         if (filter) {
             const condition = {
-                [Op.or]: [{ firstName: { [Op.like]: `%${filter}%` } }, { lastName: { [Op.like]: `%${filter}%` } }]
+                [Op.or]: [
+                    {
+                        firstName: {
+                            // eslint-disable-next-line no-useless-escape
+                            [Op.like]: Sequelize.literal(`\'%${filter}%\'`)
+                        }
+                    },
+                    {
+                        lastName: {
+                            // eslint-disable-next-line no-useless-escape
+                            [Op.like]: Sequelize.literal(`\'%${filter}%\'`)
+                        }
+                    }
+                ]
             };
             options.include[0].where = {
                 ...options.include[0].where,
