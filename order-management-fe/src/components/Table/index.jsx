@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
 import moment from 'moment';
 import { FaCaretRight, FaCaretLeft } from 'react-icons/fa6';
@@ -23,6 +23,26 @@ function Table({
     onFilterChange,
     filtering
 }) {
+    const tableRef = useRef(null);
+    const footerRef = useRef(null);
+    const [footerWidth, setFooterWidth] = useState(0);
+
+    const syncWidths = () => {
+        if (tableRef.current && footerRef.current) {
+            const tableWidth = tableRef.current.offsetWidth;
+            setFooterWidth(tableWidth);
+        }
+    };
+
+    useEffect(() => {
+        if (tableRef.current && footerRef.current) {
+            const resizeObserver = new ResizeObserver(syncWidths);
+            resizeObserver.observe(tableRef.current);
+            resizeObserver.observe(footerRef.current);
+            return () => resizeObserver.disconnect();
+        }
+    }, [tableRef.current, footerRef.current]);
+
     const pageCount = Math.ceil(count / pagination.pageSize);
     if (!filtering) {
         filtering = {};
@@ -81,6 +101,7 @@ function Table({
                     type="text"
                     className="w-75 form-control mx-auto"
                     data-testid={`filter-input-${header.column.columnDef.id}`}
+                    placeholder={header.column.columnDef.headerPlaceholder}
                     name={header.id}
                     value={filtering.field === header.id ? filtering.value : ''}
                     disabled={header.column.columnDef.enableFiltering === 'FALSE'}
@@ -94,20 +115,11 @@ function Table({
     );
 
     const Footer = () => {
-        let width = 0;
-        if (window.innerWidth <= 380) {
-            table.getHeaderGroups().forEach(({ headers }) => {
-                width = headers.reduce((cur, { column }) => {
-                    cur += Number(column.columnDef.minSize);
-                    return cur;
-                }, 0);
-            });
-        }
-
         return (
             <div
-                style={{ width: `${width ? `${width}px` : '100%'}` }}
+                ref={footerRef}
                 className="d-flex justify-content-between align-items-center p-2 table-footer"
+                style={{ width: `${footerWidth ? `${footerWidth}px` : '100%'}` }}
             >
                 <div>
                     Go to : {'  '}
@@ -184,7 +196,7 @@ function Table({
     return (
         <div className="mx-md-5 mx-2 overflow-auto d-flex flex-column position-relative">
             {!data.length ? <NoData /> : <></>}
-            <table className="w-100">
+            <table ref={tableRef} className="w-100">
                 <thead className="table-header">
                     {table.getHeaderGroups().map((headerGroup) => {
                         return (

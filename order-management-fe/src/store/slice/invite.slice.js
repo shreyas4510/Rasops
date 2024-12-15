@@ -25,6 +25,15 @@ const inviteSlice = createSlice({
         },
         setSelectedInvite(state, action) {
             state.selectedInvite = action.payload;
+        },
+        setInviteSorting(state, action) {
+            state.sorting = action.payload;
+        },
+        setInviteFiltering(state, action) {
+            state.filtering = action.payload;
+        },
+        setInvitePagination(state, action) {
+            state.pagination = action.payload;
         }
     },
     initialState: {
@@ -32,7 +41,13 @@ const inviteSlice = createSlice({
         email: '',
         inviteData: { count: 0, rows: [] },
         isRemoveInvite: false,
-        selectedInvite: ''
+        selectedInvite: '',
+        sorting: [],
+        filtering: {},
+        pagination: {
+            pageIndex: 0,
+            pageSize: 10
+        }
     }
 });
 export const {
@@ -44,7 +59,10 @@ export const {
     removeInviteRequest,
     removeUserSuccess,
     setRemoveInvite,
-    setSelectedInvite
+    setSelectedInvite,
+    setInviteSorting,
+    setInviteFiltering,
+    setInvitePagination
 } = inviteSlice.actions;
 
 export const inviteReducer = inviteSlice.reducer;

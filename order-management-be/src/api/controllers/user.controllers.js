@@ -139,15 +139,8 @@ const invite = async (req, res) => {
 const listInvites = async (req, res) => {
     try {
         const { query } = req;
-        const { limit, skip, sortKey, sortOrder, filterKey, filterValue } = query;
-
         const payload = {
-            limit,
-            skip,
-            sortKey,
-            sortOrder,
-            filterKey,
-            filterValue,
+            ...query,
             owner: req.user.id
         };
         logger('debug', 'Received request to list invites with query:', { query });

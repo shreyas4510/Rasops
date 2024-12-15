@@ -89,6 +89,10 @@ const initDb = async () => {
         logger('info', '🚀 Initializing database...');
         const sequelize = await getSequelizeInstance();
 
+        sequelize.addHook('afterQuery', (a, query) => {
+            logger('debug', query.sql);
+        });
+
         logger('info', '🛠️ Defining database models...');
         defineModels(sequelize);
         defineAssociations(db);
