@@ -1,7 +1,7 @@
 import CryptoJS from 'crypto-js';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../config/database.js';
 import env from '../../config/env.js';
@@ -342,14 +342,11 @@ const listInvites = async (payload) => {
         let where = { ownerId: owner };
         if (filterKey && filterValue) {
             where = {
-                [Op.and]: [
-                    { ownerId: owner },
-                    {
-                        [filterKey]: {
-                            [Op.like]: `%${filterValue}%`
-                        }
-                    }
-                ]
+                ...where,
+                [filterKey]: {
+                    // eslint-disable-next-line no-useless-escape
+                    [Op.like]: Sequelize.literal(`\'%${filterValue}%\'`)
+                }
             };
         }
 
