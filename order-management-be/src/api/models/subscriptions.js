@@ -41,7 +41,7 @@ const subscriptionModel = (sequelize) =>
             status: {
                 type: DataTypes.ENUM,
                 values: SUBSCRIPTION_STATUS,
-                allowNull: false
+                allowNull: true
             },
             startDate: {
                 type: DataTypes.DATE,
@@ -49,10 +49,6 @@ const subscriptionModel = (sequelize) =>
             },
             endDate: {
                 type: DataTypes.DATE,
-                allowNull: true
-            },
-            tables: {
-                type: DataTypes.INTEGER,
                 allowNull: true
             },
             deletedAt: {

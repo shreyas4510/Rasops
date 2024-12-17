@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
 import { ORDER_STATUS } from '../models/order.model.js';
+import { SUBSCRIPTION_STATUS } from '../models/subscriptions.js';
 import { USER_ROLES } from '../models/user.model.js';
 import categoryRepo from '../repositories/category.repository.js';
 import customerRepo from '../repositories/customer.repository.js';
@@ -181,6 +182,15 @@ const remove = async (hotelId) => {
     try {
         // Remove tables
         const options = { where: { hotelId } };
+        const hotelSubscription = await subscriptionRepo.findOne(options);
+
+        if (hotelSubscription.status === SUBSCRIPTION_STATUS[0]) {
+            throw CustomError(
+                STATUS_CODE.CONFLICT,
+                'Hotel have active subscription. Please cancel before you delete hotel.'
+            );
+        }
+
         await tableRepo.remove(options);
         logger('debug', `HotelId-${hotelId} - Tables removed successfully`);
 
@@ -375,7 +385,7 @@ const dashboard = async (hotelId, user) => {
                 orders: customerCount,
                 managers: managerCount - 1,
                 tables: tableCount,
-                sale: totalPrice,
+                sale: totalPrice || 0,
                 menu: menuCount
             },
             weeklyData,

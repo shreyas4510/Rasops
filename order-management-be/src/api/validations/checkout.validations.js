@@ -15,16 +15,16 @@ export const businessDetailsValidation = (payload) => {
             legalBusinessName: Joi.string().required(),
             businessType: Joi.string().required(),
             profile: Joi.object({
-                category: Joi.string().allow(''),
-                subcategory: Joi.string().allow(''),
+                category: Joi.string().required(),
+                subcategory: Joi.string().required(),
                 addresses: Joi.object({
                     registered: Joi.object({
-                        street1: Joi.string().allow(''),
-                        street2: Joi.string().allow(''),
-                        city: Joi.string().allow(''),
-                        state: Joi.string().allow(''),
-                        postalCode: Joi.string().allow(''),
-                        country: Joi.string().allow('')
+                        street1: Joi.string().required(),
+                        street2: Joi.string().required(),
+                        city: Joi.string().required(),
+                        state: Joi.string().required(),
+                        postalCode: Joi.string().required(),
+                        country: Joi.string().required()
                     })
                 })
             }),

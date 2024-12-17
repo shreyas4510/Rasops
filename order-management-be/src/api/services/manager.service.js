@@ -26,6 +26,7 @@ const fetch = async (payload) => {
             include: [
                 {
                     model: db.users,
+                    required: true,
                     include: [
                         {
                             model: db.hotelUserRelation,
@@ -46,37 +47,64 @@ const fetch = async (payload) => {
         };
 
         const hotelKey = 'hotelName';
-        if (sortKey === hotelKey) {
-            options.order = [[{ model: db.hotel }, 'name', sortOrder || defaults.sortOrder]];
-        }
-
-        if (filterKey === hotelKey && filterValue) {
-            options.include[0].include[0].include[0].where = {
-                name: {
-                    // eslint-disable-next-line no-useless-escape
-                    [Op.like]: Sequelize.literal(`\'%${filterValue}%\'`)
-                }
-            };
-        }
-
-        if (sortKey && sortOrder) {
-            options.order = [[{ model: db.users }, sortKey || defaults.sortKey, sortOrder || defaults.sortOrder]];
-        }
-
         if (filterKey && filterValue) {
-            options.include[0].where = {
-                [filterKey]: {
-                    // eslint-disable-next-line no-useless-escape
-                    [Op.like]: Sequelize.literal(`\'%${filterValue}%\'`)
+            if (filterKey === hotelKey) {
+                const hotelOptions = {
+                    model: db.hotelUserRelation,
+                    attributes: ['hotelId'],
+                    required: true,
+                    where: {
+                        hotelId: {
+                            [Op.in]: literal(`(SELECT id FROM ${TABLES.HOTEL} WHERE name LIKE '%${filterValue}%')`)
+                        }
+                    },
+                    include: [
+                        {
+                            model: db.hotel,
+                            attributes: ['id', 'name']
+                        }
+                    ]
+                };
+                options.include[0].include[0] = hotelOptions;
+            } else if (filterKey === 'name') {
+                const [firstName, lastName] = filterValue.trim().split(' ');
+                options.include[0].where = {};
+                if (firstName?.length) {
+                    options.include[0].where.firstName = {
+                        // eslint-disable-next-line no-useless-escape
+                        [Op.like]: Sequelize.literal(`\'%${firstName}%\'`)
+                    };
                 }
-            };
+
+                if (lastName?.length) {
+                    options.include[0].where.lastName = {
+                        // eslint-disable-next-line no-useless-escape
+                        [Op.like]: Sequelize.literal(`\'%${lastName}%\'`)
+                    };
+                }
+            } else {
+                options.include[0].where = {
+                    [filterKey]: {
+                        // eslint-disable-next-line no-useless-escape
+                        [Op.like]: Sequelize.literal(`\'%${filterValue}%\'`)
+                    }
+                };
+            }
+        }
+
+        if (sortKey && sortOrder && sortKey !== hotelKey) {
+            if (sortKey === 'name') {
+                options.order = [[{ model: db.users }, 'firstName', sortOrder || defaults.sortOrder]];
+            } else {
+                options.order = [[{ model: db.users }, sortKey || defaults.sortKey, sortOrder || defaults.sortOrder]];
+            }
         }
 
         logger('debug', `Fetching manager with options`, options);
         const data = await inviteRepo.find(options);
 
         logger('debug', `Managers fetched successfully`, data);
-        const managers = data.rows.reduce((cur, next) => {
+        let managers = data.rows.reduce((cur, next) => {
             const { user } = next;
             const obj = {
                 id: user.id,
@@ -99,6 +127,19 @@ const fetch = async (payload) => {
             return cur;
         }, []);
 
+        // On purpose done as invite and hotel dont have association so order by not working
+        if (sortKey === hotelKey) {
+            managers = managers.sort((a, b) => {
+                const hotelA = a.hotel?.name?.toLowerCase() || '';
+                const hotelB = b.hotel?.name?.toLowerCase() || '';
+                if ((sortOrder || defaults.sortKey).toLowerCase() === 'asc') {
+                    return hotelA.localeCompare(hotelB);
+                } else if ((sortOrder || defaults.sortKey).toLowerCase() === 'desc') {
+                    return hotelB.localeCompare(hotelA);
+                }
+                return 0;
+            });
+        }
         return { count: data.count, rows: managers };
     } catch (error) {
         logger('error', 'Error while fetching managers', { error });

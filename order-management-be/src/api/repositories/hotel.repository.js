@@ -46,9 +46,21 @@ const find = async (options) => {
     }
 };
 
+const findAll = async (options) => {
+    try {
+        logger('info', `fetching all hotels with options`, options);
+        return await db.hotel.findAndCountAll(options);
+    } catch (error) {
+        const err = error?.errors ? error?.errors[0]?.message : undefined;
+        logger('error', `Error occurred while fetching all hotels`, { error: err || error.message });
+        throw CustomError(error.code, err || error.message);
+    }
+};
+
 export default {
     save,
     update,
     remove,
-    find
+    find,
+    findAll
 };

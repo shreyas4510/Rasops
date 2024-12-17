@@ -55,15 +55,25 @@ const business = async (userId, payload) => {
         }
 
         const addresses = {};
-        addresses.street1 = payload.addresses?.registered?.street1 ? payload.addresses?.registered?.street1 : undefined;
-        addresses.street2 = payload.addresses?.registered?.street2 ? payload.addresses?.registered?.street2 : undefined;
-        addresses.city = payload.addresses?.registered?.city ? payload.addresses?.registered?.city : undefined;
-        addresses.state = payload.addresses?.registered?.state ? payload.addresses?.registered?.state : undefined;
-        // eslint-disable-next-line camelcase
-        addresses.postal_code = payload.addresses?.registered?.postalCode
-            ? payload.addresses?.registered?.postalCode
+        addresses.street1 = payload.profile.addresses?.registered?.street1
+            ? payload.profile.addresses?.registered?.street1
             : undefined;
-        addresses.country = payload.addresses?.registered?.country ? payload.addresses?.registered?.country : undefined;
+        addresses.street2 = payload.profile.addresses?.registered?.street2
+            ? payload.profile.addresses?.registered?.street2
+            : undefined;
+        addresses.city = payload.profile.addresses?.registered?.city
+            ? payload.profile.addresses?.registered?.city
+            : undefined;
+        addresses.state = payload.profile.addresses?.registered?.state
+            ? payload.profile.addresses?.registered?.state
+            : undefined;
+        // eslint-disable-next-line camelcase
+        addresses.postal_code = payload.profile.addresses?.registered?.postalCode
+            ? payload.profile.addresses?.registered?.postalCode
+            : undefined;
+        addresses.country = payload.profile.addresses?.registered?.country
+            ? payload.profile.addresses?.registered?.country
+            : undefined;
         if (Object.values(addresses).find((obj) => obj !== undefined)) {
             accountDetails.profile.addresses = { registered: { ...addresses } };
         }
@@ -116,7 +126,7 @@ const stakeholder = async (userId, payload) => {
             ? payload.addresses?.residential?.country
             : undefined;
         if (Object.values(addresses).find((obj) => obj !== undefined)) {
-            stakeholderDetails.profile.addresses = { residential: { ...addresses } };
+            stakeholderDetails.addresses = { residential: { ...addresses } };
         }
 
         logger('debug', 'Registering stakeholder to razorpay:', stakeholderDetails);
@@ -194,15 +204,9 @@ const account = async (userId, token) => {
 const getPlanId = (planId) => {
     switch (planId) {
         case PLANS.STANDARD_MONTHLY:
-            return {
-                planId: env.plans.standaranMonthly,
-                tables: 100
-            };
+            return env.plans.standaranMonthly;
         case PLANS.STANDARD_YEARLY:
-            return {
-                planId: env.plans.standardYearly,
-                tables: 100
-            };
+            return env.plans.standardYearly;
         default:
             throw CustomError(STATUS_CODE.BAD_REQUEST, 'Invalid Plan id');
     }
@@ -245,7 +249,7 @@ const subscribe = async (payload) => {
             };
         }
 
-        const { planId, tables } = getPlanId(payload.plan);
+        const planId = getPlanId(payload.plan);
         const hotelSubscription = await subscriptionRepo.findOne({
             where: { hotelId: payload.hotelId }
         });
@@ -261,8 +265,7 @@ const subscribe = async (payload) => {
                 hotelId: payload.hotelId,
                 subscriptionId: subscription.id,
                 planId: subscription.plan_id,
-                planName: payload.plan,
-                tables
+                planName: payload.plan
             };
             logger('debug', `Options to store in table`, options);
             await subscriptionRepo.save(options);
@@ -271,8 +274,7 @@ const subscribe = async (payload) => {
             const data = {
                 subscriptionId: subscription.id,
                 planId: subscription.plan_id,
-                planName: payload.plan,
-                tables
+                planName: payload.plan
             };
             logger('debug', `Existing subscription updated`, { options, data });
             await subscriptionRepo.update(options, data);
@@ -521,7 +523,7 @@ const cancel = async (payload) => {
 
         const subscriptionOptions = {
             where: { subscriptionId },
-            attributes: ['id', 'subscriptionId', 'planId', 'paymentId', 'startDate', 'endDate']
+            attributes: ['id', 'subscriptionId', 'planId', 'paymentId', 'startDate', 'endDate', 'status']
         };
         const subscription = await subscriptionRepo.findOne(subscriptionOptions);
         logger('debug', `Subscription details`, { subscription });
@@ -529,8 +531,20 @@ const cancel = async (payload) => {
         if (!subscription) {
             throw CustomError(STATUS_CODE.NOT_FOUND, 'Subscription not found');
         }
-        await razorpayService.cancel(subscriptionId, cancelImmediately);
-        logger('debug', `Subscription cancelled successfully`);
+
+        if (subscription.status === SUBSCRIPTION_STATUS[1]) {
+            throw CustomError(
+                STATUS_CODE.NOT_FOUND,
+                'Subscription is already cancelled. Please allow 24 hours for the refund to reflect. If the issue persists, contact customer care.'
+            );
+        }
+
+        try {
+            await razorpayService.cancel(subscriptionId, cancelImmediately);
+            logger('debug', `Subscription cancelled successfully`);
+        } catch (error) {
+            logger('error', `Failed to cancel subscription - ${subscriptionId} | error - ${error.message}`);
+        }
 
         if (cancelImmediately) {
             const plan = await razorpayService.getPlan(subscription.planId);
@@ -542,7 +556,7 @@ const cancel = async (payload) => {
 
             const refundAmount = calculateRefundAmount(subscription, plan);
             logger('debug', `Refund amount`, { refundAmount });
-            await razorpayService.refund(subscription.paymentId, refundAmount);
+            await razorpayService.refund(subscription.paymentId, refundAmount * 100);
 
             const options = { where: { id: subscription.id } };
             const data = {
