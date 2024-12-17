@@ -46,7 +46,14 @@ const managerSlice = createSlice({
                 isMulti: false,
                 options: []
             }
-        }
+        },
+        sorting: [],
+        filtering: {},
+        pagination: {
+            pageIndex: 0,
+            pageSize: 10
+        },
+        listChange: false
     },
     reducers: {
         setSelectedRow(state, action) {
@@ -60,9 +67,21 @@ const managerSlice = createSlice({
             state.formInfo = action.payload;
         },
         updateManagerRequest() {},
+        changeManagerSuccess(state) {
+            state.listChange = !state.listChange;
+        },
         removeManagerRequest() {},
         setHotelOption(state, action) {
             state.managerOptions.hotel.options = action.payload;
+        },
+        setManagerSorting(state, action) {
+            state.sorting = action.payload;
+        },
+        setManagerFiltering(state, action) {
+            state.filtering = action.payload;
+        },
+        setManagerPagination(state, action) {
+            state.pagination = action.payload;
         }
     }
 });
@@ -74,7 +93,11 @@ export const {
     setFormInfo,
     updateManagerRequest,
     removeManagerRequest,
-    setHotelOption
+    setHotelOption,
+    setManagerSorting,
+    setManagerFiltering,
+    setManagerPagination,
+    changeManagerSuccess
 } = managerSlice.actions;
 
 export const managerReducer = managerSlice.reducer;

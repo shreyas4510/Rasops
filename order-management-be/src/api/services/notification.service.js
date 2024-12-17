@@ -138,7 +138,6 @@ const sendNotification = async (userIds, data, customerId = undefined) => {
         );
     } catch (error) {
         logger('error', 'Error while sending notification', { error });
-        throw CustomError(error.code, error.message);
     }
 };
 

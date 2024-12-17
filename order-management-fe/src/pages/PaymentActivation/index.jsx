@@ -65,6 +65,7 @@ const PaymentActivation = () => {
                                     name="email"
                                     type="email"
                                     label="Email"
+                                    placeholder="gaurav.kumar@example.com"
                                     className={formFieldClassName}
                                     required={true}
                                 />
@@ -72,6 +73,7 @@ const PaymentActivation = () => {
                                     name="phone"
                                     type="number"
                                     label="Phone"
+                                    placeholder="9000090000"
                                     className={formFieldClassName}
                                     required={true}
                                 />
@@ -82,6 +84,7 @@ const PaymentActivation = () => {
                                     name="legalBusinessName"
                                     type="text"
                                     label="Legal Business Name"
+                                    placeholder="Acme Corp"
                                     className={formFieldClassName}
                                     required={true}
                                 />
@@ -108,6 +111,9 @@ const PaymentActivation = () => {
                                                     label="Category"
                                                     options={businessCategoryOptions}
                                                     className={formFieldClassName}
+                                                    setFieldValue={setFieldValue}
+                                                    isMulti={false}
+                                                    required={true}
                                                 />
 
                                                 <CustomFormGroup
@@ -116,6 +122,9 @@ const PaymentActivation = () => {
                                                     label="Subcategory"
                                                     options={businessSubCategoryOptions}
                                                     className={formFieldClassName}
+                                                    setFieldValue={setFieldValue}
+                                                    isMulti={false}
+                                                    required={true}
                                                 />
                                             </div>
 
@@ -125,12 +134,16 @@ const PaymentActivation = () => {
                                                     name="profile.addresses.registered.street1"
                                                     type="text"
                                                     label="Street 1"
+                                                    placeholder="507, Koramangala 1st block"
+                                                    required={true}
                                                 />
                                                 <CustomFormGroup
                                                     className={formFieldClassName}
                                                     name="profile.addresses.registered.street2"
                                                     type="text"
                                                     label="Street 2"
+                                                    placeholder="MG Road"
+                                                    required={true}
                                                 />
                                             </div>
 
@@ -140,12 +153,16 @@ const PaymentActivation = () => {
                                                     name="profile.addresses.registered.city"
                                                     type="text"
                                                     label="City"
+                                                    placeholder="Bengaluru"
+                                                    required={true}
                                                 />
                                                 <CustomFormGroup
                                                     className={formFieldClassName}
                                                     name="profile.addresses.registered.state"
                                                     type="text"
                                                     label="State"
+                                                    placeholder="KARNATAKA"
+                                                    required={true}
                                                 />
                                             </div>
 
@@ -155,12 +172,16 @@ const PaymentActivation = () => {
                                                     name="profile.addresses.registered.postalCode"
                                                     type="text"
                                                     label="Postal Code"
+                                                    placeholder="560034"
+                                                    required={true}
                                                 />
                                                 <CustomFormGroup
                                                     className={formFieldClassName}
                                                     name="profile.addresses.registered.country"
                                                     type="text"
                                                     label="Country"
+                                                    placeholder="IN"
+                                                    required={true}
                                                 />
                                             </div>
                                         </Accordion.Body>
@@ -178,6 +199,7 @@ const PaymentActivation = () => {
                                                     name="legalInfo.pan"
                                                     type="text"
                                                     label="PAN"
+                                                    placeholder="AAACL1234C"
                                                     required={true}
                                                 />
                                                 <CustomFormGroup
@@ -185,6 +207,7 @@ const PaymentActivation = () => {
                                                     name="legalInfo.gst"
                                                     type="text"
                                                     label="GST"
+                                                    placeholder="18AABCU9603R1ZM"
                                                     required={true}
                                                 />
                                             </div>
@@ -223,6 +246,7 @@ const PaymentActivation = () => {
                                     name="name"
                                     type="text"
                                     label="Name"
+                                    placeholder="Gaurav Kumar"
                                     className={formFieldClassName}
                                     required={true}
                                 />
@@ -230,6 +254,7 @@ const PaymentActivation = () => {
                                     name="email"
                                     type="email"
                                     label="Email"
+                                    placeholder="gaurav.kumar@example.com"
                                     className={formFieldClassName}
                                     required={true}
                                 />
@@ -240,6 +265,7 @@ const PaymentActivation = () => {
                                     name="kyc.pan"
                                     type="text"
                                     label="Pan"
+                                    placeholder="AVOPB1111K"
                                     className={formFieldClassName}
                                     required={true}
                                 />
@@ -256,12 +282,14 @@ const PaymentActivation = () => {
                                                     name="addresses.residential.street"
                                                     type="text"
                                                     label="Street"
+                                                    placeholder="506, Koramangala 1st block"
                                                 />
                                                 <CustomFormGroup
                                                     className={formFieldClassName}
                                                     name="addresses.residential.city"
                                                     type="text"
                                                     label="City"
+                                                    placeholder="Bengaluru"
                                                 />
                                             </div>
                                             <div className="row m-0">
@@ -270,12 +298,14 @@ const PaymentActivation = () => {
                                                     name="addresses.residential.state"
                                                     type="text"
                                                     label="State"
+                                                    placeholder="Karnataka"
                                                 />
                                                 <CustomFormGroup
                                                     className={formFieldClassName}
                                                     name="addresses.residential.postalCode"
                                                     type="text"
                                                     label="Postal Code"
+                                                    placeholder="560034"
                                                 />
                                             </div>
                                             <div className="row m-0">
@@ -284,6 +314,7 @@ const PaymentActivation = () => {
                                                     name="addresses.residential.country"
                                                     type="text"
                                                     label="Country"
+                                                    placeholder="IN"
                                                 />
                                             </div>
                                         </Accordion.Body>
@@ -322,6 +353,7 @@ const PaymentActivation = () => {
                                     type="text"
                                     label="Account Number"
                                     className={formFieldClassName}
+                                    placeholder="1234567890"
                                     required={true}
                                 />
                                 <CustomFormGroup
@@ -329,6 +361,7 @@ const PaymentActivation = () => {
                                     type="text"
                                     label="IFSC Code"
                                     className={formFieldClassName}
+                                    placeholder="HDFC0000317"
                                     required={true}
                                 />
                                 <CustomFormGroup
@@ -336,6 +369,7 @@ const PaymentActivation = () => {
                                     type="text"
                                     label="Beneficiary Name"
                                     className={formFieldClassName}
+                                    placeholder="Gaurav Kumar"
                                     required={true}
                                 />
                             </div>
@@ -351,6 +385,13 @@ const PaymentActivation = () => {
         switch (step - 1) {
             case 1:
                 payload.businessType = payload.businessType.value;
+                if (payload.profile.category) {
+                    payload.profile.category = payload.profile.category?.value;
+                }
+
+                if (payload.profile.subcategory) {
+                    payload.profile.subcategory = payload.profile.subcategory?.value;
+                }
                 dispatch(saveBusinessDetailsRequest({ step, payload }));
                 break;
             case 2:

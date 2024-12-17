@@ -129,49 +129,51 @@ const Settings = () => {
                             />
                         </Col>
                     </Row>
-                    <Row className="mb-3">
-                        {[PAYMENT_PREFERENCE.on, PAYMENT_PREFERENCE.off].includes(data.preference?.payment) ? (
-                            <>
-                                <Col className="col-12 col-sm-3">
-                                    <strong className="setting-title">Payment Gateway Preference:</strong>
-                                </Col>
-                                <Col className="col-12 col-sm-9">
-                                    <Form.Check
-                                        type="switch"
-                                        checked={data.preference?.payment === PAYMENT_PREFERENCE.on}
-                                        disabled={true}
-                                    />
-                                </Col>
-                            </>
-                        ) : (
-                            <>
-                                <Col className="col-12 col-sm-3">
-                                    <strong className="setting-title">Activate Payment Gateway:</strong>
-                                </Col>
-                                <Col className="col-12 col-sm-9">
-                                    <CustomButton
-                                        label="Activate"
-                                        disabled={data.role !== USER_ROLES[0]}
-                                        onClick={() => {
-                                            switch (data.preference?.payment) {
-                                                case PAYMENT_PREFERENCE.stakeholder:
-                                                    dispatch(setCurrentStep(2));
-                                                    break;
-                                                case PAYMENT_PREFERENCE.bank:
-                                                    dispatch(setCurrentStep(3));
-                                                    break;
-                                                case PAYMENT_PREFERENCE.business:
-                                                default:
-                                                    dispatch(setCurrentStep(1));
-                                                    break;
-                                            }
-                                            dispatch(setPaymentActivate(true));
-                                        }}
-                                    />
-                                </Col>
-                            </>
-                        )}
-                    </Row>
+                    {data.role === USER_ROLES[0] && (
+                        <Row className="mb-3">
+                            {[PAYMENT_PREFERENCE.on, PAYMENT_PREFERENCE.off].includes(data.preference?.payment) ? (
+                                <>
+                                    <Col className="col-12 col-sm-3">
+                                        <strong className="setting-title">Payment Gateway Preference:</strong>
+                                    </Col>
+                                    <Col className="col-12 col-sm-9">
+                                        <Form.Check
+                                            type="switch"
+                                            checked={data.preference?.payment === PAYMENT_PREFERENCE.on}
+                                            disabled={true}
+                                        />
+                                    </Col>
+                                </>
+                            ) : (
+                                <>
+                                    <Col className="col-12 col-sm-3">
+                                        <strong className="setting-title">Activate Payment Gateway:</strong>
+                                    </Col>
+                                    <Col className="col-12 col-sm-9">
+                                        <CustomButton
+                                            label="Activate"
+                                            disabled={data.role !== USER_ROLES[0]}
+                                            onClick={() => {
+                                                switch (data.preference?.payment) {
+                                                    case PAYMENT_PREFERENCE.stakeholder:
+                                                        dispatch(setCurrentStep(2));
+                                                        break;
+                                                    case PAYMENT_PREFERENCE.bank:
+                                                        dispatch(setCurrentStep(3));
+                                                        break;
+                                                    case PAYMENT_PREFERENCE.business:
+                                                    default:
+                                                        dispatch(setCurrentStep(1));
+                                                        break;
+                                                }
+                                                dispatch(setPaymentActivate(true));
+                                            }}
+                                        />
+                                    </Col>
+                                </>
+                            )}
+                        </Row>
+                    )}
                 </Card.Body>
             </Card>
             <OMTModal

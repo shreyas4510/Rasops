@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import logger from '../../config/logger.js';
 import categoryRepo from '../repositories/category.repository.js';
@@ -81,7 +81,15 @@ const fetch = async (payload) => {
 
         if (filterKey && filterValue) {
             options.where = {
-                [Op.and]: [{ categoryId }, { [filterKey]: { [Op.like]: `%${filterValue}%` } }]
+                [Op.and]: [
+                    { categoryId },
+                    {
+                        [filterKey]: {
+                            // eslint-disable-next-line no-useless-escape
+                            [Op.like]: Sequelize.literal(`\'%${filterValue}%\'`)
+                        }
+                    }
+                ]
             };
         }
 

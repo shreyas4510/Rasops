@@ -4,9 +4,9 @@ import * as service from '../../services/manager.service';
 import { getManagerSuccess, getManagersRequest, setFormInfo, setSelectedRow } from '../slice';
 import { GET_MANAGERS_REQUEST, REMOVE_MANAGER_REQUEST, UPDATE_MANAGER_REQUEST } from '../types';
 
-function* getManagerRequestSaga() {
+function* getManagerRequestSaga(action) {
     try {
-        const res = yield service.getManagers();
+        const res = yield service.getManagers(action.payload || {});
         yield put(getManagerSuccess(res));
     } catch (error) {
         console.error(`Failed to login: ${error?.message}`);
@@ -15,8 +15,8 @@ function* getManagerRequestSaga() {
 function* updateManagerRequestSaga(action) {
     try {
         const { id, data } = action.payload;
-        const res = yield service.updateManager({ id, data });
-        toast.success(res.message);
+        yield service.updateManager({ id, data });
+        toast.success('Manager details updated successfully');
         yield put(getManagersRequest());
         yield put(setFormInfo(false));
     } catch (error) {

@@ -11,15 +11,21 @@ export const businessDetailsSchema = Yup.object().shape({
         value: Yup.string().required('Business Type is required')
     }),
     profile: Yup.object().shape({
-        category: Yup.string().optional(),
-        subcategory: Yup.string().optional(),
+        category: Yup.object().shape({
+            label: Yup.string().required(),
+            value: Yup.string().required()
+        }),
+        subcategory: Yup.object().shape({
+            label: Yup.string().required(),
+            value: Yup.string().required()
+        }),
         addresses: Yup.object().shape({
             registered: Yup.object().shape({
-                street1: Yup.string().optional(),
-                city: Yup.string().optional(),
-                state: Yup.string().optional(),
-                postalCode: Yup.string().optional(),
-                country: Yup.string().optional()
+                street1: Yup.string().required(),
+                city: Yup.string().required(),
+                state: Yup.string().required(),
+                postalCode: Yup.string().required(),
+                country: Yup.string().required()
             })
         })
     }),

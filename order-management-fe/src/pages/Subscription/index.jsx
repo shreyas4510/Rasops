@@ -204,7 +204,13 @@ function Subscription() {
                         </div>
                     ) : (
                         <div className="text-center">
-                            <p className="my-4">Are you sure you want to cancel the subscription ?</p>
+                            <p className="my-4">
+                                <strong>Are you sure you want to cancel your subscription?</strong>
+                                <br />
+                                <br />
+                                Note: A refund for the unused portion will be issued, and the subscription cancellation
+                                will take effect at 11:59 PM.
+                            </p>
                         </div>
                     )
                 }

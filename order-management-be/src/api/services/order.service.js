@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../config/database.js';
 import logger from '../../config/logger.js';
@@ -568,7 +568,8 @@ const completed = async (hotelId, filters) => {
         if (filterKey && filterValue) {
             options.where = {
                 [filterKey]: {
-                    [Op.like]: `%${filterValue}%`
+                    // eslint-disable-next-line no-useless-escape
+                    [Op.like]: Sequelize.literal(`\'%${filterValue}%\'`)
                 }
             };
         }

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
+import debounce from 'lodash.debounce';
 import moment from 'moment';
 import { MdDeleteForever } from 'react-icons/md';
 import { TbUserEdit } from 'react-icons/tb';
@@ -13,12 +14,17 @@ import {
     removeManagerRequest,
     setFormInfo,
     setHotelOption,
+    setManagerFiltering,
+    setManagerPagination,
+    setManagerSorting,
     setSelectedRow,
     updateManagerRequest
 } from '../../store/slice/manager.slice';
 
 function Managers() {
-    const { managerOptions, formInfo, data, selectedRow } = useSelector((state) => state.manager);
+    const { managerOptions, formInfo, data, selectedRow, pagination, sorting, filtering, change } = useSelector(
+        (state) => state.manager
+    );
     const { data: hotels } = useSelector((state) => state.hotel);
     const dispatch = useDispatch();
 
@@ -46,45 +52,20 @@ function Managers() {
         };
     };
 
-    /** ** pagination state ****/
-    const [pagination, setPagination] = useState({
-        pageIndex: 0,
-        pageSize: 10
-    });
-
-    /** ** sorting state ****/
-    const [sorting, setSorting] = useState([]);
-
-    /** ** filtering state ****/
-    const [filtering, setFiltering] = useState({});
-
-    /** ** table pagination start ****/
-    const onPaginationChange = (e) => {
-        setPagination(e);
-    };
-
-    /** ** table filtering start ****/
-    const onFilterChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-
-        setFiltering({
-            field: name,
-            value
-        });
-    };
-    /** ** table filtering emd ****/
-
-    /** ** table sorting start ****/
     const onSortingChange = (e) => {
         const sortDetails = e()[0];
         const data = [...sorting][0];
+        dispatch(setManagerPagination({ pageIndex: 0, pageSize: 10 }));
         if (!data || data.id !== sortDetails.id) {
-            setSorting([{ id: sortDetails.id, desc: false }]);
+            dispatch(setManagerSorting([{ id: sortDetails.id, desc: false }]));
             return;
         }
+        dispatch(setManagerSorting([{ ...data, desc: !data.desc }]));
+    };
 
-        setSorting([{ ...data, desc: !data.desc }]);
+    const onFilterChange = (e) => {
+        dispatch(setManagerPagination({ pageIndex: 0, pageSize: 10 }));
+        dispatch(setManagerFiltering({ field: e.target.name, value: e.target.value }));
     };
 
     useEffect(() => {
@@ -101,8 +82,25 @@ function Managers() {
     }, [Object.keys(hotels).length]);
 
     useEffect(() => {
-        dispatch(getManagersRequest());
-    }, []);
+        const params = {
+            skip: pagination?.pageIndex ? pagination?.pageIndex * pagination?.pageSize : undefined,
+            limit: pagination?.pageSize,
+            sortKey: sorting[0]?.id,
+            sortOrder: sorting[0] ? (sorting[0].desc ? 'desc' : 'asc') : undefined,
+            filterKey: filtering?.field,
+            filterValue: filtering?.value
+        };
+
+        const debounceTableFilters = debounce((params) => {
+            dispatch(getManagersRequest(params));
+        }, 300);
+
+        const cleanup = () => {
+            debounceTableFilters.cancel();
+        };
+        debounceTableFilters(params);
+        return cleanup;
+    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value, change]);
 
     const handleDelete = async () => {
         const id = selectedRow?.id;
@@ -126,6 +124,7 @@ function Managers() {
             id: 'name',
             header: 'Name',
             minSize: 200,
+            headerPlaceholder: 'John Doe',
             cell: ({ row }) => {
                 return row?.original?.firstName ? (
                     <div>{row?.original?.firstName + ' ' + row?.original?.lastName}</div>
@@ -138,20 +137,23 @@ function Managers() {
             id: 'phoneNumber',
             header: 'Phone Number',
             minSize: 200,
+            headerPlaceholder: 'XXXXXXXXXX',
             cell: ({ row }) => <div>{row?.original?.phoneNumber}</div>
         }),
         columnHelper.display({
             id: 'hotelName',
             header: 'Hotel Name',
             minSize: 250,
+            headerPlaceholder: 'Rasops Restro',
             cell: ({ row }) => <div>{row?.original?.hotel?.name}</div>
         }),
         columnHelper.display({
             id: 'createdAt',
             header: 'Onboarded',
             minSize: 150,
+            headerPlaceholder: moment().format('YYYY-MM-DD'),
             cell: ({ row }) =>
-                row?.original?.createdAt && <div>{moment(row?.original?.createdAt).format('DD-MMM-YYYY')}</div>
+                row?.original?.createdAt && <div>{moment(row?.original?.createdAt).format('YYYY-MM-DD')}</div>
         }),
         columnHelper.display({
             id: 'actions',
@@ -159,6 +161,7 @@ function Managers() {
             enableSorting: 'FALSE',
             enableFiltering: 'FALSE',
             minSize: 150,
+            headerPlaceholder: '-',
             cell: ({ row }) => {
                 return row?.original?.id ? (
                     <ActionDropdown
@@ -193,12 +196,18 @@ function Managers() {
                 <Table
                     columns={columns}
                     data={data?.rows}
-                    count={data?.rows?.count}
-                    onPaginationChange={onPaginationChange}
+                    count={data?.count}
+                    // pagination props
+                    onPaginationChange={(paginate) => {
+                        dispatch(setManagerPagination(paginate(pagination)));
+                    }}
                     pagination={pagination}
+                    // sorting props
+                    onSortingChange={onSortingChange}
+                    sorting={sorting}
+                    // filtering props
                     onFilterChange={onFilterChange}
                     filtering={filtering}
-                    onSortingChange={onSortingChange}
                 />
             </div>
             <OMTModal

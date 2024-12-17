@@ -21,7 +21,8 @@ function CustomFormGroup({
     getValues = false,
     values = {},
     setFormValues,
-    required = false
+    required = false,
+    placeholder = ''
 }) {
     return (
         <FormGroup className={className} key={`${formKey}`}>
@@ -114,6 +115,7 @@ function CustomFormGroup({
                     data-testid={`${name}-input-${moment().valueOf()}`}
                     type={type}
                     name={name}
+                    placeholder={placeholder}
                     className="form-control"
                     disabled={disabled}
                 />

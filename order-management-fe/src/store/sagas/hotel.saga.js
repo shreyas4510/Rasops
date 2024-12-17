@@ -7,6 +7,7 @@ import {
     getHotelSuccess,
     removeHotelSuccess,
     setAssignableManagers,
+    setDeleteHotelConfirm,
     setHotelFormData
 } from '../slice';
 import {
@@ -46,6 +47,7 @@ function* removeHotelsRequestSaga(action) {
         yield put(removeHotelSuccess(id));
     } catch (error) {
         toast.error(`Failed to remove hotels ${error.message}`);
+        yield put(setDeleteHotelConfirm(false));
     }
 }
 

@@ -17,7 +17,7 @@ const createLinkedAccount = async (payload) => {
         return linkedAccount;
     } catch (error) {
         logger('error', 'Error while creating linked account', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -27,7 +27,7 @@ const createStakeholder = async (accountId, payload) => {
         return stakeholder;
     } catch (error) {
         logger('error', 'Error while creating stakeholder', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -37,7 +37,7 @@ const requestProduct = async (accountId, payload) => {
         return product;
     } catch (error) {
         logger('error', 'Error while requesting product', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -47,7 +47,7 @@ const updateProduct = async (accountId, productId, payload) => {
         return product;
     } catch (error) {
         logger('error', 'Error while updating product', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -57,7 +57,7 @@ const subscribe = async (payload) => {
         return subscription;
     } catch (error) {
         logger('error', 'Error while creating subscription product', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -67,7 +67,7 @@ const fetch = async (subscriptionId) => {
         return subscription;
     } catch (error) {
         logger('error', 'Error while fetching subscription product', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -77,7 +77,7 @@ const order = async (data) => {
         return order;
     } catch (error) {
         logger('error', 'Error while creating order', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -87,7 +87,7 @@ const cancel = async (subscriptionId, cancelAtCycleEnd = false) => {
         return cancelResponse;
     } catch (error) {
         logger('error', 'Error while canceling subscription', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -97,7 +97,7 @@ const getPlan = async (planId) => {
         return data;
     } catch (error) {
         logger('error', 'Error while fetching plan', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 
@@ -107,7 +107,7 @@ const refund = async (paymentId, amount) => {
         return data;
     } catch (error) {
         logger('error', 'Error while fetching plan', { error });
-        throw CustomError(error.code, error.message);
+        throw CustomError(error.code, error.error.description || 'Something went wrong');
     }
 };
 

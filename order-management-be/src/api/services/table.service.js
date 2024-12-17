@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import logger from '../../config/logger.js';
 import { TABLE_STATUS } from '../models/table.model.js';
@@ -75,7 +75,12 @@ const fetch = async (payload) => {
         }
 
         if (filter) {
-            const condition = { tableNumber: { [Op.like]: `%${filter}%` } };
+            const condition = {
+                tableNumber: {
+                    // eslint-disable-next-line no-useless-escape
+                    [Op.like]: Sequelize.literal(`\'%${filter}%\'`)
+                }
+            };
             options.where = { ...options.where, ...condition };
         }
 
