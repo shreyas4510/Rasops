@@ -1,8 +1,16 @@
 import { api, method } from '../api/apiClient';
 
-export const getManagers = async () => {
+export const getManagers = async ({
+    skip = 0,
+    limit = 10,
+    sortKey = '',
+    sortOrder = '',
+    filterKey = '',
+    filterValue = ''
+}) => {
     try {
-        return await api(method.GET, `/manager`);
+        const query = `skip=${skip}&limit=${limit}&sortKey=${sortKey}&sortOrder=${sortOrder}&filterKey=${filterKey}&filterValue=${filterValue}`;
+        return await api(method.GET, `/manager?${query}`);
     } catch (error) {
         console.error(`Error while fetching managers ${error}`);
         throw error;

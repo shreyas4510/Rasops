@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { all, put, takeLatest } from 'redux-saga/effects';
 import * as service from '../../services/checkout.service';
-import { setConfirmation, setSubscriptionData } from '../slice';
+import { setCancellation, setConfirmation, setSubscriptionData } from '../slice';
 import { CANCEL_SUBSCRIPTION_REQUEST, SUBSCRIPTION_REQUEST, SUBSCRIPTION_SUCCESS_REQUEST } from '../types';
 
 function* subscriptionRequestSaga(action) {
@@ -46,12 +46,13 @@ function* cancelSubscriptionRequestSaga(action) {
             subscriptionId,
             cancelImmediately: true
         });
-        toast.success('Subscription cancelled successfully!');
+        toast.success('Subscription Cancelled Successfully! A refund for the unused portion has been processed.');
     } catch (error) {
         console.error(`Failed to cancel subscription ${error.message}`);
-        toast.error('Failed to cancel subscription! Please try again');
+        toast.error(`Failed to cancel subscription! ${error.message}`);
     }
     navigate('/hotels');
+    yield put(setCancellation(false));
 }
 
 export default function* checkoutSaga() {
