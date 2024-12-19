@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import CryptoJS from 'crypto-js';
 import debounce from 'lodash.debounce';
 import { QRCodeSVG } from 'qrcode.react';
+import { LuRefreshCcw } from 'react-icons/lu';
 import { MdDeleteForever } from 'react-icons/md';
 import { TiPlus } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +24,9 @@ import { addTableValidationSchema, removeTableValidationSchema } from '../../val
 function Tables() {
     const dispatch = useDispatch();
     const hotelId = useSelector((state) => state.hotel.globalHotelId);
-    const { tablesData, tablesModalData, selectedTable, tablesCounts, tableUrl } = useSelector((state) => state.table);
+    const { tablesData, tablesModalData, selectedTable, tableUrl, tablesCounts, totalCount } = useSelector(
+        (state) => state.table
+    );
 
     useEffect(() => {
         dispatch(getTablesRequest({ hotelId }));
@@ -106,10 +109,21 @@ function Tables() {
                                 label: 'Delete',
                                 icon: MdDeleteForever,
                                 onClick: () => handleTableActionClick('delete')
+                            },
+                            {
+                                label: 'Reset Filters',
+                                className: `${tablesCounts < 50 ? 'd-block' : 'd-none'}`,
+                                icon: LuRefreshCcw,
+                                onClick: () => dispatch(getTablesRequest({ hotelId }))
                             }
                         ]}
                     />
                 </div>
+            </div>
+            <div>
+                <h5 className="fw-bold ms-5" style={{ color: '#49ac60' }}>
+                    Total tables : <span className="text-dark">{totalCount}</span>
+                </h5>
             </div>
             {Object.keys(selectedTable).length ? (
                 <div className="d-flex flex-column align-items-center">
@@ -130,7 +144,7 @@ function Tables() {
                 validationSchema={
                     tablesModalData.type === 'add'
                         ? addTableValidationSchema
-                        : () => removeTableValidationSchema(tablesCounts)
+                        : () => removeTableValidationSchema(totalCount)
                 }
                 title={tablesModalData?.title}
                 initialValues={tablesModalData?.initialValues || {}}

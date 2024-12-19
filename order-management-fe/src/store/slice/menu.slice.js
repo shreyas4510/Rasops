@@ -14,7 +14,8 @@ const menuSlice = createSlice({
         pagination: {
             pageIndex: 0,
             pageSize: 10
-        }
+        },
+        removeCheck: false
     },
     reducers: {
         getCategoryRequest() {},
@@ -49,6 +50,9 @@ const menuSlice = createSlice({
         },
         setPagination(state, action) {
             state.pagination = action.payload;
+        },
+        setRemoveCheck(state, action) {
+            state.removeCheck = action.payload;
         }
     }
 });
@@ -68,7 +72,8 @@ export const {
     updateMenuItemsRequest,
     setSorting,
     setFiltering,
-    setPagination
+    setPagination,
+    setRemoveCheck
 } = menuSlice.actions;
 
 export const menuReducer = menuSlice.reducer;
