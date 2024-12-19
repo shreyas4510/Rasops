@@ -17,7 +17,8 @@ function OMTModal({
     isFooter = true,
     size = 'sm',
     initialValues = {},
-    validationSchema = ''
+    validationSchema = '',
+    removeCheck = false // only for menu tab
 }) {
     const FormComponent = ({ description }) => (
         <Formik
@@ -56,7 +57,9 @@ function OMTModal({
                             );
                         })}
                     </div>
-                    <ModalFooter disabled={isSubmitting || !isValid || !dirty} />
+                    <ModalFooter
+                        disabled={isSubmitting || !isValid || (removeCheck ? !removeCheck && !dirty : !dirty)}
+                    />
                 </Form>
             )}
         </Formik>

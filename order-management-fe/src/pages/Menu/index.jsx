@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
+import debounce from 'lodash.debounce';
 import moment from 'moment/moment';
 import { IoCloseSharp } from 'react-icons/io5';
 import { MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
@@ -21,6 +22,7 @@ import {
     setFiltering,
     setMenuModalData,
     setPagination,
+    setRemoveCheck,
     setSelectedCategory,
     setSorting,
     updateCategoryRequest,
@@ -36,8 +38,17 @@ import {
 
 function Menu() {
     const dispatch = useDispatch();
-    const { selectedCategory, modalData, categoriesOptions, categories, menuItems, sorting, filtering, pagination } =
-        useSelector((state) => state.menu);
+    const {
+        selectedCategory,
+        modalData,
+        categoriesOptions,
+        categories,
+        menuItems,
+        sorting,
+        filtering,
+        pagination,
+        removeCheck
+    } = useSelector((state) => state.menu);
     const hotelId = useSelector((state) => state.hotel.globalHotelId);
 
     const onPaginationChange = (paginate) => {
@@ -54,8 +65,17 @@ function Menu() {
             filterValue: filtering?.value,
             categoryId: selectedCategory.value
         };
-        dispatch(getMenuItemsRequest(params));
-    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value]);
+
+        const debounceTableFilters = debounce((params) => {
+            dispatch(getMenuItemsRequest(params));
+        }, 300);
+
+        const cleanup = () => {
+            debounceTableFilters.cancel();
+        };
+        debounceTableFilters(params);
+        return cleanup;
+    }, [pagination, sorting[0]?.desc, sorting[0]?.id, filtering.field, filtering.value, selectedCategory.value]);
 
     const onSortingChange = (e) => {
         const sortDetails = e()[0];
@@ -65,6 +85,7 @@ function Menu() {
             return;
         }
 
+        dispatch(setPagination({ pageIndex: 0, pageSize: 10 }));
         dispatch(setSorting([{ ...data, desc: !data.desc }]));
     };
 
@@ -72,6 +93,7 @@ function Menu() {
         const name = e.target.name;
         const value = e.target.value;
 
+        dispatch(setPagination({ pageIndex: 0, pageSize: 10 }));
         dispatch(
             setFiltering({
                 field: name,
@@ -80,24 +102,33 @@ function Menu() {
         );
     };
 
+    const resetFilter = () => {
+        dispatch(setSorting([]));
+        dispatch(setFiltering({}));
+        dispatch(setPagination({ pageIndex: 0, pageSize: 10 }));
+    };
+
     const columnHelper = createColumnHelper();
     const columns = [
         columnHelper.display({
             id: 'name',
             header: 'Name',
             minSize: 200,
+            headerPlaceholder: 'Mutter Paneer',
             cell: ({ row }) => <div>{row.original.name}</div>
         }),
         columnHelper.display({
             id: 'price',
             header: 'Price',
             minSize: 150,
+            headerPlaceholder: '100',
             cell: ({ row }) => <div>{row.original.price}</div>
         }),
         columnHelper.display({
             id: 'status',
             header: 'Status',
             minSize: 180,
+            headerPlaceholder: 'UNAVAILABLE',
             cell: ({ row }) => {
                 return row.original.status && <h6>{row.original.status}</h6>;
             }
@@ -106,8 +137,9 @@ function Menu() {
             id: 'createdAt',
             header: 'Added On',
             minSize: 150,
+            headerPlaceholder: moment().format('YYYY-MM-DD'),
             cell: ({ row }) => {
-                return row.original.createdAt && <div>{moment(row.original.createdAt).format('DD-MMM-YYYY')}</div>;
+                return row.original.createdAt && <div>{moment(row.original.createdAt).format('YYYY-MM-DD')}</div>;
             }
         }),
         columnHelper.display({
@@ -116,6 +148,7 @@ function Menu() {
             enableSorting: 'FALSE',
             enableFiltering: 'FALSE',
             minSize: 150,
+            headerPlaceholder: '-',
             cell: ({ row }) => {
                 return row.original.name ? (
                     <MdModeEditOutline
@@ -151,7 +184,10 @@ function Menu() {
                 name: `${item}-${key}`
             };
         });
-        updatedOps['add-button'] = addButton;
+        updatedOps['add-button'] = {
+            ...addButton,
+            invalidDisable: true
+        };
 
         const updatedInitialVals = {
             ...values,
@@ -165,6 +201,7 @@ function Menu() {
             options: updatedOps
         };
         dispatch(setMenuModalData(modalData));
+        dispatch(setRemoveCheck(false));
         return modalData;
     };
 
@@ -185,10 +222,17 @@ function Menu() {
         modalData = {
             ...modalData,
             initialValues: updatedInitialVals,
-            options: updatedOptions
+            options: {
+                ...updatedOptions,
+                'add-button': {
+                    ...updatedOptions['add-button'],
+                    invalidDisable: false
+                }
+            }
         };
 
         dispatch(setMenuModalData(modalData));
+        dispatch(setRemoveCheck(true));
         return modalData;
     };
 
@@ -239,6 +283,7 @@ function Menu() {
         };
 
         dispatch(setMenuModalData(addOptions));
+        dispatch(setRemoveCheck(false));
     };
 
     const handleUpdateItemClick = (type, data = {}) => {
@@ -310,6 +355,7 @@ function Menu() {
         }
 
         dispatch(setMenuModalData(updateOptions));
+        dispatch(setRemoveCheck(false));
     };
 
     const handleDeleteItemClick = (type) => {
@@ -350,6 +396,7 @@ function Menu() {
         };
 
         dispatch(setMenuModalData(removeOptions));
+        dispatch(setRemoveCheck(false));
     };
 
     const handleSubmit = (values, { setSubmitting }) => {
@@ -448,8 +495,8 @@ function Menu() {
                         options={categoriesOptions || []}
                         value={selectedCategory}
                         onChange={(item) => {
+                            resetFilter();
                             dispatch(setSelectedCategory(item));
-                            dispatch(getMenuItemsRequest({ categoryId: item.value }));
                         }}
                     />
                     <ActionDropdown
@@ -534,6 +581,7 @@ function Menu() {
                 size={modalData.type === 'remove' ? 'md' : 'lg'}
                 submitText={modalData?.submitText}
                 closeText={modalData?.closeText}
+                removeCheck={removeCheck}
             />
         </>
     );

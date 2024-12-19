@@ -6,9 +6,10 @@ const tablesSlice = createSlice({
     reducers: {
         getTablesRequest() {},
         getTablesSuccess(state, action) {
-            const { data, count } = action.payload;
+            const { data, count, totalCount } = action.payload;
             state.tablesData = data;
             state.tablesCounts = count;
+            state.totalCount = totalCount;
             state.selectedTable = data[0] || {};
         },
         setSelectedTable(state, action) {
@@ -28,6 +29,7 @@ const tablesSlice = createSlice({
         tablesModalData: false,
         selectedTable: {},
         tablesCounts: 0,
+        totalCount: 0,
         tableUrl: ''
     }
 });
