@@ -2,9 +2,8 @@ import { Op, Sequelize } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 import logger from '../../config/logger.js';
 import { TABLE_STATUS } from '../models/table.model.js';
-import subscriptionRepo from '../repositories/subscription.repository.js';
 import tableRepo from '../repositories/table.repository.js';
-import { CustomError, STATUS_CODE } from '../utils/common.js';
+import { CustomError } from '../utils/common.js';
 
 const create = async (hotelId, payload) => {
     try {
@@ -21,21 +20,6 @@ const create = async (hotelId, payload) => {
         let startNo = 1;
         if (records.count) {
             startNo = records.rows[0].tableNumber + 1;
-        }
-
-        const subscriptionOptions = {
-            where: { hotelId },
-            attributes: ['id', 'tables']
-        };
-        const subscription = await subscriptionRepo.findOne(subscriptionOptions);
-        const maxCount = Number(subscription.tables);
-
-        if (startNo - 1 + count > maxCount) {
-            logger('debug', `Table addition limit exceeded ${startNo - 1 + count}`);
-            throw CustomError(
-                STATUS_CODE.TOO_MANY_REQUEST,
-                `Maximum ${maxCount} tables can be added. Upgrade Plan to add more tables.`
-            );
         }
 
         const data = [];
@@ -64,12 +48,12 @@ const fetch = async (payload) => {
         const options = {
             where: {
                 hotelId
-            },
-            order: [['tableNumber', 'ASC']],
-            attributes: ['id', 'tableNumber'],
-            limit
+            }
         };
-
+        const totalCount = await tableRepo.count(options);
+        options.order = [['tableNumber', 'ASC']];
+        options.attributes = ['id', 'tableNumber'];
+        options.limit = limit;
         if (active) {
             options.where.status = TABLE_STATUS[1];
         }
@@ -86,7 +70,7 @@ const fetch = async (payload) => {
 
         logger('debug', `Fetching table with payload ${JSON.stringify(options)}`);
         const data = await tableRepo.find(options);
-        return data;
+        return { ...data, totalCount };
     } catch (error) {
         logger('error', `Error while fetching tables ${error}`);
         throw CustomError(error.code, error.message);
