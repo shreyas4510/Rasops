@@ -306,18 +306,20 @@ const dashboard = async (hotelId, user) => {
             data: {}
         };
 
-        let weekStartDate = moment().startOf('week');
-        while (weekStartDate.isSameOrBefore(moment())) {
-            let item = weekData.find((obj) => obj.date === weekStartDate.format('YYYY-MM-DD'));
-            if (!item) {
-                item = { date: weekStartDate.format('YYYY-MM-DD'), totalPrice: '0' };
+        if (weekData.length) {
+            let weekStartDate = moment().startOf('week');
+            while (weekStartDate.isSameOrBefore(moment())) {
+                let item = weekData.find((obj) => obj.date === weekStartDate.format('YYYY-MM-DD'));
+                if (!item) {
+                    item = { date: weekStartDate.format('YYYY-MM-DD'), totalPrice: '0' };
+                }
+                weeklyData.week += Number(item.totalPrice);
+                if (moment(item.date).isSame(moment(), 'day')) {
+                    weeklyData.today = Number(item.totalPrice);
+                }
+                weeklyData.data[moment(item.date).format('DD')] = item.totalPrice;
+                weekStartDate = weekStartDate.add(1, 'day');
             }
-            weeklyData.week += Number(item.totalPrice);
-            if (moment(item.date).isSame(moment(), 'day')) {
-                weeklyData.today = Number(item.totalPrice);
-            }
-            weeklyData.data[moment(item.date).format('DD')] = item.totalPrice;
-            weekStartDate = weekStartDate.add(1, 'day');
         }
         /* weekly data end */
 
@@ -349,15 +351,17 @@ const dashboard = async (hotelId, user) => {
             data: {}
         };
 
-        let startMonth = moment().startOf('year');
-        while (startMonth.isSameOrBefore(moment().endOf('month'))) {
-            let item = monthData.find((obj) => obj.month === startMonth.format('YYYY-MM'));
-            if (!item) {
-                item = { month: startMonth.format('YYYY-MM'), totalPrice: '0' };
+        if (monthData.length) {
+            let startMonth = moment().startOf('year');
+            while (startMonth.isSameOrBefore(moment().endOf('month'))) {
+                let item = monthData.find((obj) => obj.month === startMonth.format('YYYY-MM'));
+                if (!item) {
+                    item = { month: startMonth.format('YYYY-MM'), totalPrice: '0' };
+                }
+                monthlyData.year += Number(item.totalPrice);
+                monthlyData.data[startMonth.format('MMM')] = item.totalPrice;
+                startMonth = startMonth.add(1, 'month');
             }
-            monthlyData.year += Number(item.totalPrice);
-            monthlyData.data[startMonth.format('MMM')] = item.totalPrice;
-            startMonth = startMonth.add(1, 'month');
         }
         /* monthly data end */
 

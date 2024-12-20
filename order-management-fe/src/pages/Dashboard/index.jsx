@@ -145,7 +145,7 @@ function Dashboard() {
                 </Col>
                 <Col className="col-sm-7 col-12">
                     <h6>Week Revenue</h6>
-                    {dailyRevenue?.length ? (
+                    {dailyRevenue[0]?.data?.length ? (
                         <LineChart data={dailyRevenue} xLabel="Day" yLabel="Revenue" />
                     ) : (
                         <DashboardNoData />

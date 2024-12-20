@@ -544,7 +544,7 @@ const completed = async (hotelId, filters) => {
         const options = {
             where: { hotelId },
             distinct: true,
-            attributes: ['id', 'name', 'email', 'phoneNumber', 'feedback', 'rating'],
+            attributes: ['id', 'name', 'email', 'phoneNumber', 'feedback', 'rating', 'updatedAt'],
             include: [
                 {
                     model: db.orders,
@@ -576,6 +576,8 @@ const completed = async (hotelId, filters) => {
 
         if (sortKey && sortOrder) {
             options.order = [[sortKey || defaults.sortKey, sortOrder || defaults.sortOrder]];
+        } else {
+            options.order = [[defaults.sortKey, defaults.sortOrder]];
         }
         logger('debug', 'Options to fetch completed orders', options);
         const customers = await customerRepo.find(options);

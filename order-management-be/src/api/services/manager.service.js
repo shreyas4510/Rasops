@@ -92,6 +92,7 @@ const fetch = async (payload) => {
             }
         }
 
+        options.order = [[{ model: db.users }, defaults.sortKey, defaults.sortOrder]];
         if (sortKey && sortOrder && sortKey !== hotelKey) {
             if (sortKey === 'name') {
                 options.order = [[{ model: db.users }, 'firstName', sortOrder || defaults.sortOrder]];
