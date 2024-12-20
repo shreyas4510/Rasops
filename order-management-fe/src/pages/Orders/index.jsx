@@ -135,30 +135,35 @@ function Orders() {
         columnHelper.display({
             id: 'name',
             header: 'Customer Name',
+            headerPlaceholder: 'John Doe',
             minSize: 180,
             cell: ({ row }) => <div>{row.original?.name || ''}</div>
         }),
         columnHelper.display({
             id: 'email',
             header: 'Email',
+            headerPlaceholder: 'john.doe@rasops.com',
             minSize: 300,
             cell: ({ row }) => <div>{row.original?.email || ''}</div>
         }),
         columnHelper.display({
             id: 'phoneNumber',
             header: 'Phone Number',
+            headerPlaceholder: '9000090000',
             minSize: 180,
             cell: ({ row }) => <div>{row.original?.phoneNumber || ''}</div>
         }),
         columnHelper.display({
             id: 'feedback',
             header: 'Feedback',
+            headerPlaceholder: 'Great Food!',
             minSize: 300,
             cell: ({ row }) => <div>{row.original?.feedback || ''}</div>
         }),
         columnHelper.display({
             id: 'rating',
             header: 'Rating',
+            headerPlaceholder: '5',
             minSize: 150,
             cell: ({ row }) => <div>{row.original?.rating || ''}</div>
         }),
