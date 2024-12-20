@@ -110,7 +110,7 @@ const sendNotification = async (userIds, data, customerId = undefined) => {
                 );
 
                 if (preference) {
-                    await webpush.sendNotification(
+                    webpush.sendNotification(
                         {
                             endpoint: subscriptionData.endpoint,
                             expirationTime: subscriptionData.expiration,

@@ -305,13 +305,20 @@ const dashboard = async (hotelId, user) => {
             today: 0,
             data: {}
         };
-        weekData.forEach((item) => {
+
+        let weekStartDate = moment().startOf('week');
+        while (weekStartDate.isSameOrBefore(moment())) {
+            let item = weekData.find((obj) => obj.date === weekStartDate.format('YYYY-MM-DD'));
+            if (!item) {
+                item = { date: weekStartDate.format('YYYY-MM-DD'), totalPrice: '0' };
+            }
             weeklyData.week += Number(item.totalPrice);
             if (moment(item.date).isSame(moment(), 'day')) {
                 weeklyData.today = Number(item.totalPrice);
             }
             weeklyData.data[moment(item.date).format('DD')] = item.totalPrice;
-        });
+            weekStartDate = weekStartDate.add(1, 'day');
+        }
         /* weekly data end */
 
         /* monthly data start */
@@ -341,11 +348,18 @@ const dashboard = async (hotelId, user) => {
             year: 0,
             data: {}
         };
-        monthData.forEach((item) => {
+
+        let startMonth = moment().startOf('year');
+        while (startMonth.isSameOrBefore(moment().endOf('month'))) {
+            let item = monthData.find((obj) => obj.month === startMonth.format('YYYY-MM'));
+            if (!item) {
+                item = { month: startMonth.format('YYYY-MM'), totalPrice: '0' };
+            }
             monthlyData.year += Number(item.totalPrice);
-            monthlyData.data[moment(item.month).format('MMM')] = item.totalPrice;
-        });
-        /* monthly data start */
+            monthlyData.data[startMonth.format('MMM')] = item.totalPrice;
+            startMonth = startMonth.add(1, 'month');
+        }
+        /* monthly data end */
 
         const topMenuOptions = {
             attributes: [
