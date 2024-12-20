@@ -3,8 +3,9 @@ import { createColumnHelper } from '@tanstack/react-table';
 import debounce from 'lodash.debounce';
 import { Carousel, Col, Container, Form, Row } from 'react-bootstrap';
 import { BsInfoCircleFill } from 'react-icons/bs';
-import { IoCheckmarkDoneCircle } from 'react-icons/io5';
+import { FaCheck } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
+import CustomButton from '../../components/CustomButton';
 import CustomSelect from '../../components/CustomSelect';
 import OMTModal from '../../components/Modal';
 import '../../assets/styles/orders.css';
@@ -56,9 +57,6 @@ function Orders() {
             const { meta } = event.data;
             switch (meta?.action) {
                 case NOTIFICATION_ACTIONS.CUSTOMER_REGISTERATION:
-                    if (userData.preference?.orders !== ORDER_PREFERENCE.on) {
-                        debounceSetPreference(ORDER_PREFERENCE.on);
-                    }
                     dispatch(getTablesRequest({ hotelId: meta.hotelId, location: 'orders', active: true }));
                     break;
                 case NOTIFICATION_ACTIONS.ONLINE_PAYMENT_CONFIRMED:
@@ -70,15 +68,18 @@ function Orders() {
                     }
                     break;
                 case NOTIFICATION_ACTIONS.PAYMENT_REQUEST:
-                    dispatch(
-                        setPaymentRequest({
-                            title: 'Payment Request',
-                            message: `Payment request for Table-${meta.tableNumber} of amount ${meta.totalPrice}. Please approve once the payment is done.`,
-                            submitText: 'Approve',
-                            tableId: meta.tableId,
-                            customerId: meta.customerId
-                        })
-                    );
+                    if (selectedTable.value === meta.tableId) {
+                        dispatch(
+                            setPaymentRequest({
+                                title: 'Payment Request',
+                                message: `Payment request for Table-${meta.tableNumber} of amount ${meta.totalPrice}. Please approve once the payment is done.`,
+                                submitText: 'Approve',
+                                tableId: meta.tableId,
+                                hotelId: meta.hotelId,
+                                customerId: meta.customerId
+                            })
+                        );
+                    }
                     break;
                 default:
                     console.warn(`Unhandled notification action: ${meta.action}`);
@@ -122,8 +123,10 @@ function Orders() {
             orders: inputValue ? ORDER_PREFERENCE.on : ORDER_PREFERENCE.off
         };
         dispatch(updateUserRequest({ preferences }));
-        if (inputValue === ORDER_PREFERENCE.on) {
+        if (inputValue) {
             dispatch(getTablesRequest({ hotelId, location: 'orders', active: true }));
+        } else {
+            dispatch(getCompletedOrdersRequest({ hotelId }));
         }
     }, 500);
 
@@ -294,36 +297,29 @@ function Orders() {
                     {activeOrder.pendingOrder && (
                         <Container className="my-4 d-flex flex-column">
                             <h6>Active Order</h6>
-                            <div className="p-4 rounded shadow width-container mx-auto active-orders-container">
-                                {!activeOrder.bill ? (
-                                    <>
-                                        {Object.values(activeOrder?.pendingOrder || {}).map((item, index) => (
-                                            <Row key={`${index}-${item}`} className="my-2">
-                                                <Col>
-                                                    <h6 className="text-center fw-bold">{item.name}</h6>
-                                                </Col>
-                                                <Col>
-                                                    <h6 className="text-center fw-bold">{item.quantity}</h6>
-                                                </Col>
-                                            </Row>
-                                        ))}
-                                    </>
-                                ) : (
-                                    <BillingView order={activeOrder.billDetails} />
-                                )}
-
-                                <IoCheckmarkDoneCircle
-                                    color="#08182d"
-                                    className="active-order-done-icon"
-                                    size={60}
-                                    role="button"
+                            <div className="p-4 d-flex flex-column rounded shadow width-container mx-auto active-orders-container">
+                                <CustomButton
+                                    disabled={false}
+                                    label={
+                                        <>
+                                            <span className="mx-2">
+                                                <FaCheck />
+                                            </span>
+                                            <span>{activeOrder.bill ? 'Bill Paid' : 'Order Served'}</span>
+                                        </>
+                                    }
+                                    className="ms-auto mb-3 btn-dark"
+                                    defaultClass={false}
                                     onClick={() => {
                                         if (activeOrder.bill) {
                                             dispatch(
-                                                paymentConfirmationRequest({
-                                                    manual: true,
-                                                    customerId: activeOrder.billDetails.id,
-                                                    hotelId
+                                                setPaymentRequest({
+                                                    title: 'Payment Request',
+                                                    message: `Payment request for ${selectedTable.label} of amount ${activeOrder.billDetails.totalPrice}. Please approve once the payment is done.`,
+                                                    submitText: 'Approve',
+                                                    tableId: selectedTable.value,
+                                                    hotelId,
+                                                    customerId: activeOrder.billDetails.id
                                                 })
                                             );
                                         } else {
@@ -338,6 +334,22 @@ function Orders() {
                                         }
                                     }}
                                 />
+                                {!activeOrder.bill ? (
+                                    <>
+                                        {Object.values(activeOrder?.pendingOrder || {}).map((item, index) => (
+                                            <Row key={`${index}-${item}`}>
+                                                <Col>
+                                                    <h6 className="text-center fw-bold">{item.name}</h6>
+                                                </Col>
+                                                <Col>
+                                                    <h6 className="text-center fw-bold">{item.quantity}</h6>
+                                                </Col>
+                                            </Row>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <BillingView order={activeOrder.billDetails} />
+                                )}
                             </div>
                         </Container>
                     )}
@@ -393,6 +405,7 @@ function Orders() {
                             sorting={sorting}
                             // filtering props
                             onFilterChange={(e) => {
+                                dispatch(setOrderPagination({ pageIndex: 0, pageSize: 10 }));
                                 dispatch(setOrderFiltering({ field: e.target.name, value: e.target.value }));
                             }}
                             filtering={filtering}
@@ -421,9 +434,13 @@ function Orders() {
                         dispatch(
                             paymentConfirmationRequest({
                                 manual: true,
-                                customerId: paymentRequest.customerId
+                                customerId: paymentRequest.customerId,
+                                hotelId: paymentRequest.hotelId
                             })
                         );
+                    }}
+                    handleClose={() => {
+                        dispatch(setPaymentRequest(false));
                     }}
                     size={'md'}
                     submitText={paymentRequest?.submitText}

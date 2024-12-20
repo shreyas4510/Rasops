@@ -21,7 +21,7 @@ function* getActiveOrdersRequestSaga(action) {
 
 function* getCompletedOrdersRequestSaga(action) {
     try {
-        const { hotelId, params } = action.payload;
+        const { hotelId, params = {} } = action.payload;
         const result = yield service.getCompletedOrders({ hotelId, ...params });
         yield put(getCompletedOrdersSuccess(result));
     } catch (error) {

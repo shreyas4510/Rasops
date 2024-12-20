@@ -144,11 +144,9 @@ function Dashboard() {
                     {top5.length ? <PieChart data={top5} /> : <DashboardNoData />}
                 </Col>
                 <Col className="col-sm-7 col-12">
-                    {dailyRevenue.data?.length ? (
-                        <>
-                            <h6>Week Revenue</h6>
-                            <LineChart data={dailyRevenue} xLabel="Day" yLabel="Revenue" />
-                        </>
+                    <h6>Week Revenue</h6>
+                    {dailyRevenue?.length ? (
+                        <LineChart data={dailyRevenue} xLabel="Day" yLabel="Revenue" />
                     ) : (
                         <DashboardNoData />
                     )}

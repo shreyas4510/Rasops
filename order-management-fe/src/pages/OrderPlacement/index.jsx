@@ -395,16 +395,12 @@ function OrderPlacement() {
                                     title: 'Total Price',
                                     value:
                                         viewOrderDetails.totalPrice +
-                                        2 * Math.round(viewOrderDetails.totalPrice * (5 / 100))
+                                        2 * Math.round(viewOrderDetails.totalPrice * (2.5 / 100))
                                 }
                             ].map(({ title, value }, key) => (
                                 <div key={`${key}-${title}`} className="d-flex justify-content-between my-2">
-                                    <i className="fw-bold" style={{ color: '#570d0a' }}>
-                                        {title}
-                                    </i>
-                                    <i className="fw-bold" style={{ color: '#570d0a' }}>
-                                        ₹ {value}
-                                    </i>
+                                    <strong>{title}</strong>
+                                    <strong>₹ {value}</strong>
                                 </div>
                             ))}
                     </div>
