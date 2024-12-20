@@ -110,17 +110,21 @@ const sendNotification = async (userIds, data, customerId = undefined) => {
                 );
 
                 if (preference) {
-                    webpush.sendNotification(
-                        {
-                            endpoint: subscriptionData.endpoint,
-                            expirationTime: subscriptionData.expiration,
-                            keys: {
-                                p256dh: subscriptionData.p256dh,
-                                auth: subscriptionData.auth
-                            }
-                        },
-                        JSON.stringify(data)
-                    );
+                    webpush
+                        .sendNotification(
+                            {
+                                endpoint: subscriptionData.endpoint,
+                                expirationTime: subscriptionData.expiration,
+                                keys: {
+                                    p256dh: subscriptionData.p256dh,
+                                    auth: subscriptionData.auth
+                                }
+                            },
+                            JSON.stringify(data)
+                        )
+                        .catch((error) => {
+                            logger('error', 'web notification service failed', { error });
+                        });
 
                     if (!customerId) {
                         const notificationData = {
