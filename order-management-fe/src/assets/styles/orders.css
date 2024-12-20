@@ -32,11 +32,4 @@
 
 .active-orders-container {
     background-color: rgba(73, 172, 96, 0.37);
-    position: relative;
-}
-
-.active-order-done-icon {
-    position: absolute;
-    top: 5px;
-    right: 5px;
 }

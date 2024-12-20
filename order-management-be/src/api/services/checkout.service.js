@@ -345,6 +345,7 @@ const payment = async ({ customerId, hotelId, manual }) => {
                 path: 'orders',
                 meta: {
                     action: NOTIFICATION_ACTIONS.PAYMENT_REQUEST,
+                    hotelId,
                     tableId: customer.table.id,
                     customerId,
                     tableNumber: customer.table.tableNumber,
